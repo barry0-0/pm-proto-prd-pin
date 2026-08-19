@@ -1,6 +1,6 @@
 ---
 name: pm-proto-prd-pin
-description: 为任意 HTML 原型一键植入「交互式 PRD 打点标注器与多版本规约生成系统」。严格遵循标准实现：全球 4 语言架构 (中/英/日/韩: zh-CN, en, ja, ko)、REST API 真实落盘与本地 JS 双层持久化、在原型元素上高精度十字准星打点标注、智能展开弹窗/Tab精准定位、三态抽屉 (400px全展开 / 56px标号竖条半收起 / 0px全收起)、左侧双按钮控制组 (全收起+半收起朝内区隔)、纯白底色 Mermaid 矢量图表引擎与动态防截断渲染、真正交互式可视化表格直编 (零管道符如同 Excel 点击单元格打字并支持一键增删行列)、纯净无框逐行即时文档工作台 (带 caretRangeFromPoint 精准光标落点算法与焦点锁定)、136px 绝对统一卡片高度与纯标题模糊搜索、右侧抽屉安全管理锁与置顶/移至依次瞬移顺延排序体系、生成整页可视化 PRD 文档大屏 (带大纲检索与独立新网页大屏/PDF导出)、大头针气泡独立生命周期、编辑器草稿暂存最小化胶囊、以及多版本严格物理隔离与上传冲突解决模态框。当用户提到「需求打点」「原型标注」「PRD标记」「元素打标」「交互规约生成」「给原型加上PRD功能」「大头针标注」时使用本 Skill。
+description: 为任意 HTML 原型一键植入「交互式 PRD 打点标注器与多版本规约生成系统」。严格遵循标准实现：全球 4 语言架构 (中/英/日/韩: zh-CN, en, ja, ko)、REST API 真实落盘与本地 JS 双层持久化、在原型元素上高精度十字准星打点标注 (打标时自动收起右侧抽屉)、智能展开弹窗/Tab精准定位、三态抽屉 (400px全展开 / 56px标号竖条半收起 / 0px全收起)、左侧双按钮控制组 (全收起+半收起朝内区隔)、纯白底色 Mermaid 矢量图表引擎与动态防截断渲染、真正交互式可视化表格直编 (零管道符如同 Excel 点击单元格打字并支持一键增删行列与 Shift+Enter 换行)、纯净无框逐行即时文档工作台 (带 caretRangeFromPoint 精准光标落点算法、工具栏焦点持续锁定、以及 Markdown 列表小圆点强制高保真渲染)、136px 绝对统一卡片高度与纯标题模糊搜索、右侧抽屉安全管理锁与置顶/移至依次瞬移顺延排序体系、生成整页可视化 PRD 文档大屏 (带大纲检索与独立新网页大屏/PDF导出)、大头针气泡独立生命周期与展开侧边栏联动、编辑器草稿暂存最小化胶囊 (右下角悬浮保活)、以及多版本严格物理隔离与上传冲突解决模态框 (覆盖/追加/另存)。当用户提到「需求打点」「原型标注」「PRD标记」「元素打标」「交互规约生成」「给原型加上PRD功能」「大头针标注」时使用本 Skill。
 agent_created: true
 ---
 
@@ -13,15 +13,15 @@ agent_created: true
 
 ---
 
-## 🎯 核心能力与标准功能模板规范
+## 🎯 核心规范与模块功能模板 (1:1 完整实现标准)
 
-### 0. 🌐 原生全球多语言架构体系 (Native Multi-Language i18n Protocol)
+### Phase 0: 🌐 原生全球多语言架构体系 (Native Multi-Language i18n Protocol)
 - **四国语言内建覆盖**：
   - 🇨🇳 **简体中文 (`zh-CN`)**
   - 🇺🇸 **English (`en`)**
   - 🇯🇵 **日本語 (`ja`)**
   - 🇰🇷 **한국어 (`ko`)**
-- **全要素动态本地化**：
+- **全要素动态本地化 (115 个词条字典全覆盖)**：
   - 抽屉左侧控制按钮、顶部操作栏、排序管理模式提示条与操作按钮、搜索占位符、需求卡片脚标、打点编辑器全量工具栏、可视化表格操作按钮、流程图渲染栏、全景 PRD 大屏所有元数据与目录大纲、版本冲突处理对话框等 **100% 字典覆盖**；
 - **运行时无感知热切换与本地记忆**：
   - 抽屉顶部提供多语言切换下拉菜单，切换后即刻热重绘所有组件与徽标，并将偏好持久化至 `localStorage('prd_ui_lang')`；
@@ -31,7 +31,29 @@ agent_created: true
 
 ---
 
-### 1. 💾 双层持久化机制与标准后端接口协议 (Dual Persistence API Protocol)
+### Module 1: 💾 双层持久化机制与标准后端接口协议 (Dual Persistence API Protocol)
+- **标准数据模型 (Data Schema)**：
+  ```typescript
+  interface PinItem {
+    id: number;              // 1..N 连续自然序号
+    title: string;           // 需求标题
+    type: '业务规则' | '交互逻辑' | '数据口径' | '权限规则' | '异常流' | 'UI规范';
+    desc: string;            // Markdown 格式内容 (支持表格/Mermaid/列表)
+    selector: string;        // 自愈弹性 CSS 选择器
+    rect: { top: number; left: number; width: number; height: number };
+    pageKey: string;         // 如 "merchant.html"
+    pageTitle: string;       // 如 "商家端后台"
+    version: string;         // 如 "v1.0.0"
+    updatedAt: string;       // ISO 时间戳
+  }
+
+  interface VersionRegistry {
+    activeVersion: string;
+    versions: {
+      [versionName: string]: PinItem[];
+    };
+  }
+  ```
 - **REST API 标准接口规范 (优先调用)**：
   - `POST /api/save-prd`：
     - **请求体 (Payload)**：`{ pageKey: string, version: string, data: PinItem[], versionRegistry: VersionRegistry }`
@@ -40,14 +62,14 @@ agent_created: true
     - **保存失败反馈**：若未检测到本地服务接口（404/NetworkError），右下角弹出 Toast `❌ 保存失败：未检测到本地服务接口，无法写入本地磁盘 JS 文件！` 并提供一键下载备份；
   - `GET /api/get-all-prd`：
     - **返回体**：`{ success: true, registry: VersionRegistry }`
-  - `GET /api/get-prd?page=admin.html`：
+  - `GET /api/get-prd?page=merchant.html`：
     - **返回体**：`{ success: true, pins: PinItem[] }`
 - **本地静态文件持久化 (Fallback)**：
   - 当无 Node.js 后端服务时，自动降级为 `localStorage` 缓存与点击「💾 导出 JS 数据」一键生成标准 `prd-data-[pageKey].js` 磁盘文件。
 
 ---
 
-### 2. 📍 交互式十字准星打点与智能空间锚定 (Pinning & Spatial Anchoring Engine)
+### Module 2: 📍 交互式十字准星打点与智能空间锚定 (Pinning & Spatial Anchoring Engine)
 - **十字准星拾取器 (`bindPickListeners`)**：
   - 点击「📍 新增打点」进入打标模式，鼠标指针变为 `crosshair`，底层元素高亮蓝色虚线框；
   - **打标时自动收起右侧抽屉**：进入十字准星打标模式时，右侧抽屉**自动完全收起**，折叠为边缘胶囊 `📍 点击页面组件打标 (ESC退出)`，彻底杜绝侧边栏遮挡底层页面组件；
@@ -61,30 +83,37 @@ agent_created: true
 
 ---
 
-### 3. ✍️ 纯净无边框逐行即时可视化工作台 (Borderless In-situ Live Editor)
+### Module 3: ✍️ 纯净无边框逐行即时可视化工作台 (Borderless In-situ Live Editor Workbench)
+- **分块组件架构 (`splitMarkdownIntoBlocks` & `renderLiveBlocksUI`)**：
+  - 内部将 Markdown 自动解析为段落、标题、表格、流程图、代码块等多类型独立块结构；
+  - 非编辑行呈现为纯净无框高保真排版，点击任意行即时就地展开为无框源码输入；
 - **精准光标落点算法 (`document.caretRangeFromPoint`)**：
   - 鼠标在非编辑行任意文字位置点击时，系统毫秒级计算点击字符偏移量，光标**直接精准落到用户点击的文字位置**，告别跳到行首的繁琐；
-- **Markdown 列表小圆点强制高保真渲染**：
+- **Markdown 列表小圆点强制高保真渲染 (List Bullet Guard)**：
   - 注入 `!important` 列表样式规则，彻底免疫 host 页面 CSS Reset 或 Tailwind 的 `list-style: none` 干扰；
   - `- 文本` 严格渲染为高保真无序列表圆点 `•`，`1. 文本` 严格渲染为有序列表序号；
-- **沉浸式纯净文档质感**：
-  - 彻底去除每行繁琐的外框与阴影，还原干净真实的文档编写体验；
-  - 移除末尾多余的「新增一行/段落」按钮，PM 在空白区域点击或敲击回车即可顺畅流转；
 - **工具条操作无缝焦点锁定 (Focus-Preserving Toolbar)**：
-  - 点击加粗 `B`、斜体 `I`、标题 `H3`/`H4`、代码块等任意格式按钮或插入表格/模板时，**焦点持续锁定在当前编辑的那一行**，绝不跳转到文档最底部；
+  - 点击加粗 `B`、斜体 `I`、删除线 `S`、标题 `H3`/`H4`、列表、待办、引用、代码块等任意格式按钮或插入表格/模板时，**焦点持续锁定在当前编辑的那一行**，绝不跳转到文档最底部；
 - **真正交互式可视化表格直编 (Visual Table Editor)**：
   - 彻底告别 Markdown 管道符（`| col |`），插入后直接渲染为所见即所得的真实 HTML 表格；
   - 所有表头 `<th>` 与单元格 `<td>` 支持 `contenteditable="true"`，点击直接打字；
   - `Shift + Enter` 单元格内换行（自动转为 `<br>`）；`Enter` 跳下一行单元格；`Tab` 跳右侧下一格；
-  - 工具栏提供 `➕ 加一行`、`➕ 加一列`、`➖ 删末行`、`➖ 删末列`、`🗑️ 删表格` 一键操作；
+  - 表格操作栏：`➕ 加一行`、`➕ 加一列`、`➖ 删末行`、`➖ 删末列`、`🗑️ 删表格`；
+  - 双向自动序列化同步为标准 Markdown 表格；
 - **纯白底色 Mermaid 矢量图表引擎与动态防截断渲染**：
   - 纯白优雅卡片底色，图表渲染完成后自动分析 SVG `viewBox`，动态追加 `+28px` 底部安全补偿高度，杜绝复杂图表底部文字截断；
+  - 支持在图表右上角点击 `✏️ 编辑流程图` 就地修改代码并一键渲染；
+- **业务规约预置模板库 (Templates Dropdown)**：
+  1. **数据字典/字段规约模板**：字段名、类型、必填、说明、枚举值；
+  2. **复杂计算/口径规则模板**：指标名称、计算公式、统计维度、更新频率；
+  3. **外部接口/契约规范模板**：接口路径、请求方式、入参、出参、错误码；
+  4. **权限与角色流转矩阵模板**：角色名称、查看权限、操作权限、审批权限；
 - **草稿暂存最小化胶囊 (`.prd-editor-mini-dock`)**：
   - 点击「➖ 最小化/看页面」，编辑器折叠至右下角悬浮胶囊，随意查阅原型并一键无损恢复草稿。
 
 ---
 
-### 4. 🗂️ 三态抽屉与左边缘双按钮控制体系 (3-State Drawer & Dual Inward Handles)
+### Module 4: 🗂️ 三态抽屉与左边缘双按钮控制体系 (3-State Drawer & Dual Inward Handles)
 - **左边缘双按钮控制把手组 (朝内指向抽屉，颜色与功能清晰区隔)**：
   - **上方按钮 (全收起)**：深色科技质感（`#0f172a`）+ 朝内向右箭头 `›`，点击完全收起抽屉；
   - **下方按钮 (半收起)**：专业亮蓝质感（`#2563eb`）+ 朝内紧凑标号条图标 `⇥`，点击收窄为 56px 纯数字标号竖条；
@@ -97,14 +126,14 @@ agent_created: true
   - **完全收起**：折叠至右侧边缘胶囊 `📌 需求打点 (n)`；
 - **100% 绝对统一卡片高度 (Strict 136px Unified Height)**：
   - 标题单行截断带省略号（`text-overflow: ellipsis`）；
-  - 简介使用纯文本摘要提取算法，锁定标准 2 行（36px）展示，杜绝高度塌陷；
+  - 简介使用纯文本摘要提取算法（过滤代码块/表格/标记），锁定标准 2 行（36px）展示，杜绝高度塌陷；
   - 所有卡片高度**严格统一为 136px**，列表排版整齐如一；
 - **纯标题完全模糊搜索与检索系统 (Fuzzy Title Search)**：
   - 支持中英文子串包含、空格多关键词分词（如 `订单 履约`）、以及字符流顺序模糊检索，配有一键清空按钮 `✕`。
 
 ---
 
-### 5. 🔒 排序管理安全锁与依次顺延瞬移体系 (Sequential Cascade Reordering)
+### Module 5: 🔒 排序管理安全锁与依次顺延瞬移体系 (Sequential Cascade Reordering)
 - **日常安全浏览模式（默认）**：
   - 卡片隐藏排序/删除按钮，禁用拖拽，彻底防止日常查阅和定位误触；
 - **排序与删除管理模式（点击 `⚙️ 排序管理` 开启）**：
@@ -118,7 +147,7 @@ agent_created: true
 
 ---
 
-### 6. 🏷️ 严格多版本物理隔离与导入冲突控制 (Multi-Version & Import Resolver)
+### Module 6: 🏷️ 严格多版本物理隔离与导入冲突控制 (Multi-Version & Import Resolver)
 - **版本数据模型与向后兼容**：
   - 统一由 `versionRegistry` 全局维护：
     ```javascript
@@ -143,7 +172,7 @@ agent_created: true
 
 ---
 
-### 7. 📑 全景 PRD 文档大屏与交付导出 (PRD Document Screen & Export)
+### Module 7: 📑 全景 PRD 文档大屏与交付导出 (PRD Document Screen & Export)
 - **抽屉常驻入口**：右侧抽屉底部常驻 `📑 查看完整PRD` 按钮；
 - **独立新网页打开 (`↗️ 在新网页打开`)**：
   - 在独立新标签页中打开纯净 PRD 大屏文档，带固定 TOC 目录大纲；
