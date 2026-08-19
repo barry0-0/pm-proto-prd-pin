@@ -2991,10 +2991,13 @@
       if (!container) return;
 
       try {
-        if (vditorInstance) {
-          try { window.vditorInstance.destroy(); } catch (e) {}
-          vditorInstance = null;
+        if (window.vditorInstance) {
+          try {
+            if (window.vditorInstance.vditor) window.vditorInstance.destroy();
+          } catch (e) {}
+          window.vditorInstance = null;
         }
+        container.innerHTML = '';
 
         window.vditorInstance = new window.Vditor('prd-vditor-container', {
           mode: 'ir', // Instant Rendering 即时渲染模式 (Typora 级体验)
