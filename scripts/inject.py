@@ -32,15 +32,20 @@ def main():
     target_assets_js = os.path.join(target_dir, 'assets', 'js')
     os.makedirs(target_assets_js, exist_ok=True)
 
-    # 1. 复制 prd-pin-tool.js
+    # 1. 复制 prd-pin-tool.js 与 vendor 依赖
     src_tool = os.path.join(assets_dir, 'prd-pin-tool.js')
     dst_tool = os.path.join(target_assets_js, 'prd-pin-tool.js')
     if os.path.isfile(src_tool):
         shutil.copy2(src_tool, dst_tool)
         print(f"✅ 已植入核心引擎: assets/js/prd-pin-tool.js")
-    else:
-        # Fallback to local source if in workspace
-        print(f"⚠️ 未在 assets 找到 prd-pin-tool.js，跳过复制")
+
+    src_vendor = os.path.join(assets_dir, 'vendor')
+    dst_vendor = os.path.join(target_dir, 'assets', 'vendor')
+    if os.path.isdir(src_vendor):
+        if os.path.exists(dst_vendor):
+            shutil.rmtree(dst_vendor)
+        shutil.copytree(src_vendor, dst_vendor)
+        print(f"✅ 已植入第三方依赖库: assets/vendor/")
 
     # 2. 复制 server.js 与 start.sh
     for fn in ['server.js', 'start.sh']:

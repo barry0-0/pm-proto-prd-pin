@@ -13,7 +13,25 @@
 
 (function() {
   // 当前页面标识
-  const pageKey = window.location.pathname.split('/').pop() || 'admin.html';
+  // 1. 获取当前页面路径与项目隔离标识 (Project & Page Isolation)
+  const fullPath = window.location.pathname || '';
+  const pageKey = fullPath.split('/').pop().split('?')[0].split('#')[0] || 'admin.html';
+  const projectScope = (fullPath.replace(/\/[^\/]*$/, '') || 'default_proj').replace(/[^a-zA-Z0-9_-]/g, '_');
+  const cacheKey = `prd_registry_${projectScope}_${pageKey}`;
+  const cacheVersionKey = `${cacheKey}_version`;
+
+  // 获取 prd-pin-tool.js 所在目录基准路径 (自动计算相对路径，无论项目放置在何种子目录下)
+  let scriptBasePath = 'assets/';
+  try {
+    const scripts = document.querySelectorAll('script');
+    for (let s of scripts) {
+      if (s.src && s.src.includes('prd-pin-tool.js')) {
+        const srcUrl = s.src.split('?')[0].split('#')[0];
+        scriptBasePath = srcUrl.substring(0, srcUrl.lastIndexOf('/') + 1);
+        break;
+      }
+    }
+  } catch (e) {}
   
   // 0. 全局多语言国际化字典 (Multi-Language I18N Dictionary: 中 / 英 / 日 / 韩)
   const I18N = {
@@ -606,8 +624,8 @@
 
   const PRD_CACHE_VERSION = 'full-spec-v12';
 
-  // 1. 多版本数据注册表初始化与向后兼容
-  const presets = window.INITIAL_PRD_DATA || [];
+  // 1. 多版本数据注册表初始化与向后兼容 (支持项目与页面强隔离、优先使用本地数据文件)
+  const presets = Array.isArray(window.INITIAL_PRD_DATA) ? window.INITIAL_PRD_DATA : [];
   let currentVersion = 'v1.0.0';
   let versionRegistry = {
     activeVersion: 'v1.0.0',
@@ -621,10 +639,8 @@
     currentVersion = versionRegistry.activeVersion || Object.keys(versionRegistry.versions)[0] || 'v1.0.0';
   }
 
-  // 本地缓存加载与版本校验
+  // 本地缓存加载与版本校验 (使用带有项目前缀的 cacheKey，避免多项目冲突)
   try {
-    const cacheKey = `prd_registry_${pageKey}`;
-    const cacheVersionKey = `${cacheKey}_version`;
     if (localStorage.getItem(cacheVersionKey) !== PRD_CACHE_VERSION) {
       localStorage.removeItem(cacheKey);
       localStorage.setItem(cacheVersionKey, PRD_CACHE_VERSION);
@@ -640,10 +656,17 @@
     }
   } catch (e) {}
 
-  if (!versionRegistry.versions[currentVersion]) {
-    versionRegistry.versions[currentVersion] = JSON.parse(JSON.stringify(presets));
+  // 若当前版本在缓存中为空，但 JS 数据文件中有预置打点，则以 JS 数据文件为准
+  if (!versionRegistry.versions[currentVersion] || versionRegistry.versions[currentVersion].length === 0) {
+    if (presets.length > 0) {
+      versionRegistry.versions[currentVersion] = JSON.parse(JSON.stringify(presets));
+    } else if (!versionRegistry.versions[currentVersion]) {
+      versionRegistry.versions[currentVersion] = [];
+    }
   }
   let savedPins = versionRegistry.versions[currentVersion];
+  window.PRD_VERSION_REGISTRY = versionRegistry;
+  window.INITIAL_PRD_DATA = savedPins;
 
   function reIndexPins(pins) {
     pins.forEach((pin, index) => {
@@ -1970,8 +1993,8 @@
     versionRegistry.versions[currentVersion] = savedPins;
 
     try {
-      localStorage.setItem(`prd_registry_${pageKey}`, JSON.stringify(versionRegistry));
-      localStorage.setItem(`prd_registry_${pageKey}_version`, PRD_CACHE_VERSION);
+      localStorage.setItem(cacheKey, JSON.stringify(versionRegistry));
+      localStorage.setItem(cacheVersionKey, PRD_CACHE_VERSION);
       window.INITIAL_PRD_DATA = savedPins;
       window.PRD_VERSION_REGISTRY = versionRegistry;
     } catch (e) {}
@@ -2815,10 +2838,9 @@
     renderEditorModal(activeDraft);
   };
 
-    // 动态加载 Vditor 样式与脚本 (优先使用本地 vendor，降级使用 CDN)
+    // 动态加载 Vditor 样式与脚本 (优先使用相对路径 vendor，降级使用 CDN)
   let isVditorLoading = false;
   let isVditorLoaded = false;
-  let vditorInstance = null;
 
   function ensureVditorLoaded(callback) {
     if (window.Vditor) {
@@ -2838,11 +2860,14 @@
     }
     isVditorLoading = true;
 
+    // 相对基准路径
+    const localVendorDir = scriptBasePath.includes('/js/') ? scriptBasePath.replace('/js/', '/vendor/vditor/') : (scriptBasePath + 'vendor/vditor/');
+
     if (!document.getElementById('vditor-css')) {
       const link = document.createElement('link');
       link.id = 'vditor-css';
       link.rel = 'stylesheet';
-      link.href = 'assets/vendor/vditor/index.css';
+      link.href = localVendorDir + 'index.css';
       link.onerror = () => {
         link.href = 'https://cdn.jsdelivr.net/npm/vditor@3.10.8/dist/index.css';
       };
@@ -2850,7 +2875,7 @@
     }
 
     const script = document.createElement('script');
-    script.src = 'assets/vendor/vditor/index.min.js';
+    script.src = localVendorDir + 'index.min.js';
     script.onerror = () => {
       const fallbackScript = document.createElement('script');
       fallbackScript.src = 'https://cdn.jsdelivr.net/npm/vditor@3.10.8/dist/index.min.js';
@@ -2858,6 +2883,10 @@
         isVditorLoaded = true;
         isVditorLoading = false;
         if (callback) callback();
+      };
+      fallbackScript.onerror = () => {
+        isVditorLoading = false;
+        if (callback) callback(); // 即使 CDN 也失败，也触发回调进入 fallback textarea
       };
       document.head.appendChild(fallbackScript);
     };
@@ -3012,19 +3041,35 @@
       tpl = `| 字段名 | 字段类型 | 是否必填 | 枚举值 / 格式说明 | 业务口径与默认值 |\n|---|---|---|---|---|\n| orderId | String | 是 | 18位纯数字 | 订单唯一编号，系统雪花算法生成 |\n| payAmount | Decimal | 是 | >= 0.00 | 实际支付金额，单位：元 |\n| status | Enum | 是 | PENDING / SUCCESS | 订单状态，默认 PENDING |`;
     }
 
-    if (window.vditorInstance) {
+    // 优先插入 Vditor
+    if (window.vditorInstance && typeof window.vditorInstance.getValue === 'function') {
       try {
         window.vditorInstance.focus();
         window.vditorInstance.insertValue('\n\n' + tpl + '\n\n');
+        return;
       } catch (e) {
         const cur = window.vditorInstance.getValue() || '';
         window.vditorInstance.setValue(cur ? cur.trim() + '\n\n' + tpl + '\n\n' : tpl);
+        return;
       }
-    } else {
-      const fallback = document.getElementById('prd-fallback-textarea');
-      if (fallback) {
-        fallback.value += '\n\n' + tpl + '\n\n';
+    }
+
+    // 兜底：若 Vditor 尚未就绪或在纯文本/离线模式下，直接操作 textarea
+    let textarea = document.getElementById('prd-fallback-textarea') || document.querySelector('#prd-vditor-container textarea');
+    if (!textarea) {
+      const container = document.getElementById('prd-vditor-container');
+      if (container) {
+        container.innerHTML = `<textarea id="prd-fallback-textarea" style="width:100%; height:100%; box-sizing:border-box; padding:10px; font-family:monospace; border:1px solid #cbd5e1; border-radius:6px; font-size:13px; outline:none; line-height:1.5;">${escapeHtml(activeDraft?.desc || '')}</textarea>`;
+        textarea = document.getElementById('prd-fallback-textarea');
       }
+    }
+    if (textarea) {
+      const start = textarea.selectionStart || textarea.value.length;
+      const end = textarea.selectionEnd || textarea.value.length;
+      const val = textarea.value || '';
+      textarea.value = val.substring(0, start) + '\n\n' + tpl + '\n\n' + val.substring(end);
+      textarea.focus();
+      if (activeDraft) activeDraft.desc = textarea.value;
     }
   };
 
