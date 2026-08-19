@@ -4,7 +4,7 @@
 
 **The Ultimate Interactive PRD Pinning, Vditor IR Markdown Editor & Multi-Version Specification Engine for HTML Prototypes.**
 
-[![Version](https://img.shields.io/badge/version-1.0.2-blue.svg)](https://github.com/barry0-0/pm-proto-prd-pin/releases/tag/1.0.2)
+[![Version](https://img.shields.io/badge/version-1.0.3-blue.svg)](https://github.com/barry0-0/pm-proto-prd-pin/releases/tag/1.0.3)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![i18n](https://img.shields.io/badge/i18n-en%20%7C%20zh--CN%20%7C%20ja%20%7C%20ko-brightgreen.svg)](#-internationalization-i18n)
 [![Zero-Dependency](https://img.shields.io/badge/dependencies-zero--native-orange.svg)](#-quick-start)
