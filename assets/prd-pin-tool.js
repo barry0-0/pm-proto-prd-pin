@@ -17,370 +17,509 @@
   
   // 0. 全局多语言国际化字典 (Multi-Language I18N Dictionary: 中 / 英 / 日 / 韩)
   const I18N = {
-    'zh-CN': {
-      langName: '简体中文',
-      edgeText: '📌 需求打点',
-      drawerTitle: '需求规约',
-      manageOrder: '⚙️ 排序管理',
-      doneManage: '✓ 完成退出',
-      manageModeBanner: '🔧 排序与删除管理模式中...',
-      versionPill: '🏷️ 当前版本',
-      newVersion: '➕ 新建空白版本...',
-      copyVersion: '📋 复制当前版本副本...',
-      uploadVersion: '📂 上传版本数据...',
-      deleteVersion: '🗑️ 删除当前版本...',
-      searchPlaceholder: '🔍 模糊搜索需求标题 (如: 订单 / 弹窗 / 竞价)...',
-      addPinBtn: '📍 新增打点',
-      viewFullPrdBtn: '📑 查看完整PRD',
-      openNewTabBtn: '↗️ 在新网页打开',
-      exportMdBtn: '📥 导出 Markdown',
-      exportJsBtn: '💾 导出 JS 数据',
-      importVersionBtn: '📂 上传/导入版本',
-      printBtn: '🖨️ 打印 / 导出 PDF',
-      closePageBtn: '✕ 关闭网页',
-      locateBtn: '🎯 定位',
-      editBtn: '✏️ 编辑',
-      deleteBtn: '🗑️ 删除',
-      moveToBtn: '🔢 移至',
-      boundComp: '已绑定组件',
-      unbound: '未绑定',
-      noPinsEmptyTip: '当前版本暂无需求点',
-      noSearchMatchTip: '未搜索到匹配的需求标题',
-      searchKeywordTip: '关键词',
-      clearSearchBtn: '清空搜索条件',
-      tocTitle: '📑 目录大纲',
-      docHeroTitleSuffix: '· 产品需求规格说明书 (PRD)',
-      docMetaPage: '页面文件',
-      docMetaVersion: '规格版本',
-      docMetaCount: '规格条目',
-      docMetaTime: '生成时间',
-      noDocContentTip: '当前版本尚未录入任何 PRD 规格',
-      editModalTitle: '编辑需求规格',
-      createModalTitle: '新建需求规格',
-      tabLive: '✨ 可视化即时直编',
-      tabRaw: '📄 纯文本源码',
-      minimizeBtn: '➖ 最小化/看页面',
-      reqTitleLabel: '需求名称',
-      reqTitlePlaceholder: '输入需求标题 (必填)',
-      reqTypeLabel: '需求类型',
-      reqTypes: {
-        '业务规则': '业务规则',
-        '交互逻辑': '交互逻辑',
-        '数据口径': '数据口径',
-        '权限规则': '权限规则',
-        '异常流': '异常流',
-        'UI规范': 'UI规范'
-      },
-      tableDropdown: '📊 插入可视化表格...',
-      mermaidDropdown: '🔄 插入流程图 (Mermaid)...',
-      templateDropdown: '📑 插入业务规约模板...',
-      tableToolbarTip: '📊 可视化表格（可直接多行打字，Shift+Enter单元格换行，Enter/Tab换行换格）',
-      addRow: '➕ 加一行',
-      addCol: '➕ 加一列',
-      delRow: '➖ 删末行',
-      delCol: '➖ 删末列',
-      delTable: '🗑️ 删表格',
-      editFlowchart: '✏️ 编辑流程图',
-      editingFlowchartCode: '🔄 正在编辑 Mermaid 流程图代码：',
-      finishRender: '✓ 完成渲染',
-      rePickBtn: '🎯 重新拾取元素',
-      tempSaveBtn: '👀 暂存并看页面',
-      cancelBtn: '取消',
-      saveBtn: '💾 保存需求',
-      editingDraftPrefix: '编辑中',
-      draftStashedTip: '草稿已暂存 · 点击继续编辑',
-      restoreEditBtn: '恢复编辑',
-      discardDraftPrompt: '确认放弃当前正在编辑的草稿吗？',
-      saveSuccessToast: '✅ 需求规约已成功保存并写入本地 JS 文件！',
-      saveFailToast: '❌ 保存失败：未检测到本地服务接口，无法写入本地磁盘 JS 文件！',
-      pinDeletedToast: '✅ 需求点已删除并同步至本地文件！',
-      reorderSuccessToast: '✅ 需求序号已成功调整并同步！',
-      rePickTip: '请在页面上点击要重新绑定的新组件！',
-      rePickSuccessToast: '组件重新绑定成功！',
-      deleteVersionConfirm: '⚠️ 危险操作：确认永久删除当前版本及其所有打点数据吗？',
-      cannotDeleteOnlyVersion: '无法删除：必须保留至少一个 PRD 规格版本！',
-      importModalTitle: '📂 导入 PRD 规格版本数据',
-      importFileLabel: '导入文件',
-      importVersionNameLabel: '指定导入版本号：',
-      conflictOverwrite: '🔴 覆盖现有版本（清空旧打点，完全替换为上传文件内容）',
-      conflictAppend: '🟢 追加合并（保留旧打点，将上传打点追加至末尾）',
-      conflictNewVer: '🔵 另存为新版本（输入新版本名称，不影响当前版本）',
-      confirmImportBtn: '确认导入并应用'
+    "zh-CN": {
+        "langName": "🇨🇳 简体中文",
+        "edgeText": "📌 需求打点",
+        "drawerTitle": "需求规约",
+        "manageOrder": "⚙️ 排序管理",
+        "doneManage": "✓ 完成退出",
+        "manageModeBanner": "🔧 排序与删除管理模式中...",
+        "versionPill": "🏷️ 当前版本",
+        "newVersion": "➕ 新建空白版本...",
+        "copyVersion": "📋 复制当前版本副本...",
+        "uploadVersion": "📂 上传版本数据...",
+        "deleteVersion": "🗑️ 删除当前版本...",
+        "searchPlaceholder": "🔍 模糊搜索需求标题 (如: 订单 / 弹窗 / 竞价)...",
+        "addPinBtn": "📍 新增打点",
+        "viewFullPrdBtn": "📑 查看完整PRD",
+        "openNewTabBtn": "↗️ 在新网页打开",
+        "exportMdBtn": "📥 导出 Markdown",
+        "exportJsBtn": "💾 导出 JS 数据",
+        "importVersionBtn": "📂 上传/导入版本",
+        "printBtn": "🖨️ 打印 / 导出 PDF",
+        "closePageBtn": "✕ 关闭网页",
+        "locateBtn": "🎯 定位",
+        "editBtn": "✏️ 编辑",
+        "deleteBtn": "🗑️ 删除",
+        "moveToBtn": "🔢 移至",
+        "moveToTopBtn": "🔝 置顶",
+        "moveUpBtn": "▲ 上移",
+        "moveDownBtn": "▼ 下移",
+        "boundComp": "已绑定组件",
+        "unbound": "未绑定",
+        "noPinsEmptyTip": "当前版本暂无需求点",
+        "noSearchMatchTip": "未搜索到匹配的需求标题",
+        "searchKeywordTip": "关键词",
+        "clearSearchBtn": "清空搜索条件",
+        "tocTitle": "📑 目录大纲",
+        "docHeroTitleSuffix": "· 产品需求规格说明书 (PRD)",
+        "docMetaPage": "页面文件",
+        "docMetaVersion": "规格版本",
+        "docMetaCount": "规格条目",
+        "docMetaTime": "生成时间",
+        "noDocContentTip": "当前版本尚未录入任何 PRD 规格",
+        "editModalTitle": "编辑需求规格",
+        "createModalTitle": "新建需求规格",
+        "tabLive": "✨ 可视化即时直编",
+        "tabRaw": "📄 纯文本源码",
+        "minimizeBtn": "➖ 最小化/看页面",
+        "reqTitleLabel": "需求名称",
+        "reqTitlePlaceholder": "输入需求标题 (必填)",
+        "reqTypeLabel": "需求类型",
+        "reqTypes": {
+            "业务规则": "业务规则",
+            "交互逻辑": "交互逻辑",
+            "数据口径": "数据口径",
+            "权限规则": "权限规则",
+            "异常流": "异常流",
+            "UI规范": "UI规范"
+        },
+        "tableDropdown": "📊 插入可视化表格...",
+        "mermaidDropdown": "🔄 插入流程图 (Mermaid)...",
+        "templateDropdown": "📑 插入业务规约模板...",
+        "tableToolbarTip": "📊 可视化表格（可直接多行打字，Shift+Enter单元格换行，Enter/Tab换行换格）",
+        "addRow": "➕ 加一行",
+        "addCol": "➕ 加一列",
+        "delRow": "➖ 删末行",
+        "delCol": "➖ 删末列",
+        "delTable": "🗑️ 删表格",
+        "editFlowchart": "✏️ 编辑流程图",
+        "editingFlowchartCode": "🔄 正在编辑 Mermaid 流程图代码：",
+        "finishRender": "✓ 完成渲染",
+        "rePickBtn": "🎯 重新拾取元素",
+        "tempSaveBtn": "👀 暂存并看页面",
+        "cancelBtn": "取消",
+        "saveBtn": "💾 保存需求",
+        "editingDraftPrefix": "编辑中",
+        "draftStashedTip": "草稿已暂存 · 点击继续编辑",
+        "restoreEditBtn": "恢复编辑",
+        "discardDraftPrompt": "确认放弃当前正在编辑的草稿吗？",
+        "saveSuccessToast": "✅ 需求规约已成功保存并写入本地 JS 文件！",
+        "saveFailToast": "❌ 保存失败：未检测到本地服务接口，无法写入本地磁盘 JS 文件！",
+        "pinDeletedToast": "✅ 需求点已删除并同步至本地文件！",
+        "reorderSuccessToast": "✅ 需求序号已成功调整并同步！",
+        "rePickTip": "请在页面上点击要重新绑定的新组件！",
+        "rePickSuccessToast": "组件重新绑定成功！",
+        "deleteVersionConfirm": "⚠️ 危险操作：确认永久删除当前版本及其所有打点数据吗？",
+        "cannotDeleteOnlyVersion": "无法删除：必须保留至少一个 PRD 规格版本！",
+        "importModalTitle": "📂 导入 PRD 规格版本数据",
+        "importFileLabel": "导入文件",
+        "importVersionNameLabel": "指定导入版本号：",
+        "conflictOverwrite": "🔴 覆盖现有版本（清空旧打点，完全替换为上传文件内容）",
+        "conflictAppend": "🟢 追加合并（保留旧打点，将上传打点追加至末尾）",
+        "conflictNewVer": "🔵 另存为新版本（输入新版本名称，不影响当前版本）",
+        "confirmImportBtn": "确认导入并应用",
+        "pickingTip": "📍 点击页面组件打标 (ESC退出)",
+        "fullCollapseTip": "完全收起抽屉",
+        "semiCollapseTip": "半收起为标号竖条",
+        "expandDrawerTip": "展开完整抽屉",
+        "noDescTip": "暂无详细描述",
+        "clickToEditBlock": "点击编辑此段落",
+        "clickToInputContent": "点击输入内容...",
+        "dragToReorderTip": "按住拖拽排序",
+        "clickToReorderTip": "点击直接修改序号",
+        "moveToTopTip": "直接瞬移置顶到第 1 项",
+        "moveUpTip": "上移一位",
+        "moveDownTip": "下移一位",
+        "collapseSidebarBtn": "📁 收起侧边栏",
+        "expandSidebarBtn": "📂 展开侧边栏",
+        "closeInspectBubble": "关闭当前需求框",
+        "reqDoc": "需求",
+        "unboundElementTip": "未绑定页面元素",
+        "bold": "加粗",
+        "italic": "斜体",
+        "strikethrough": "删除线",
+        "heading3": "三级标题",
+        "heading4": "四级标题",
+        "bulletList": "无序列表",
+        "numberList": "有序列表",
+        "taskList": "待办清单",
+        "quote": "引用说明",
+        "inlineCode": "行内代码",
+        "codeBlock": "代码块",
+        "divider": "分割线",
+        "unnamedPin": "（未命名需求）",
+        "itemCountUnit": "项"
     },
-    'en': {
-      langName: 'English',
-      edgeText: '📌 PRD Pins',
-      drawerTitle: 'PRD Specs',
-      manageOrder: '⚙️ Reorder Mode',
-      doneManage: '✓ Done & Exit',
-      manageModeBanner: '🔧 Reorder & Delete Management Mode Active...',
-      versionPill: '🏷️ Version',
-      newVersion: '➕ New Blank Version...',
-      copyVersion: '📋 Duplicate Current Version...',
-      uploadVersion: '📂 Upload Version Data...',
-      deleteVersion: '🗑️ Delete Current Version...',
-      searchPlaceholder: '🔍 Fuzzy search requirement title (e.g. Order / Modal / Bid)...',
-      addPinBtn: '📍 Add Pin',
-      viewFullPrdBtn: '📑 Full PRD View',
-      openNewTabBtn: '↗️ Open in New Tab',
-      exportMdBtn: '📥 Export Markdown',
-      exportJsBtn: '💾 Export JS Data',
-      importVersionBtn: '📂 Upload/Import Version',
-      printBtn: '🖨️ Print / Export PDF',
-      closePageBtn: '✕ Close Window',
-      locateBtn: '🎯 Locate',
-      editBtn: '✏️ Edit',
-      deleteBtn: '🗑️ Delete',
-      moveToBtn: '🔢 Move to',
-      boundComp: 'Bound Component',
-      unbound: 'Unbound',
-      noPinsEmptyTip: 'No requirements in current version',
-      noSearchMatchTip: 'No matching requirement title found',
-      searchKeywordTip: 'Keyword',
-      clearSearchBtn: 'Clear Search Filter',
-      tocTitle: '📑 Table of Contents',
-      docHeroTitleSuffix: '· Product Requirement Document (PRD)',
-      docMetaPage: 'Page File',
-      docMetaVersion: 'PRD Version',
-      docMetaCount: 'Total Specs',
-      docMetaTime: 'Generated At',
-      noDocContentTip: 'No PRD specifications recorded in this version yet',
-      editModalTitle: 'Edit Specification',
-      createModalTitle: 'New Specification',
-      tabLive: '✨ Visual Live Editor',
-      tabRaw: '📄 Raw Markdown',
-      minimizeBtn: '➖ Minimize / View Page',
-      reqTitleLabel: 'Requirement Title',
-      reqTitlePlaceholder: 'Enter requirement title (Required)',
-      reqTypeLabel: 'Requirement Type',
-      reqTypes: {
-        '业务规则': 'Business Rule',
-        '交互逻辑': 'Interaction Logic',
-        '数据口径': 'Data Metric / Spec',
-        '权限规则': 'Permission Rule',
-        '异常流': 'Exception Flow',
-        'UI规范': 'UI Specification'
-      },
-      tableDropdown: '📊 Insert Visual Table...',
-      mermaidDropdown: '🔄 Insert Flowchart (Mermaid)...',
-      templateDropdown: '📑 Insert Spec Template...',
-      tableToolbarTip: '📊 Visual Table (Direct typing, Shift+Enter for newline, Enter/Tab for next cell)',
-      addRow: '➕ Add Row',
-      addCol: '➕ Add Col',
-      delRow: '➖ Del Last Row',
-      delCol: '➖ Del Last Col',
-      delTable: '🗑️ Delete Table',
-      editFlowchart: '✏️ Edit Flowchart',
-      editingFlowchartCode: '🔄 Editing Mermaid Flowchart Code:',
-      finishRender: '✓ Finish Render',
-      rePickBtn: '🎯 Re-pick Element',
-      tempSaveBtn: '👀 Stash & View Page',
-      cancelBtn: 'Cancel',
-      saveBtn: '💾 Save Spec',
-      editingDraftPrefix: 'Editing',
-      draftStashedTip: 'Draft Stashed · Click to Resume',
-      restoreEditBtn: 'Resume Editing',
-      discardDraftPrompt: 'Are you sure you want to discard the current draft?',
-      saveSuccessToast: '✅ PRD specification saved and written to local disk JS file!',
-      saveFailToast: '❌ Save failed: Local server API not detected, cannot write to disk!',
-      pinDeletedToast: '✅ Requirement pin deleted and synced to local file!',
-      reorderSuccessToast: '✅ Requirement order successfully updated!',
-      rePickTip: 'Click any component on the page to re-bind!',
-      rePickSuccessToast: 'Component re-bound successfully!',
-      deleteVersionConfirm: '⚠️ Danger: Are you sure you want to permanently delete this version and all its pins?',
-      cannotDeleteOnlyVersion: 'Cannot delete: At least one PRD version must be retained!',
-      importModalTitle: '📂 Import PRD Specification Version Data',
-      importFileLabel: 'Import File',
-      importVersionNameLabel: 'Target Version Name:',
-      conflictOverwrite: '🔴 Overwrite existing version (Clear old pins & replace with file content)',
-      conflictAppend: '🟢 Append & merge (Keep existing pins & append imported items)',
-      conflictNewVer: '🔵 Save as new version (Enter new version name without affecting existing data)',
-      confirmImportBtn: 'Confirm Import & Apply'
+    "en": {
+        "langName": "🇺🇸 English",
+        "edgeText": "📌 PRD Pins",
+        "drawerTitle": "PRD Specs",
+        "manageOrder": "⚙️ Reorder Mode",
+        "doneManage": "✓ Done & Exit",
+        "manageModeBanner": "🔧 Reorder & Delete Management Mode Active...",
+        "versionPill": "🏷️ Version",
+        "newVersion": "➕ New Blank Version...",
+        "copyVersion": "📋 Duplicate Version...",
+        "uploadVersion": "📂 Upload Version Data...",
+        "deleteVersion": "🗑️ Delete Version...",
+        "searchPlaceholder": "🔍 Search PRD titles (e.g. Order / Modal / Bid)...",
+        "addPinBtn": "📍 Add Pin",
+        "viewFullPrdBtn": "📑 View Full PRD",
+        "openNewTabBtn": "↗️ Open in New Tab",
+        "exportMdBtn": "📥 Export Markdown",
+        "exportJsBtn": "💾 Export JS Data",
+        "importVersionBtn": "📂 Upload / Import Version",
+        "printBtn": "🖨️ Print / PDF",
+        "closePageBtn": "✕ Close Page",
+        "locateBtn": "🎯 Locate",
+        "editBtn": "✏️ Edit",
+        "deleteBtn": "🗑️ Delete",
+        "moveToBtn": "🔢 Move To",
+        "moveToTopBtn": "🔝 Top",
+        "moveUpBtn": "▲ Up",
+        "moveDownBtn": "▼ Down",
+        "boundComp": "Element Bound",
+        "unbound": "Unbound",
+        "noPinsEmptyTip": "No PRD pins found in this version",
+        "noSearchMatchTip": "No matching PRD spec titles found",
+        "searchKeywordTip": "Keyword",
+        "clearSearchBtn": "Clear Search Filter",
+        "tocTitle": "📑 Table of Contents",
+        "docHeroTitleSuffix": "· Product Requirement Document (PRD)",
+        "docMetaPage": "Page File",
+        "docMetaVersion": "Spec Version",
+        "docMetaCount": "Total Items",
+        "docMetaTime": "Generated At",
+        "noDocContentTip": "No PRD specifications recorded in this version yet",
+        "editModalTitle": "Edit PRD Spec",
+        "createModalTitle": "New PRD Spec",
+        "tabLive": "✨ Visual Live Editor",
+        "tabRaw": "📄 Raw Markdown",
+        "minimizeBtn": "➖ Minimize / View UI",
+        "reqTitleLabel": "Requirement Title",
+        "reqTitlePlaceholder": "Enter requirement title (Required)",
+        "reqTypeLabel": "Requirement Type",
+        "reqTypes": {
+            "业务规则": "Business Rule",
+            "交互逻辑": "Interaction Logic",
+            "数据口径": "Data Metric",
+            "权限规则": "Permission Rule",
+            "异常流": "Exception Flow",
+            "UI规范": "UI Specification"
+        },
+        "tableDropdown": "📊 Insert Visual Table...",
+        "mermaidDropdown": "🔄 Insert Flowchart (Mermaid)...",
+        "templateDropdown": "📑 Insert Spec Template...",
+        "tableToolbarTip": "📊 Visual Table (Direct cell typing, Shift+Enter for new line, Enter/Tab to navigate)",
+        "addRow": "➕ Add Row",
+        "addCol": "➕ Add Col",
+        "delRow": "➖ Del Row",
+        "delCol": "➖ Del Col",
+        "delTable": "🗑️ Del Table",
+        "editFlowchart": "✏️ Edit Flowchart",
+        "editingFlowchartCode": "🔄 Editing Mermaid Flowchart Code:",
+        "finishRender": "✓ Render Chart",
+        "rePickBtn": "🎯 Re-pick Element",
+        "tempSaveBtn": "👀 Stash & View Page",
+        "cancelBtn": "Cancel",
+        "saveBtn": "💾 Save Spec",
+        "editingDraftPrefix": "Editing",
+        "draftStashedTip": "Draft Stashed · Click to Resume",
+        "restoreEditBtn": "Resume Edit",
+        "discardDraftPrompt": "Are you sure you want to discard the active draft?",
+        "saveSuccessToast": "✅ PRD specification saved and written to disk JS file!",
+        "saveFailToast": "❌ Save failed: Local server not reachable!",
+        "pinDeletedToast": "✅ PRD pin deleted and synced to local file!",
+        "reorderSuccessToast": "✅ PRD pin reordered and synced!",
+        "rePickTip": "Click on the page element you want to bind!",
+        "rePickSuccessToast": "Element re-bound successfully!",
+        "deleteVersionConfirm": "⚠️ Dangerous: Permanently delete this version and all its pins?",
+        "cannotDeleteOnlyVersion": "Cannot delete: At least one PRD version must be kept!",
+        "importModalTitle": "📂 Import PRD Version Data",
+        "importFileLabel": "Import File",
+        "importVersionNameLabel": "Target Version Name:",
+        "conflictOverwrite": "🔴 Overwrite (Wipe existing pins and replace completely)",
+        "conflictAppend": "🟢 Append & Merge (Keep old pins and append new ones)",
+        "conflictNewVer": "🔵 Save as New Version (Create new version without affecting current)",
+        "confirmImportBtn": "Confirm & Apply Import",
+        "pickingTip": "📍 Click page element to pin (ESC to cancel)",
+        "fullCollapseTip": "Fully collapse drawer",
+        "semiCollapseTip": "Semi-collapse to mini badge rail",
+        "expandDrawerTip": "Expand full drawer",
+        "noDescTip": "No detailed description",
+        "clickToEditBlock": "Click to edit paragraph",
+        "clickToInputContent": "Click to type content...",
+        "dragToReorderTip": "Drag to reorder",
+        "clickToReorderTip": "Click to change order index",
+        "moveToTopTip": "Jump directly to #1",
+        "moveUpTip": "Move up 1 rank",
+        "moveDownTip": "Move down 1 rank",
+        "collapseSidebarBtn": "📁 Collapse Sidebar",
+        "expandSidebarBtn": "📂 Expand Sidebar",
+        "closeInspectBubble": "Close inspect bubble",
+        "reqDoc": "Spec",
+        "unboundElementTip": "No element bound",
+        "bold": "Bold",
+        "italic": "Italic",
+        "strikethrough": "Strikethrough",
+        "heading3": "Heading 3",
+        "heading4": "Heading 4",
+        "bulletList": "Bullet List",
+        "numberList": "Numbered List",
+        "taskList": "Task Checklist",
+        "quote": "Quote",
+        "inlineCode": "Inline Code",
+        "codeBlock": "Code Block",
+        "divider": "Divider",
+        "unnamedPin": "(Unnamed Spec)",
+        "itemCountUnit": "items"
     },
-    'ja': {
-      langName: '日本語',
-      edgeText: '📌 要件ピン',
-      drawerTitle: '要件仕様書',
-      manageOrder: '⚙️ 並び替え管理',
-      doneManage: '✓ 完了',
-      manageModeBanner: '🔧 並び替え・削除管理モード中...',
-      versionPill: '🏷️ バージョン',
-      newVersion: '➕ 新規空白バージョン...',
-      copyVersion: '📋 現在のバージョンを複製...',
-      uploadVersion: '📂 バージョンデータをアップロード...',
-      deleteVersion: '🗑️ 現在のバージョンを削除...',
-      searchPlaceholder: '🔍 要件タイトルをあいまい検索 (例: 注文 / ポップアップ / 入札)...',
-      addPinBtn: '📍 ピン追加',
-      viewFullPrdBtn: '📑 完全PRDを表示',
-      openNewTabBtn: '↗️ 新しいタブで開く',
-      exportMdBtn: '📥 Markdown出力',
-      exportJsBtn: '💾 JSデータ保存',
-      importVersionBtn: '📂 バージョンインポート',
-      printBtn: '🖨️ 印刷 / PDF出力',
-      closePageBtn: '✕ 閉じる',
-      locateBtn: '🎯 移動',
-      editBtn: '✏️ 編集',
-      deleteBtn: '🗑️ 削除',
-      moveToBtn: '🔢 移動',
-      boundComp: 'コンポーネント連携済',
-      unbound: '未連携',
-      noPinsEmptyTip: 'このバージョンには要件がありません',
-      noSearchMatchTip: '一致する要件タイトルが見つかりません',
-      searchKeywordTip: 'キーワード',
-      clearSearchBtn: '検索条件をクリア',
-      tocTitle: '📑 目次大綱',
-      docHeroTitleSuffix: '· 製品要件仕様書 (PRD)',
-      docMetaPage: 'ページファイル',
-      docMetaVersion: '要件バージョン',
-      docMetaCount: '要件総数',
-      docMetaTime: '生成日時',
-      noDocContentTip: 'このバージョンにはまだPRD要件が登録されていません',
-      editModalTitle: '要件仕様を編集',
-      createModalTitle: '新規要件仕様',
-      tabLive: '✨ ビジュアル直接編集',
-      tabRaw: '📄 原文マークダウン',
-      minimizeBtn: '➖ 最小化 / ページ確認',
-      reqTitleLabel: '要件名',
-      reqTitlePlaceholder: '要件名を入力 (必須)',
-      reqTypeLabel: '要件タイプ',
-      reqTypes: {
-        '业务规则': 'ビジネスルール',
-        '交互逻辑': 'インタラクション',
-        '数据口径': 'データ定義・基準',
-        '权限规则': '権限ルール',
-        '异常流': '例外フロー',
-        'UI规范': 'UI仕様'
-      },
-      tableDropdown: '📊 ビジュアル表を挿入...',
-      mermaidDropdown: '🔄 フローチャート挿入 (Mermaid)...',
-      templateDropdown: '📑 仕様テンプレート挿入...',
-      tableToolbarTip: '📊 ビジュアル表（直接入力、Shift+Enterでセル内改行、Enter/Tabで次のセル）',
-      addRow: '➕ 行追加',
-      addCol: '➕ 列追加',
-      delRow: '➖ 末尾行削除',
-      delCol: '➖ 末尾列削除',
-      delTable: '🗑️ 表を削除',
-      editFlowchart: '✏️ フローチャート編集',
-      editingFlowchartCode: '🔄 Mermaidフローチャートコード編集：',
-      finishRender: '✓ レンダリング完了',
-      rePickBtn: '🎯 要素を再選択',
-      tempSaveBtn: '👀 一時保存して画面確認',
-      cancelBtn: 'キャンセル',
-      saveBtn: '💾 要件を保存',
-      editingDraftPrefix: '編集中',
-      draftStashedTip: '下書き保存済 · クリックして編集再開',
-      restoreEditBtn: '編集を再開',
-      discardDraftPrompt: '現在の下書きを破棄してもよろしいですか？',
-      saveSuccessToast: '✅ PRD要件仕様が保存され、ローカルJSファイルに書き込まれました！',
-      saveFailToast: '❌ 保存失敗：ローカルサーバーAPIが検出されません！',
-      pinDeletedToast: '✅ 要件ピンが削除され、同期されました！',
-      reorderSuccessToast: '✅ 要件の並び順が正常に更新されました！',
-      rePickTip: 'ページ上のコンポーネントをクリックして再連携してください！',
-      rePickSuccessToast: 'コンポーネントが正常に再連携されました！',
-      deleteVersionConfirm: '⚠️ 危険：現在のバージョンとすべてのピンを完全に削除しますか？',
-      cannotDeleteOnlyVersion: '削除できません：少なくとも1つのバージョンを保持する必要があります！',
-      importModalTitle: '📂 PRD仕様バージョンデータのインポート',
-      importFileLabel: 'ファイル',
-      importVersionNameLabel: 'インポート先バージョン名：',
-      conflictOverwrite: '🔴 既存バージョンを上書き（古いピンをクリアして置換）',
-      conflictAppend: '🟢 末尾に追加統合（既存ピンを保持して追加）',
-      conflictNewVer: '🔵 新規バージョンとして保存（既存データに影響なし）',
-      confirmImportBtn: 'インポートを確定して適用'
+    "ja": {
+        "langName": "🇯🇵 日本語",
+        "edgeText": "📌 要件ピン",
+        "drawerTitle": "要件仕様 (PRD)",
+        "manageOrder": "⚙️ 順序管理",
+        "doneManage": "✓ 完了・終了",
+        "manageModeBanner": "🔧 並べ替え・削除管理モード実行中...",
+        "versionPill": "🏷️ バージョン",
+        "newVersion": "➕ 新規空白バージョン...",
+        "copyVersion": "📋 バージョンを複製...",
+        "uploadVersion": "📂 バージョンデータをアップロード...",
+        "deleteVersion": "🗑️ バージョンを削除...",
+        "searchPlaceholder": "🔍 要件タイトルを曖昧検索 (注文 / モーダル / 入札)...",
+        "addPinBtn": "📍 ピンを追加",
+        "viewFullPrdBtn": "📑 完全PRDを表示",
+        "openNewTabBtn": "↗️ 新規タブで開く",
+        "exportMdBtn": "📥 Markdown出力",
+        "exportJsBtn": "💾 JSデータ出力",
+        "importVersionBtn": "📂 バージョンをインポート",
+        "printBtn": "🖨️ 印刷 / PDF出力",
+        "closePageBtn": "✕ 閉じる",
+        "locateBtn": "🎯 移動",
+        "editBtn": "✏️ 編集",
+        "deleteBtn": "🗑️ 削除",
+        "moveToBtn": "🔢 移動先",
+        "moveToTopBtn": "🔝 先頭へ",
+        "moveUpBtn": "▲ 上へ",
+        "moveDownBtn": "▼ 下へ",
+        "boundComp": "要素バインド済",
+        "unbound": "未バインド",
+        "noPinsEmptyTip": "このバージョンには要件ピンがありません",
+        "noSearchMatchTip": "一致する要件タイトルが見つかりません",
+        "searchKeywordTip": "キーワード",
+        "clearSearchBtn": "検索をクリア",
+        "tocTitle": "📑 目次アウトライン",
+        "docHeroTitleSuffix": "· 製品要件仕様書 (PRD)",
+        "docMetaPage": "ページファイル",
+        "docMetaVersion": "仕様バージョン",
+        "docMetaCount": "要件項目数",
+        "docMetaTime": "生成日時",
+        "noDocContentTip": "このバージョンにはまだPRD仕様が記録されていません",
+        "editModalTitle": "要件仕様を編集",
+        "createModalTitle": "新規要件仕様を作成",
+        "tabLive": "✨ リアルタイム視覚編集",
+        "tabRaw": "📄 Markdownソース",
+        "minimizeBtn": "➖ 最小化 / 画面確認",
+        "reqTitleLabel": "要件タイトル",
+        "reqTitlePlaceholder": "要件タイトルを入力 (必須)",
+        "reqTypeLabel": "要件タイプ",
+        "reqTypes": {
+            "业务规则": "ビジネスルール",
+            "交互逻辑": "インタラクション",
+            "数据口径": "データ仕様",
+            "权限规则": "権限ルール",
+            "异常流": "例外フロー",
+            "UI规范": "UI仕様"
+        },
+        "tableDropdown": "📊 表を挿入...",
+        "mermaidDropdown": "🔄 フローチャート挿入 (Mermaid)...",
+        "templateDropdown": "📑 テンプレート挿入...",
+        "tableToolbarTip": "📊 ビジュアルテーブル（セル内直接入力、Shift+Enterで改行、Enter/Tabで移動）",
+        "addRow": "➕ 行追加",
+        "addCol": "➕ 列追加",
+        "delRow": "➖ 行削除",
+        "delCol": "➖ 列削除",
+        "delTable": "🗑️ 表削除",
+        "editFlowchart": "✏️ 図を編集",
+        "editingFlowchartCode": "🔄 Mermaidコードを編集中：",
+        "finishRender": "✓ レンダリング完了",
+        "rePickBtn": "🎯 要素を再選択",
+        "tempSaveBtn": "👀 一時保存して確認",
+        "cancelBtn": "キャンセル",
+        "saveBtn": "💾 保存",
+        "editingDraftPrefix": "編集中",
+        "draftStashedTip": "下書き保存済 · クリックして再開",
+        "restoreEditBtn": "編集を再開",
+        "discardDraftPrompt": "現在の下書きを破棄してもよろしいですか？",
+        "saveSuccessToast": "✅ 要件仕様が保存され、ローカルJSファイルに書き込まれました！",
+        "saveFailToast": "❌ 保存失敗：ローカルサーバーに接続できません！",
+        "pinDeletedToast": "✅ 要件ピンが削除され、同期されました！",
+        "reorderSuccessToast": "✅ 要件の順序が更新されました！",
+        "rePickTip": "バインドする画面要素をクリックしてください！",
+        "rePickSuccessToast": "要素の再バインドが完了しました！",
+        "deleteVersionConfirm": "⚠️ 警告：このバージョンとすべてのピンを完全に削除しますか？",
+        "cannotDeleteOnlyVersion": "削除不可：少なくとも1つのバージョンを保持する必要があります！",
+        "importModalTitle": "📂 PRDバージョンデータをインポート",
+        "importFileLabel": "インポートファイル",
+        "importVersionNameLabel": "対象バージョン名：",
+        "conflictOverwrite": "🔴 上書き（既存ピンを消去して完全置換）",
+        "conflictAppend": "🟢 追加マージ（既存ピンを保持し末尾に追加）",
+        "conflictNewVer": "🔵 新規バージョンとして保存（既存に影響なし）",
+        "confirmImportBtn": "インポートを適用",
+        "pickingTip": "📍 画面要素をクリックしてピン留め (ESCで終了)",
+        "fullCollapseTip": "ドロワーを完全に折りたたむ",
+        "semiCollapseTip": "番号バーに折りたたむ",
+        "expandDrawerTip": "完全なドロワーを展開",
+        "noDescTip": "詳細説明はありません",
+        "clickToEditBlock": "クリックして段落を編集",
+        "clickToInputContent": "クリックして入力...",
+        "dragToReorderTip": "ドラッグして並べ替え",
+        "clickToReorderTip": "クリックして順序番号を変更",
+        "moveToTopTip": "先頭（第1位）へ移動",
+        "moveUpTip": "1つ上へ移動",
+        "moveDownTip": "1つ下へ移動",
+        "collapseSidebarBtn": "📁 サイドバーを閉じる",
+        "expandSidebarBtn": "📂 サイドバーを開く",
+        "closeInspectBubble": "要件ポップアップを閉じる",
+        "reqDoc": "要件",
+        "unboundElementTip": "要素未バインド",
+        "bold": "太字",
+        "italic": "斜体",
+        "strikethrough": "取り消し線",
+        "heading3": "見出し 3",
+        "heading4": "見出し 4",
+        "bulletList": "箇条書きリスト",
+        "numberList": "番号付きリスト",
+        "taskList": "タスクリスト",
+        "quote": "引用",
+        "inlineCode": "インラインコード",
+        "codeBlock": "コードブロック",
+        "divider": "区切り線",
+        "unnamedPin": "（名称未設定要件）",
+        "itemCountUnit": "件"
     },
-    'ko': {
-      langName: '한국어',
-      edgeText: '📌 요구사항 핀',
-      drawerTitle: '요구사항 명세',
-      manageOrder: '⚙️ 순서 관리',
-      doneManage: '✓ 완료',
-      manageModeBanner: '🔧 순서 변경 및 삭제 관리 모드...',
-      versionPill: '🏷️ 버전',
-      newVersion: '➕ 새 빈 버전...',
-      copyVersion: '📋 현재 버전 복제...',
-      uploadVersion: '📂 버전 데이터 업로드...',
-      deleteVersion: '🗑️ 현재 버전 삭제...',
-      searchPlaceholder: '🔍 요구사항 제목 검색 (예: 주문 / 팝업 / 입찰)...',
-      addPinBtn: '📍 핀 추가',
-      viewFullPrdBtn: '📑 전체 PRD 보기',
-      openNewTabBtn: '↗️ 새 탭에서 열기',
-      exportMdBtn: '📥 Markdown 내보내기',
-      exportJsBtn: '💾 JS 데이터 저장',
-      importVersionBtn: '📂 버전 가져오기',
-      printBtn: '🖨️ 인쇄 / PDF 내보내기',
-      closePageBtn: '✕ 창 닫기',
-      locateBtn: '🎯 위치',
-      editBtn: '✏️ 수정',
-      deleteBtn: '🗑️ 삭제',
-      moveToBtn: '🔢 이동',
-      boundComp: '컴포넌트 연결됨',
-      unbound: '연결 안 됨',
-      noPinsEmptyTip: '현재 버전에 요구사항이 없습니다',
-      noSearchMatchTip: '일치하는 요구사항 제목이 없습니다',
-      searchKeywordTip: '키워드',
-      clearSearchBtn: '검색 초기화',
-      tocTitle: '📑 목차 개요',
-      docHeroTitleSuffix: '· 제품 요구사항 명세서 (PRD)',
-      docMetaPage: '페이지 파일',
-      docMetaVersion: '명세 버전',
-      docMetaCount: '총 요구사항 수',
-      docMetaTime: '생성 일시',
-      noDocContentTip: '현재 버전에 등록된 PRD 요구사항이 없습니다',
-      editModalTitle: '요구사항 명세 수정',
-      createModalTitle: '새 요구사항 명세',
-      tabLive: '✨ 시각적 실시간 편집',
-      tabRaw: '📄 원본 마크다운',
-      minimizeBtn: '➖ 최소화 / 화면 확인',
-      reqTitleLabel: '요구사항 제목',
-      reqTitlePlaceholder: '요구사항 제목 입력 (필수)',
-      reqTypeLabel: '요구사항 유형',
-      reqTypes: {
-        '业务规则': '비즈니스 규칙',
-        '交互逻辑': '인터랙션 로직',
-        '数据口径': '데이터 정의/기준',
-        '权限规则': '권한 규칙',
-        '异常流': '예외 흐름',
-        'UI规范': 'UI 규격'
-      },
-      tableDropdown: '📊 시각적 표 삽입...',
-      mermaidDropdown: '🔄 플로우차트 삽입 (Mermaid)...',
-      templateDropdown: '📑 명세 템플릿 삽입...',
-      tableToolbarTip: '📊 시각적 표 (직접 입력, Shift+Enter 셀 내 줄바꿈, Enter/Tab 셀 이동)',
-      addRow: '➕ 행 추가',
-      addCol: '➕ 열 추가',
-      delRow: '➖ 마지막 행 삭제',
-      delCol: '➖ 마지막 열 삭제',
-      delTable: '🗑️ 표 삭제',
-      editFlowchart: '✏️ 플로우차트 수정',
-      editingFlowchartCode: '🔄 Mermaid 플로우차트 코드 수정:',
-      finishRender: '✓ 렌더링 완료',
-      rePickBtn: '🎯 요소 다시 선택',
-      tempSaveBtn: '👀 임시저장 후 화면 확인',
-      cancelBtn: '취소',
-      saveBtn: '💾 요구사항 저장',
-      editingDraftPrefix: '수정 중',
-      draftStashedTip: '임시저장됨 · 클릭하여 계속 작성',
-      restoreEditBtn: '작성 계속하기',
-      discardDraftPrompt: '현재 작성 중인 임시저장 내용을 취소하시겠습니까?',
-      saveSuccessToast: '✅ PRD 요구사항이 저장되어 로컬 JS 파일에 기록되었습니다!',
-      saveFailToast: '❌ 저장 실패: 로컬 서버 API를 감지할 수 없습니다!',
-      pinDeletedToast: '✅ 요구사항 핀이 삭제되었습니다!',
-      reorderSuccessToast: '✅ 요구사항 순서가 성공적으로 변경되었습니다!',
-      rePickTip: '페이지에서 다시 연결할 컴포넌트를 클릭하세요!',
-      rePickSuccessToast: '컴포넌트가 성공적으로 다시 연결되었습니다!',
-      deleteVersionConfirm: '⚠️ 경고: 현재 버전과 모든 핀을 영구 삭제하시겠습니까?',
-      cannotDeleteOnlyVersion: '삭제 불가: 최소 하나의 버전은 유지되어야 합니다!',
-      importModalTitle: '📂 PRD 명세 버전 데이터 가져오기',
-      importFileLabel: '가져올 파일',
-      importVersionNameLabel: '대상 버전 이름:',
-      conflictOverwrite: '🔴 기존 버전 덮어쓰기 (기존 핀 삭제 후 파일 내용으로 대체)',
-      conflictAppend: '🟢 추가 병합 (기존 핀 유지 및 가져온 항목 추가)',
-      conflictNewVer: '🔵 새 버전으로 저장 (기존 데이터에 영향 없이 새 버전 생성)',
-      confirmImportBtn: '가져오기 확인 및 적용'
+    "ko": {
+        "langName": "🇰🇷 한국어",
+        "edgeText": "📌 요구사항 핀",
+        "drawerTitle": "요구사항 규격 (PRD)",
+        "manageOrder": "⚙️ 순서 관리",
+        "doneManage": "✓ 완료 및 종료",
+        "manageModeBanner": "🔧 정렬 및 삭제 관리 모드 실행 중...",
+        "versionPill": "🏷️ 버전",
+        "newVersion": "➕ 새 빈 버전...",
+        "copyVersion": "📋 현재 버전 복제...",
+        "uploadVersion": "📂 버전 데이터 업로드...",
+        "deleteVersion": "🗑️ 버전 삭제...",
+        "searchPlaceholder": "🔍 요구사항 제목 검색 (예: 주문 / 팝업 / 입찰)...",
+        "addPinBtn": "📍 핀 추가",
+        "viewFullPrdBtn": "📑 전체 PRD 보기",
+        "openNewTabBtn": "↗️ 새 탭에서 열기",
+        "exportMdBtn": "📥 Markdown 내보내기",
+        "exportJsBtn": "💾 JS 데이터 내보내기",
+        "importVersionBtn": "📂 버전 가져오기",
+        "printBtn": "🖨️ 인쇄 / PDF",
+        "closePageBtn": "✕ 닫기",
+        "locateBtn": "🎯 위치 이동",
+        "editBtn": "✏️ 편집",
+        "deleteBtn": "🗑️ 삭제",
+        "moveToBtn": "🔢 순서 이동",
+        "moveToTopBtn": "🔝 맨 위로",
+        "moveUpBtn": "▲ 위로",
+        "moveDownBtn": "▼ 아래로",
+        "boundComp": "요소 연결됨",
+        "unbound": "미연결",
+        "noPinsEmptyTip": "이 버전에 등록된 요구사항 핀이 없습니다",
+        "noSearchMatchTip": "일치하는 요구사항 제목이 없습니다",
+        "searchKeywordTip": "키워드",
+        "clearSearchBtn": "검색 조건 지우기",
+        "tocTitle": "📑 목차 개요",
+        "docHeroTitleSuffix": "· 제품 요구사항 정의서 (PRD)",
+        "docMetaPage": "페이지 파일",
+        "docMetaVersion": "규격 버전",
+        "docMetaCount": "항목 수",
+        "docMetaTime": "생성 일시",
+        "noDocContentTip": "이 버전에 아직 작성된 PRD 규격이 없습니다",
+        "editModalTitle": "요구사항 규격 편집",
+        "createModalTitle": "새 요구사항 규격 작성",
+        "tabLive": "✨ 실시간 시각 편집",
+        "tabRaw": "📄 Markdown 원본",
+        "minimizeBtn": "➖ 최소화 / 화면 보기",
+        "reqTitleLabel": "요구사항 명칭",
+        "reqTitlePlaceholder": "요구사항 제목 입력 (필수)",
+        "reqTypeLabel": "요구사항 유형",
+        "reqTypes": {
+            "业务规则": "비즈니스 규칙",
+            "交互逻辑": "인터랙션 로직",
+            "数据口径": "데이터 기준",
+            "权限规则": "권한 규칙",
+            "异常流": "예외 흐름",
+            "UI规范": "UI 규격"
+        },
+        "tableDropdown": "📊 테이블 삽입...",
+        "mermaidDropdown": "🔄 다이어그램 삽입 (Mermaid)...",
+        "templateDropdown": "📑 템플릿 삽입...",
+        "tableToolbarTip": "📊 시각적 표 (셀 직접 입력, Shift+Enter 줄바꿈, Enter/Tab 셀 이동)",
+        "addRow": "➕ 행 추가",
+        "addCol": "➕ 열 추가",
+        "delRow": "➖ 행 삭제",
+        "delCol": "➖ 열 삭제",
+        "delTable": "🗑️ 표 삭제",
+        "editFlowchart": "✏️ 다이어그램 편집",
+        "editingFlowchartCode": "🔄 Mermaid 코드 편집 중:",
+        "finishRender": "✓ 렌더링 완료",
+        "rePickBtn": "🎯 요소 다시 선택",
+        "tempSaveBtn": "👀 임시저장 및 화면확인",
+        "cancelBtn": "취소",
+        "saveBtn": "💾 저장",
+        "editingDraftPrefix": "편집 중",
+        "draftStashedTip": "임시저장됨 · 클릭하여 편집 계속",
+        "restoreEditBtn": "편집 재개",
+        "discardDraftPrompt": "현재 작성 중인 초안을 취소하시겠습니까?",
+        "saveSuccessToast": "✅ 요구사항 규격이 로컬 JS 파일에 성공적으로 저장되었습니다!",
+        "saveFailToast": "❌ 저장 실패: 로컬 서버에 연결할 수 없습니다!",
+        "pinDeletedToast": "✅ 요구사항 핀이 삭제되고 동기화되었습니다!",
+        "reorderSuccessToast": "✅ 요구사항 순서가 성공적으로 변경되었습니다!",
+        "rePickTip": "연결할 화면 요소를 클릭하세요!",
+        "rePickSuccessToast": "요소 재연결이 완료되었습니다!",
+        "deleteVersionConfirm": "⚠️ 경고: 이 버전과 모든 핀을 영구 삭제하시겠습니까?",
+        "cannotDeleteOnlyVersion": "삭제 불가: 최소 하나의 버전은 유지되어야 합니다!",
+        "importModalTitle": "📂 PRD 버전 데이터 가져오기",
+        "importFileLabel": "가져올 파일",
+        "importVersionNameLabel": "대상 버전명:",
+        "conflictOverwrite": "🔴 덮어쓰기 (기존 핀을 삭제하고 업로드 데이터로 교체)",
+        "conflictAppend": "🟢 병합 추가 (기존 핀 유지 및 끝에 추가)",
+        "conflictNewVer": "🔵 새 버전으로 저장 (기존 버전에 영향 없음)",
+        "confirmImportBtn": "가져오기 적용",
+        "pickingTip": "📍 화면 요소를 클릭하여 핀 추가 (ESC 취소)",
+        "fullCollapseTip": "패널 완전히 접기",
+        "semiCollapseTip": "번호 바 모드로 접기",
+        "expandDrawerTip": "전체 패널 펼치기",
+        "noDescTip": "상세 설명 없음",
+        "clickToEditBlock": "클릭하여 단락 편집",
+        "clickToInputContent": "클릭하여 내용 입력...",
+        "dragToReorderTip": "드래그하여 순서 변경",
+        "clickToReorderTip": "클릭하여 순서 번호 변경",
+        "moveToTopTip": "맨 위(1번)로 이동",
+        "moveUpTip": "1칸 위로 이동",
+        "moveDownTip": "1칸 아래로 이동",
+        "collapseSidebarBtn": "📁 사이드바 접기",
+        "expandSidebarBtn": "📂 사이드바 펼치기",
+        "closeInspectBubble": "요구사항 팝업 닫기",
+        "reqDoc": "요구사항",
+        "unboundElementTip": "요소 미연결",
+        "bold": "굵게",
+        "italic": "기울임",
+        "strikethrough": "취소선",
+        "heading3": "제목 3",
+        "heading4": "제목 4",
+        "bulletList": "글머리 기호 목록",
+        "numberList": "번호 매기기 목록",
+        "taskList": "체크리스트",
+        "quote": "인용구",
+        "inlineCode": "인라인 코드",
+        "codeBlock": "코드 블록",
+        "divider": "구분선",
+        "unnamedPin": "(이름 없는 요구사항)",
+        "itemCountUnit": "개"
     }
-  };
+};
 
-  let currentLang = window.PRD_DEFAULT_LANG || localStorage.getItem('prd_ui_lang') || (document.documentElement.lang && document.documentElement.lang.startsWith('en') ? 'en' : document.documentElement.lang && document.documentElement.lang.startsWith('ja') ? 'ja' : document.documentElement.lang && document.documentElement.lang.startsWith('ko') ? 'ko' : 'zh-CN');
-  if (!I18N[currentLang]) currentLang = 'zh-CN';
+  let currentLang = 'zh-CN';
+  try {
+    const savedLang = localStorage.getItem('prd_ui_lang');
+    if (savedLang && I18N[savedLang]) currentLang = savedLang;
+  } catch (e) {}
 
   function t(key, fallback = '') {
     if (I18N[currentLang] && I18N[currentLang][key] !== undefined) {
@@ -449,7 +588,7 @@
     if (drawerTitleEl) drawerTitleEl.innerHTML = `${t('drawerTitle')} · ${getCurrentPageTitle()}`;
 
     const orderBtn = document.getElementById('prd-manage-order-btn');
-    if (orderBtn) orderBtn.innerText = isManageOrderMode ? t('doneManage') : t('manageOrder');
+    if (orderBtn) orderBtn.innerText = isDrawerManageMode ? t('doneManage') : t('manageOrder');
 
     const searchInput = document.getElementById('prd-drawer-search-input');
     if (searchInput) searchInput.placeholder = t('searchPlaceholder');
@@ -600,31 +739,62 @@
     .prd-right-drawer.open { right: 0; }
 
     /* 抽屉左边缘收起小箭头按钮 */
-    .prd-drawer-left-arrow {
+    /* 抽屉左边缘控制把手组 (上方全收起 + 下方半收起，按钮朝内指向右侧) */
+    .prd-drawer-left-handles {
       position: absolute;
-      left: -28px;
+      left: -32px;
       top: 50%;
       transform: translateY(-50%);
-      width: 28px;
-      height: 48px;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: #ffffff;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 1000017;
+      user-select: none;
+    }
+    #prd-drawer.open .prd-drawer-left-handles, .prd-right-drawer.open .prd-drawer-left-handles {
+      display: flex !important;
+    }
+    .prd-drawer-handle-btn {
+      width: 32px;
+      height: 44px;
       border-radius: 8px 0 0 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: -4px 4px 12px rgba(0,0,0,0.2);
-      border: 1px solid rgba(59, 130, 246, 0.35);
-      border-right: none;
-      transition: all 0.2s;
-      z-index: 1000017;
+      box-shadow: -4px 4px 12px rgba(0,0,0,0.18);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
     }
-    .prd-drawer-left-arrow:hover {
+    .prd-drawer-handle-btn span {
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    /* 上方按钮：全收起 (深色科技质感，右向箭头 › 朝内收起) */
+    .prd-handle-full-collapse {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #ffffff;
+      border: 1px solid #334155;
+      border-right: none;
+    }
+    .prd-handle-full-collapse:hover {
       background: #ef4444;
       border-color: #f87171;
+      transform: scale(1.08) translateX(-2px);
     }
-    .prd-drawer-left-arrow span { font-size: 16px; font-weight: 800; }
+    /* 下方按钮：半收起 (专业亮蓝，右向紧凑收折标号条图标 ⇥) */
+    .prd-handle-semi-collapse {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      border: 1px solid #60a5fa;
+      border-right: none;
+    }
+    .prd-handle-semi-collapse:hover {
+      background: #1e40af;
+      border-color: #93c5fd;
+      transform: scale(1.08) translateX(-2px);
+    }
 
     .prd-drawer-header {
       padding: 12px 14px;
@@ -667,7 +837,7 @@
       gap: 8px;
     }
 
-    /* 需求卡片样式 */
+    /* 需求卡片样式 (100% 绝对统一卡片高度 136px) */
     .prd-card-item {
       background: #ffffff;
       border: 1px solid #e2e8f0;
@@ -675,11 +845,17 @@
       padding: 10px 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      justify-content: space-between;
+      height: 136px !important;
+      min-height: 136px !important;
+      max-height: 136px !important;
+      box-sizing: border-box;
       cursor: pointer;
       transition: all 0.15s ease-in-out;
       box-shadow: 0 1px 3px rgba(0,0,0,0.02);
       position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
     }
     .prd-card-item:hover {
       border-color: #93c5fd;
@@ -703,13 +879,23 @@
       font-size: 13px;
       font-weight: 700;
       color: #0f172a;
+      height: 22px;
+      flex-shrink: 0;
     }
     .prd-num-title {
       display: flex;
       align-items: center;
       gap: 6px;
       flex: 1;
+      min-width: 0;
       overflow: hidden;
+      white-space: nowrap;
+    }
+    .prd-num-title span:last-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
     }
     .prd-pin-num-pill {
       background: #ef4444;
@@ -735,19 +921,28 @@
     .prd-card-desc {
       font-size: 12px;
       color: #64748b;
-      line-height: 1.5;
+      line-height: 18px;
+      height: 36px !important;
+      min-height: 36px !important;
+      max-height: 36px !important;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-word;
+      margin: 4px 0;
+      flex-shrink: 0;
     }
     .prd-card-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px dashed #f1f5f9;
-      padding-top: 6px;
-      margin-top: 2px;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 4px;
+      margin-top: 0;
+      height: 24px;
+      flex-shrink: 0;
     }
 
     .prd-tag {
@@ -792,8 +987,8 @@
     .prd-btn-primary:hover {
       background: var(--prd-primary-hover);
     }
-    .btn-danger { color: #ef4444 !important; border-color: #fecaca !important; }
-    .btn-danger:hover { background: #fef2f2 !important; border-color: #ef4444 !important; }
+    .prd-panel .btn-danger, .prd-btn-danger { color: #ef4444 !important; border-color: #fecaca !important; }
+    .prd-panel .btn-danger:hover, .prd-btn-danger:hover { background: #fef2f2 !important; border-color: #ef4444 !important; }
 
     /* 页面大头针 */
     .prd-pin-marker {
@@ -853,6 +1048,154 @@
     }
 
     /* 悬浮 Popover 气泡 */
+
+    /* 严格保障所有环境下的 Markdown 列表小圆点与序号排版 */
+    ul.prd-md-list, .prd-live-blocks-container ul, .prd-doc-content ul, .prd-drawer-content ul, .prd-inspect-bubble ul, .prd-live-block ul {
+      list-style-type: disc !important;
+      padding-left: 24px !important;
+      margin: 6px 0 !important;
+      display: block !important;
+    }
+    ol.prd-md-list, .prd-live-blocks-container ol, .prd-doc-content ol, .prd-drawer-content ol, .prd-inspect-bubble ol, .prd-live-block ol {
+      list-style-type: decimal !important;
+      padding-left: 24px !important;
+      margin: 6px 0 !important;
+      display: block !important;
+    }
+    ul.prd-md-list li, ol.prd-md-list li, .prd-live-blocks-container li, .prd-doc-content li, .prd-drawer-content li, .prd-inspect-bubble li, .prd-live-block li {
+      display: list-item !important;
+      list-style-type: inherit !important;
+      margin-bottom: 4px !important;
+      line-height: 1.65 !important;
+    }
+    .prd-live-block ul li::marker, .prd-doc-content ul li::marker {
+      color: #2563eb !important;
+    }
+
+    /* 抽屉全展开 (400px) / 半收起 (56px 标号竖条) / 全收起 状态体系 */
+    #prd-drawer, .prd-right-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 400px;
+      height: 100vh;
+      background: #ffffff;
+      box-shadow: -4px 0 25px rgba(0, 0, 0, 0.12);
+      z-index: 1000008;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), width 0.2s ease;
+      box-sizing: border-box;
+      border-left: 1px solid #e2e8f0;
+    }
+    #prd-drawer.open, .prd-right-drawer.open {
+      transform: translateX(0) !important;
+      width: 400px !important;
+    }
+    #prd-drawer.semi-open, .prd-right-drawer.semi-open {
+      transform: translateX(0) !important;
+      width: 56px !important;
+      overflow: visible !important;
+    }
+    #prd-drawer.semi-open .prd-drawer-full-content, .prd-right-drawer.semi-open .prd-drawer-full-content {
+      display: none !important;
+    }
+    #prd-drawer.semi-open .prd-drawer-mini-rail, .prd-right-drawer.semi-open .prd-drawer-mini-rail {
+      display: flex !important;
+    }
+    .prd-drawer-full-content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    .prd-drawer-mini-rail {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      background: #f8fafc;
+      align-items: center;
+      padding: 10px 0;
+      box-sizing: border-box;
+      user-select: none;
+      overflow-y: auto;
+      overflow-x: visible;
+    }
+    .prd-mini-badge-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #ef4444;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.35);
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: transform 0.15s, background 0.15s;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .prd-mini-badge-btn:hover {
+      transform: scale(1.18);
+      background: #dc2626;
+      z-index: 1000020;
+    }
+    .prd-mini-badge-btn::after {
+      content: attr(data-title);
+      position: absolute;
+      right: 44px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1e293b;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      z-index: 1000030;
+    }
+    .prd-mini-badge-btn:hover::after {
+      opacity: 1;
+    }
+    
+    /* 抽屉左侧折叠把手 */
+    .prd-drawer-edge-handle {
+      position: absolute;
+      left: -24px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 48px;
+      background: #1e293b;
+      color: #ffffff;
+      border-radius: 6px 0 0 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.15);
+      z-index: 1000009;
+      transition: background 0.15s;
+      user-select: none;
+    }
+    .prd-drawer-edge-handle:hover {
+      background: #2563eb;
+    }
+
     .prd-inspect-bubble {
       position: fixed;
       background: #ffffff;
@@ -1390,6 +1733,7 @@
     }
   };
 
+  window.parseMarkdown = parseMarkdown;
   function parseMarkdown(md) {
     if (!md) return '';
     let text = md.trim();
@@ -1665,6 +2009,7 @@
 
     renderPinMarkers();
     renderRightDrawerList();
+    renderMiniRailList();
     updateVersionBarUI();
 
     if (activeDocModal) {
@@ -2691,7 +3036,7 @@
       } else {
         const rendered = parseMarkdown(block.text);
         html += `
-          <div class="prd-live-block rendered" data-index="${idx}" onclick="window.activateBlockForEdit(${idx})" title="点击编辑此段落">
+          <div class="prd-live-block rendered" data-index="${idx}" onclick="window.activateBlockForEdit(${idx}, event)" title="点击编辑此段落">
             ${rendered || '<p style="color:#94a3b8; font-style:italic; margin:0;">点击输入内容...</p>'}
           </div>
         `;
@@ -2931,10 +3276,58 @@
     }
   };
 
-  window.activateBlockForEdit = function(idx) {
+  window.activateBlockForEdit = function(idx, event) {
     activeEditingBlockIndex = idx;
     lastFocusedBlockIndex = idx;
+
+    let targetCharOffset = null;
+    if (event && (event.clientX !== undefined && event.clientY !== undefined)) {
+      let range = null;
+      if (document.caretRangeFromPoint) {
+        range = document.caretRangeFromPoint(event.clientX, event.clientY);
+      } else if (document.caretPositionFromPoint) {
+        const pos = document.caretPositionFromPoint(event.clientX, event.clientY);
+        if (pos) {
+          range = document.createRange();
+          range.setStart(pos.offsetNode, pos.offset);
+        }
+      }
+      if (range) {
+        const blockEl = document.querySelector(`.prd-live-block[data-index="${idx}"]`);
+        if (blockEl) {
+          const preRange = range.cloneRange();
+          preRange.selectNodeContents(blockEl);
+          preRange.setEnd(range.endContainer, range.endOffset);
+          const rawText = preRange.toString();
+          targetCharOffset = rawText.length;
+        }
+      }
+    }
+
     renderLiveBlocksUI();
+
+    setTimeout(() => {
+      const input = document.getElementById(`prd-block-input-${idx}`);
+      if (input) {
+        input.focus();
+        if (targetCharOffset !== null) {
+          const lineText = input.value || '';
+          let finalOffset = targetCharOffset;
+          if (lineText.startsWith('- ') || lineText.startsWith('* ')) {
+            finalOffset = Math.min(lineText.length, targetCharOffset + 2);
+          } else if (lineText.startsWith('### ')) {
+            finalOffset = Math.min(lineText.length, targetCharOffset + 4);
+          } else if (lineText.startsWith('## ')) {
+            finalOffset = Math.min(lineText.length, targetCharOffset + 3);
+          } else if (lineText.startsWith('# ')) {
+            finalOffset = Math.min(lineText.length, targetCharOffset + 2);
+          } else {
+            finalOffset = Math.min(lineText.length, targetCharOffset);
+          }
+          input.setSelectionRange(finalOffset, finalOffset);
+        }
+      }
+    }, 0);
   };
 
   window.handleBlockFocus = function(idx, textarea) {
@@ -3391,24 +3784,66 @@
     targetIdx = Math.max(0, Math.min(savedPins.length - 1, targetIdx));
     if (curIdx === targetIdx) return;
 
+    // 记录列表当前滚动高度，保证重绘后位置完全不跳动
+    const drawerList = document.getElementById('prd-drawer-list');
+    const prevScrollTop = drawerList ? drawerList.scrollTop : 0;
+
     const backup = JSON.parse(JSON.stringify(savedPins));
+    
+    // 移至上方：该项移到 targetIdx，原位置项依次往下瞬移顺延
     const [moved] = savedPins.splice(curIdx, 1);
     savedPins.splice(targetIdx, 0, moved);
 
+    // 重新按序赋予 1..N 连续自然序号
     reIndexPins(savedPins);
+
     const isSaved = await persistData();
     if (isSaved) {
       renderPinMarkers();
       renderRightDrawerList();
-      showToast(`✅ 需求序号已成功调整为 #${targetIdx + 1} 并同步！`, 'success');
+      renderMiniRailList();
+
+      // 瞬时锁定并恢复滚动高度
+      const updatedDrawerList = document.getElementById('prd-drawer-list');
+      if (updatedDrawerList) {
+        updatedDrawerList.scrollTop = prevScrollTop;
+      }
+
+      // 高亮瞬移成功的目标卡片
+      const movedCard = document.querySelector(`.prd-card-item:nth-child(${targetIdx + (isDrawerManageMode ? 2 : 1)})`);
+      if (movedCard) {
+        movedCard.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+        movedCard.style.boxShadow = '0 0 0 2px #2563eb, 0 4px 14px rgba(37,99,235,0.25)';
+        setTimeout(() => {
+          if (movedCard) movedCard.style.boxShadow = '';
+        }, 800);
+      }
+
+      showToast(`✅ 需求已调整至 #${targetIdx + 1}，后续序号已依次顺延！`, 'success');
     } else {
       savedPins = backup;
       reIndexPins(savedPins);
       renderRightDrawerList();
+      renderMiniRailList();
       alert('❌ 排序保存失败：未检测到本地服务接口，无法写入本地磁盘 JS 文件！');
       showToast('❌ 排序保存失败', 'error');
     }
   };
+
+  // 纯文本摘要提取算法（保障卡片高度 100% 绝对统一）
+  function stripMarkdownSnippet(md) {
+    if (!md || typeof md !== 'string') return '暂无详细业务描述';
+    let text = md.replace(/```[\s\S]*?```/g, ' [图表/代码] ');
+    text = text.replace(/\|[^\n]+\|/g, ' [表格] ');
+    text = text.replace(/#{1,6}\s+/g, '');
+    text = text.replace(/[-*]\s+/g, '');
+    text = text.replace(/\d+\.\s+/g, '');
+    text = text.replace(/[*_~`]/g, '');
+    text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+    text = text.replace(/<[^>]+>/g, ' ');
+    text = text.replace(/\s+/g, ' ').trim();
+    return text || '暂无详细业务描述';
+  }
 
   function renderRightDrawerList() {
     const container = document.getElementById('prd-drawer-list');
@@ -3423,8 +3858,8 @@
     if (isDrawerManageMode) {
       headerBannerHtml = `
         <div style="background:#fff7ed; border:1px solid #fed7aa; color:#c2410c; padding:6px 12px; border-radius:6px; font-size:11px; display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-shrink:0;">
-          <span style="font-weight:700;">🔧 排序与删除管理模式中...</span>
-          <button class="prd-btn-action" style="background:#ea580c; color:#fff; padding:2px 8px; font-size:11px; border:none;" onclick="window.toggleDrawerManageMode()">✓ 完成退出</button>
+          <span style="font-weight:700;">${t('manageModeBanner')}</span>
+          <button class="prd-btn-action" style="background:#ea580c; color:#fff; padding:2px 8px; font-size:11px; border:none;" onclick="window.toggleDrawerManageMode()">${t('doneManage')}</button>
         </div>
       `;
     }
@@ -3464,9 +3899,10 @@
             </div>
             ${isDrawerManageMode ? `
               <div style="display:flex; align-items:center; gap:2px;">
-                <button class="prd-btn-action" style="padding:1px 5px; font-size:10px; background:#f1f5f9; border-radius:4px;" onclick="event.stopPropagation(); window.promptChangePinOrder(${pin.id})" title="调整到任意指定序号">🔢 移至</button>
-                <button class="prd-btn-action" style="padding:1px 4px; font-size:10px;" onclick="event.stopPropagation(); window.movePinOrder(${pin.id}, -1)" title="上移一位">▲</button>
-                <button class="prd-btn-action" style="padding:1px 4px; font-size:10px;" onclick="event.stopPropagation(); window.movePinOrder(${pin.id}, 1)" title="下移一位">▼</button>
+                <button class="prd-btn-action" style="padding:1px 5px; font-size:10px; background:#eff6ff; color:#1d4ed8; border-radius:4px;" onclick="event.stopPropagation(); window.reorderPinToIndex(${pin.id}, 0)" title="${escapeHtml(t('moveToTopTip'))}">${t('moveToTopBtn')}</button>
+                <button class="prd-btn-action" style="padding:1px 5px; font-size:10px; background:#f1f5f9; border-radius:4px;" onclick="event.stopPropagation(); window.promptChangePinOrder(${pin.id})" title="${escapeHtml(t('clickToReorderTip'))}">${t('moveToBtn')}</button>
+                <button class="prd-btn-action" style="padding:1px 4px; font-size:10px;" onclick="event.stopPropagation(); window.movePinOrder(${pin.id}, -1)" title="${escapeHtml(t('moveUpTip'))}">▲</button>
+                <button class="prd-btn-action" style="padding:1px 4px; font-size:10px;" onclick="event.stopPropagation(); window.movePinOrder(${pin.id}, 1)" title="${escapeHtml(t('moveDownTip'))}">▼</button>
               </div>
             ` : ''}
           </div>
@@ -3475,15 +3911,15 @@
             <span class="prd-tag prd-tag-type">${escapeHtml(pin.type || '业务规则')}</span>
           </div>
 
-          <div class="prd-card-desc">
-            ${parseMarkdown(pin.desc) || '暂无描述'}
+          <div class="prd-card-desc" title="${escapeHtml(stripMarkdownSnippet(pin.desc))}">
+            ${escapeHtml(stripMarkdownSnippet(pin.desc))}
           </div>
 
           <div class="prd-card-footer">
-            <span style="font-size:10px; color:#94a3b8;">${pin.selector ? '已绑定组件' : '未绑定'}</span>
+            <span style="font-size:10px; color:#94a3b8;">${pin.selector ? t('boundComp') : t('unbound')}</span>
             <div style="display:flex; gap:6px;">
-              <button class="prd-btn-action" onclick="event.stopPropagation(); window.locateAndHighlight(${pin.id});">🎯 定位</button>
-              <button class="prd-btn-action" onclick="event.stopPropagation(); window.openEditorForPin(${pin.id});">✏️ 编辑</button>
+              <button class="prd-btn-action" onclick="event.stopPropagation(); window.locateAndHighlight(${pin.id});">${t('locateBtn')}</button>
+              <button class="prd-btn-action" onclick="event.stopPropagation(); window.openEditorForPin(${pin.id});">${t('editBtn')}</button>
               ${isDrawerManageMode ? `
                 <button class="prd-btn-action btn-danger" onclick="event.stopPropagation(); window.deletePinItem(${pin.id});" title="删除该需求">🗑️ 删除</button>
               ` : ''}
@@ -3594,30 +4030,76 @@
 
   window.setPRDMode = function(mode) {
     currentMode = mode;
-    const drawer = document.getElementById('prd-drawer');
+    const drawer = document.getElementById('prd-right-drawer') || document.getElementById('prd-drawer');
     const edgeTab = document.getElementById('prd-drawer-edge-tab');
 
-    if (mode === 'edit') {
+    if (mode === 'pick' || mode === 'edit') {
       document.body.style.cursor = 'crosshair';
       bindPickListeners();
-      if (drawer) drawer.classList.add('open');
-      if (edgeTab) edgeTab.style.display = 'none';
+      // 打标时自动收起右侧抽屉，完全暴露底层页面组件
+      if (drawer) {
+        drawer.classList.remove('open', 'semi-open');
+      }
+      if (edgeTab) {
+        edgeTab.style.display = 'flex';
+        edgeTab.innerHTML = `<span class="prd-edge-text" style="color:#ef4444; font-weight:700;">📍 点击页面组件打标 (ESC退出)</span>`;
+      }
       renderPinMarkers();
-      renderRightDrawerList();
-      showToast('✏️ 编辑打点模式已激活：直接点击页面元素即可！', 'info');
+      showToast('📍 点击页面任意组件即可完成打标并呼出规约编辑窗', 'info');
     } else if (mode === 'show') {
       unbindPickListeners();
-      if (drawer) drawer.classList.add('open');
+      if (drawer) {
+        drawer.classList.remove('semi-open');
+        drawer.classList.add('open');
+      }
       if (edgeTab) edgeTab.style.display = 'none';
       renderPinMarkers();
       renderRightDrawerList();
+    } else if (mode === 'semi') {
+      unbindPickListeners();
+      if (drawer) {
+        drawer.classList.remove('open');
+        drawer.classList.add('semi-open');
+      }
+      if (edgeTab) edgeTab.style.display = 'none';
+      renderPinMarkers();
+      renderMiniRailList();
     } else if (mode === 'hide') {
       unbindPickListeners();
-      if (drawer) drawer.classList.remove('open');
-      if (edgeTab) edgeTab.style.display = 'flex';
+      if (drawer) drawer.classList.remove('open', 'semi-open');
+      if (edgeTab) {
+        edgeTab.style.display = 'flex';
+        edgeTab.innerHTML = `<span class="prd-edge-text">${t('edgeText')} (<span id="prd-edge-count">${savedPins.length}</span>)</span>`;
+      }
       renderPinMarkers();
     }
   };
+
+  window.toggleDrawerSemiMode = function() {
+    const drawer = document.getElementById('prd-right-drawer') || document.getElementById('prd-drawer');
+    if (!drawer) return;
+    if (drawer.classList.contains('semi-open')) {
+      window.setPRDMode('show');
+    } else {
+      window.setPRDMode('semi');
+    }
+  };
+
+  function renderMiniRailList() {
+    const miniRailContainer = document.getElementById('prd-mini-rail-pins');
+    if (!miniRailContainer) return;
+
+    let html = '';
+    savedPins.forEach((pin) => {
+      html += `
+        <button class="prd-mini-badge-btn" data-title="#${pin.id} ${escapeHtml(pin.title)}" onclick="window.locateAndHighlight(${pin.id})">
+          ${pin.id}
+        </button>
+      `;
+    });
+    miniRailContainer.innerHTML = html;
+  }
+
 
   // 16. 当前页面 PRD 可视化 Markdown 文档大屏与新标签页独立打开
   let activeDocModal = null;
@@ -4300,49 +4782,80 @@
     drawer.className = 'prd-right-drawer';
     drawer.id = 'prd-drawer';
     drawer.innerHTML = `
-      <!-- 左边缘快捷收起箭头按钮 -->
-      <div class="prd-drawer-left-arrow" id="prd-drawer-left-arrow" onclick="window.setPRDMode('hide')" title="点击收起需求面板">
-        <span>›</span>
-      </div>
-
-      <!-- 抽屉头部 -->
-      <div class="prd-drawer-header">
-        <div style="font-size:14px; font-weight:700; color:#0f172a; display:flex; align-items:center; gap:6px;">
-          <span>📋 ${getCurrentPageTitle()}</span>
-          <span style="background:#e0f2fe; color:#0284c7; font-size:11px; padding:2px 8px; border-radius:10px; font-weight:700;" id="prd-drawer-count">${savedPins.length}</span>
+      <!-- 左边缘快捷控制把手组 (上方全收起 + 下方半收起，按钮朝内指向右侧) -->
+      <div class="prd-drawer-left-handles" id="prd-drawer-left-handles">
+        <div class="prd-drawer-handle-btn prd-handle-full-collapse" onclick="window.setPRDMode('hide')" title="完全收起抽屉 (Full Close)">
+          <span>›</span>
         </div>
-        <div style="display:flex; align-items:center; gap:4px;">
-          <button class="prd-btn-action" style="font-size:11px; background:#eff6ff; color:#1d4ed8;" onclick="window.toggleDrawerManageMode()" title="开启/关闭排序与删除管理模式">⚙️ 排序管理</button>
-          <button class="prd-btn-action" style="font-size:16px;" onclick="window.setPRDMode('hide')" title="收起抽屉">&times;</button>
+        <div class="prd-drawer-handle-btn prd-handle-semi-collapse" onclick="window.setPRDMode('semi')" title="半收起为标号竖条 (Semi Rail)">
+          <span>⇥</span>
         </div>
       </div>
 
-      <!-- 多版本切换工具栏 -->
-      <div class="prd-version-bar">
-        <select class="prd-version-select" id="prd-version-select" onchange="window.handleVersionSelectChange(this.value)">
-          <!-- 动态版本列表 -->
-        </select>
-        <button class="prd-btn-action" style="padding:3px 6px; font-size:11px;" onclick="window.promptCreateVersion()" title="新建版本">➕</button>
-        <button class="prd-btn-action" style="padding:3px 6px; font-size:11px;" onclick="window.triggerImportJS()" title="上传版本数据">📂</button>
-      </div>
+      <!-- 1. 全展开完整面板 (400px) -->
+      <div class="prd-drawer-full-content" style="display:flex; flex-direction:column; height:100%; width:100%; overflow:hidden;">
+        <!-- 抽屉头部 -->
+        <div class="prd-drawer-header">
+          <div style="font-size:14px; font-weight:700; color:#0f172a; display:flex; align-items:center; gap:6px;">
+            <span>📋 ${getCurrentPageTitle()}</span>
+            <span style="background:#e0f2fe; color:#0284c7; font-size:11px; padding:2px 8px; border-radius:10px; font-weight:700;" id="prd-drawer-count">${savedPins.length}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <select id="prd-lang-select" onchange="window.setPRDLanguage(this.value)" style="padding:2px 4px; border:1px solid #cbd5e1; border-radius:4px; font-size:11px; outline:none; background:#fff; cursor:pointer; color:#334155; font-weight:600;" title="切换语言 (Language)">
+              <option value="zh-CN" ${currentLang==='zh-CN'?'selected':''}>🇨🇳 中文</option>
+              <option value="en" ${currentLang==='en'?'selected':''}>🇺🇸 EN</option>
+              <option value="ja" ${currentLang==='ja'?'selected':''}>🇯🇵 日本語</option>
+              <option value="ko" ${currentLang==='ko'?'selected':''}>🇰🇷 한국어</option>
+            </select>
+            
+            <button id="prd-manage-order-btn" class="prd-btn-action" style="font-size:11px; background:#eff6ff; color:#1d4ed8; padding:3px 6px;" onclick="window.toggleDrawerManageMode()" title="${escapeHtml(t('manageOrder'))}">${isDrawerManageMode ? t('doneManage') : t('manageOrder')}</button>
+            <button class="prd-btn-action" style="font-size:16px; padding:0 6px;" onclick="window.setPRDMode('hide')" title="完全收起抽屉">&times;</button>
+          </div>
+        </div>
 
-      <!-- 搜索过滤栏 (纯标题完全模糊检索 + 快速清空) -->
-      <div class="prd-drawer-filter-bar" style="padding:8px 12px; background:#fff; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; gap:6px;">
-        <div style="position:relative; flex:1; display:flex; align-items:center;">
-          <input type="text" id="prd-drawer-search-input" placeholder="🔍 模糊搜索需求标题 (如: 订单 / 弹窗 / 竞价)..." style="width:100%; padding:6px 28px 6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; outline:none; background:#fff; box-sizing:border-box;" oninput="window.handlePRDSearchInput(this.value)">
-          <button id="prd-search-clear-btn" style="position:absolute; right:6px; background:none; border:none; color:#94a3b8; font-size:14px; cursor:pointer; display:none; align-items:center; justify-content:center; padding:2px;" onclick="window.clearPRDSearch()" title="清空搜索">&times;</button>
+        <!-- 多版本切换工具栏 -->
+        <div class="prd-version-bar">
+          <select class="prd-version-select" id="prd-version-select" onchange="window.handleVersionSelectChange(this.value)">
+            <!-- 动态版本列表 -->
+          </select>
+          <button class="prd-btn-action" style="padding:3px 6px; font-size:11px;" onclick="window.promptCreateVersion()" title="新建版本">➕</button>
+          <button class="prd-btn-action" style="padding:3px 6px; font-size:11px;" onclick="window.triggerImportJS()" title="上传版本数据">📂</button>
+        </div>
+
+        <!-- 搜索过滤栏 (纯标题完全模糊检索 + 快速清空) -->
+        <div class="prd-drawer-filter-bar" style="padding:8px 12px; background:#fff; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; gap:6px;">
+          <div style="position:relative; flex:1; display:flex; align-items:center;">
+            <input type="text" id="prd-drawer-search-input" placeholder="🔍 模糊搜索需求标题 (如: 订单 / 弹窗 / 竞价)..." style="width:100%; padding:6px 28px 6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; outline:none; background:#fff; box-sizing:border-box;" oninput="window.handlePRDSearchInput(this.value)">
+            <button id="prd-search-clear-btn" style="position:absolute; right:6px; background:none; border:none; color:#94a3b8; font-size:14px; cursor:pointer; display:none; align-items:center; justify-content:center; padding:2px;" onclick="window.clearPRDSearch()" title="清空搜索">&times;</button>
+          </div>
+        </div>
+
+        <!-- 需求列表主体 -->
+        <div class="prd-drawer-body" id="prd-drawer-list" style="flex:1; overflow-y:auto;">
+          <!-- 动态渲染卡片 -->
+        </div>
+
+        <!-- 抽屉底部操作栏 (常驻查看完整PRD与新增打点) -->
+        <div class="prd-drawer-footer" style="padding:10px 14px; background:#ffffff; border-top:1px solid #e2e8f0; display:flex; gap:8px;">
+          <button class="prd-btn-primary" style="flex:1;" onclick="window.setPRDMode('edit')">${t('addPinBtn')}</button>
+          <button class="prd-btn-action" style="background:#f1f5f9; padding:8px 14px;" onclick="window.openCurrentPagePRDDoc()">${t('viewFullPrdBtn')}</button>
         </div>
       </div>
 
-      <!-- 需求列表主体 -->
-      <div class="prd-drawer-body" id="prd-drawer-list">
-        <!-- 动态渲染卡片 -->
-      </div>
-
-      <!-- 抽屉底部操作栏 (常驻查看完整PRD与新增打点) -->
-      <div class="prd-drawer-footer" style="padding:10px 14px; background:#ffffff; border-top:1px solid #e2e8f0; display:flex; gap:8px;">
-        <button class="prd-btn-primary" style="flex:1;" onclick="window.setPRDMode('edit')">📍 新增打点</button>
-        <button class="prd-btn-action" style="background:#f1f5f9; padding:8px 14px;" onclick="window.openCurrentPagePRDDoc()">📑 查看完整PRD</button>
+      <!-- 2. 半收起紧凑标号竖条 (56px Mini Rail) -->
+      <div class="prd-drawer-mini-rail" style="display:none; flex-direction:column; height:100%; width:100%; background:#f8fafc; align-items:center; padding:10px 0; box-sizing:border-box; user-select:none;">
+        <button class="prd-btn-action" style="width:36px; height:30px; padding:0; display:flex; align-items:center; justify-content:center; margin-bottom:8px; font-size:12px;" onclick="window.setPRDMode('show')" title="展开完整抽屉">
+          ▶
+        </button>
+        <div style="font-size:10px; font-weight:800; color:#64748b; margin-bottom:10px; text-align:center;">
+          ${escapeHtml(currentVersion)}
+        </div>
+        <div id="prd-mini-rail-pins" style="display:flex; flex-direction:column; align-items:center; flex:1; overflow-y:auto; overflow-x:visible; width:100%;">
+          <!-- 由 renderMiniRailList 动态填充 -->
+        </div>
+        <button class="prd-btn-primary" style="width:36px; height:36px; padding:0; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; margin-top:8px; box-shadow:0 2px 8px rgba(37,99,235,0.4);" onclick="window.setPRDMode('edit')" title="新增打点">
+          📍
+        </button>
       </div>
     `;
     document.body.appendChild(drawer);
