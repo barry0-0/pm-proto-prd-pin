@@ -31,7 +31,19 @@ agent_created: true
 
 ---
 
-### Module 1: 💾 双层持久化机制与标准后端接口协议 (Dual Persistence API Protocol)
+### Module 1: 💾 双引擎持久化机制与 GitHub Pages 零后端云端直写体系 (Dual-Engine Cloud Persistence)
+- **☁️ GitHub Pages 零服务器云端直写架构 (Serverless GitHub Contents REST API)**:
+  - **创立人身份强鉴权 (Repository & Owner Guard)**：
+    - 前端调用 `GET https://api.github.com/repos/{owner}/{repo}` 校验当前用户是否为仓库创立人/拥有者，且必须具备 `permissions.push === true` 写入权限；
+    - **访客只读隔离**：未认证或非创立人访问时，界面保持纯粹的【👁️ 访客只读模式】，可自由查阅打点、Mermaid 图表与 PRD 文档，但绝无权篡改；
+    - **创立人极简配置**：提供 `👑 GitHub Pages 创立人认证与实时同步配置` 模态框，配置专属 Fine-Grained PAT（仅需 `Contents: Read and write` 权限），密钥仅保留在本地浏览器 `localStorage`，零第三方中转；
+  - **REST API 自动化 Commit 提交链路**：
+    - 点击保存或调整排序时，前端自动向 `PUT https://api.github.com/repos/{owner}/{repo}/contents/assets/js/prd-data-{pageKey}.js` 发送 Commit 请求；
+    - 提交信息自动标注 `docs(prd): update annotations for {pageKey} [skip ci]`，自动跳过 Actions 冗余构建；
+- **⚡ 三模态环境智能自适应路由 (Tri-Mode Environment Routing)**:
+  1. **🟢 本地 Node 服务环境 (`http://localhost:*`)**：自动调用本地 `POST /api/save-prd` 写入本地磁盘；
+  2. **👑 GitHub Pages 线上环境 (`*.github.io`)**：自动切换为 GitHub REST API 创立人直连云端 Commit 模式；
+  3. **👁️ 静态离线/只读环境**：点击新增或编辑时，前置弹出引导窗（本地引导 `node server.js`，线上引导创立人 Token 认证）。
 - **⚡ 前置服务健康探测与只读阻断拦截机制 (Pre-Action API Health Check & ReadOnly Guard)**:
   - 在用户点击 **「📍 新增打点」**、**「⚙️ 排序管理」**、**「✏️ 编辑需求」** 或版本新建/复制/删除操作的瞬间，系统**提前异步探测后端接口健康状态**；
   - 若处于静态只读预览环境（如 `file://` 协议或未启动本地服务的静态托管）：

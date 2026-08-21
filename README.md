@@ -38,7 +38,7 @@
 | **💡 3 Core Business Templates** | Fast-insert buttons for Business Rules, Statechart Diagrams, and Data Dictionary Tables | Rapid authoring of standardized specification clauses |
 | **👀 Single-Entry Stash & Minimize** | Clean close `✕` in header + `👀 Stash & View Page` in bottom bar (`.prd-editor-mini-dock` pill) | Review underlying prototype elements without losing unsaved drafts; 1-click restore |
 | **🌐 Native 4-Language i18n** | Full 115-key dynamic dictionary covering `en`, `zh-CN`, `ja`, `ko`; runtime hot-switching | Seamless multi-lingual team collaboration across global product workflows |
-| **💾 Dual Persistence & Pre-Action Guard** | Pre-action API health probing on add/reorder/edit; prioritizes `POST /api/save-prd` sync | Zero data loss, instant upfront alert modal if backend is offline instead of failing at save step |
+| **💾 Serverless Cloud & Dual Persistence** | Direct Git Commit via GitHub REST API (`PUT /contents`) on GitHub Pages + Node.js disk save | 100% Serverless cloud persistence on GitHub Pages for Repo Owner, Visitor Read-Only protection |
 | **🗂️ 3-State Drawer & Dual Handles** | Full (400px), Semi (56px Mini Rail), Hidden (0px); dual inward-facing edge handles | Frees up 95% of prototype canvas while keeping all pins immediately accessible |
 | **🔒 Reorder Safety Lock & Cascade** | Normal browsing locks order; manage mode unlocks `🔝 Top`, `🔢 Move To`, sequential cascade | Accidental reordering prevention; seamless 1 -> 2 -> 3 cascading when reordering |
 | **🏷️ Multi-Version Physical Isolation** | Isolated `versionRegistry`; new versions start clean (0 pins); upload conflict resolver | No pin cross-contamination across sprint iterations |
@@ -89,7 +89,10 @@ Access `http://localhost:3000/merchant.html` and start pinning specs!
 6. **🌐 全球 4 语言架构 (`zh-CN`, `en`, `ja`, `ko`)**：
    - 抽屉顶部实时切换多语言，115 个字典键全要素动态本地化；
    - Phase 0 规范强制前置确认目标语言框架。
-7. **💾 REST API 双层持久化与前置服务拦截机制**：
+7. **💾 GitHub Pages 零后端云端直写与双引擎持久化**：
+   - **☁️ GitHub Pages 实时 Commit**：通过 GitHub Contents REST API 直接提交代码更新 `prd-data-*.js`，100% 零后端云端持久化；
+   - **👑 创立人权限安全卡点**：调用 API 严格校验 `permissions.push` 权限，只有当前仓库创立人/管理员可编辑保存，其他访客均为纯只读；
+   - **🟢 三模态自动感知**：本地自动走 Node 服务，GitHub Pages 走 Git Commit，离线/未认证前置弹窗拦截。
    - **提前校验阻断**：在点击「新增打点」、「排序管理」、「编辑需求」的入口即刻探测接口，无服务时直接弹窗拦截并引导 `node server.js`，绝不拖延到保存时才报错；
    - 优先调用 `POST /api/save-prd` 写入本地磁盘 JS 文件，支持跨项目命名空间隔离。
    - 优先调用 `POST /api/save-prd` 写入本地磁盘 JS 文件；
