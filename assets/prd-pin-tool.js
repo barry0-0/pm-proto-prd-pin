@@ -36,6 +36,22 @@
   // 0. 全局多语言国际化字典 (Multi-Language I18N Dictionary: 中 / 英 / 日 / 韩)
   const I18N = {
     "zh-CN": {
+        "envTitle": "🔒 编辑权限校验与环境感知",
+        "envGhBadge": "☁️ GitHub Pages 云端环境",
+        "envLocalBadge": "💻 本地离线/静态预览环境",
+        "envGhDesc": "当前页面部署在 <strong>GitHub Pages 云端环境</strong>，默认处于【👁️ 访客只读模式】。<br><br>为防止原型被外部访客随意篡改，<strong>只有本仓库的创立人/协作者</strong>在完成身份鉴权后，才可解锁在线新增打点、排序管理与实时 Commit 保存权限。",
+        "envGhHowToUnlock": "💡 如何解锁编辑权限：",
+        "envGhUnlockStep": "点击下方按钮输入您为本仓库生成的 GitHub Fine-Grained Token，系统将自动校验 <code>push</code> 权限并为您解锁专属编辑工作台。",
+        "envGhUnlockBtn": "👑 立即认证创立人 (解锁编辑)",
+        "envGhContinueVisitor": "👁️ 继续以访客身份浏览",
+        "envLocalDesc": "当前页面处于<strong>本地静态预览模式</strong>，未检测到本地后端写入服务（<code>POST /api/save-prd</code>）。<br><br>在此模式下无法将【新增打点/排序管理/规约编辑】实时写入本地磁盘 JS 文件。",
+        "envLocalHowToUnlock": "💡 解锁编辑与保存的两种方式：",
+        "envLocalOpt1": "<strong>方式 1（推荐本地）</strong>：在项目终端启动本地持久化服务：",
+        "envLocalOpt2": "<strong>方式 2（云端直写）</strong>：点击配置 GitHub 创立人 Token，直接将打点提交至云端仓库。",
+        "envLocalCopyCmd": "📋 复制启动命令",
+        "envLocalCopied": "✅ 已复制命令: node server.js",
+        "envLocalConfigGh": "☁️ 配置 GitHub 云端直写",
+        "envLocalGotIt": "知道了",
               ghModalTitle: '👑 GitHub Pages 创立人认证与实时同步配置',
       ghModalDesc: '为当前 GitHub Pages 原型配置专属访问令牌（Fine-Grained PAT），即可解锁<strong>【零服务器、纯前端直写 GitHub 仓库】</strong>的实时云端保存能力。',
       ghOwnerLabel: '📦 仓库所有者 (Owner)',
@@ -188,6 +204,22 @@
         "itemCountUnit": "项"
     },
     "en": {
+        "envTitle": "🔒 Edit Permission Check & Environment Guidance",
+        "envGhBadge": "☁️ GitHub Pages Cloud Mode",
+        "envLocalBadge": "💻 Local Offline / Static Preview",
+        "envGhDesc": "This prototype is hosted on <strong>GitHub Pages</strong> and is currently in [👁️ Visitor Read-Only Mode].<br><br>To prevent unauthorized modifications, <strong>only the Repository Owner / Collaborator</strong> can unlock editing and Git Commit saving.",
+        "envGhHowToUnlock": "💡 How to unlock editing access:",
+        "envGhUnlockStep": "Click the button below to configure your GitHub Fine-Grained Token for this repository. The system will verify <code>push</code> permissions and unlock your editor.",
+        "envGhUnlockBtn": "👑 Verify Owner (Unlock Editing)",
+        "envGhContinueVisitor": "👁️ Continue as Visitor",
+        "envLocalDesc": "Currently in <strong>Local Static Preview Mode</strong>. Local persistence API (<code>POST /api/save-prd</code>) is not running.<br><br>Adding pins, managing order, or editing specifications cannot be saved to local disk JS files in this mode.",
+        "envLocalHowToUnlock": "💡 Two ways to enable editing & saving:",
+        "envLocalOpt1": "<strong>Option 1 (Recommended for Local)</strong>: Start the local server in your terminal:",
+        "envLocalOpt2": "<strong>Option 2 (Direct Cloud)</strong>: Configure your GitHub Token to commit directly to the repository.",
+        "envLocalCopyCmd": "📋 Copy Start Command",
+        "envLocalCopied": "✅ Copied command: node server.js",
+        "envLocalConfigGh": "☁️ Configure GitHub Cloud Sync",
+        "envLocalGotIt": "Got it",
               ghModalTitle: '👑 GitHub Pages Owner Authentication & Cloud Sync',
       ghModalDesc: 'Configure a Fine-Grained Personal Access Token (PAT) for this prototype to unlock <strong>[Serverless, Direct Commit to GitHub]</strong> real-time cloud persistence.',
       ghOwnerLabel: '📦 Repository Owner',
@@ -340,6 +372,22 @@
         "itemCountUnit": "items"
     },
     "ja": {
+        "envTitle": "🔒 編集権限の確認と環境ガイダンス",
+        "envGhBadge": "☁️ GitHub Pages クラウド環境",
+        "envLocalBadge": "💻 ローカル静的プレビュー環境",
+        "envGhDesc": "このページは <strong>GitHub Pages クラウド環境</strong> にデプロイされており、現在は【👁️ 閲覧専用モード】です。<br><br>不正な改ざんを防ぐため、<strong>リポジトリの作成者/管理者</strong>のみがオンライン編集およびリアルタイム保存を行えます。",
+        "envGhHowToUnlock": "💡 編集権限を解除する方法：",
+        "envGhUnlockStep": "下のボタンから GitHub Fine-Grained トークンを設定してください。システムが <code>push</code> 権限を確認し、編集機能をアンロックします。",
+        "envGhUnlockBtn": "👑 作成者認証を行う (編集解除)",
+        "envGhContinueVisitor": "👁️ 閲覧モードを継続",
+        "envLocalDesc": "現在は<strong>ローカル静的プレビューモード</strong>です。ローカル永続化サービス（<code>POST /api/save-prd</code>）が起動していません。<br><br>ピンの新規追加や編集内容をローカルディスクのJSファイルに保存できません。",
+        "envLocalHowToUnlock": "💡 編集と保存を有効にする2つの方法：",
+        "envLocalOpt1": "<strong>方法 1（ローカル推奨）</strong>：ターミナルでローカルサーバーを起動：",
+        "envLocalOpt2": "<strong>方法 2（クラウド直結）</strong>：GitHub トークンを設定してリポジトリに直接保存。",
+        "envLocalCopyCmd": "📋 起動コマンドをコピー",
+        "envLocalCopied": "✅ コマンドをコピーしました: node server.js",
+        "envLocalConfigGh": "☁️ GitHub クラウド同期を設定",
+        "envLocalGotIt": "了解",
               ghModalTitle: '👑 GitHub Pages 作成者認証とリアルタイム同期設定',
       ghModalDesc: 'Fine-Grained PAT（個人アクセストークン）を設定することで、<strong>【サーバーレス・GitHubリポジトリ直接書き込み】</strong>によるリアルタイム保存を有効化します。',
       ghOwnerLabel: '📦 リポジトリ所有者 (Owner)',
@@ -492,6 +540,22 @@
         "itemCountUnit": "件"
     },
     "ko": {
+        "envTitle": "🔒 편집 권한 확인 및 환경 안내",
+        "envGhBadge": "☁️ GitHub Pages 클라우드 환경",
+        "envLocalBadge": "💻 로컬 정적 미리보기 환경",
+        "envGhDesc": "이 페이지는 <strong>GitHub Pages 클라우드 환경</strong>에 배포되어 있으며 현재 [👁️ 방문자 읽기 전용 모드]입니다.<br><br>무단 수정을 방지하기 위해 <strong>저장소 소유자/관리자</strong>만 편집 및 실시간 커밋 권한을 가집니다.",
+        "envGhHowToUnlock": "💡 편집 권한을 얻는 방법:",
+        "envGhUnlockStep": "아래 버튼을 눌러 GitHub Fine-Grained 토큰을 입력하면, <code>push</code> 권한을 확인하고 편집 워크벤치를 잠금 해제합니다.",
+        "envGhUnlockBtn": "👑 소유자 인증하기 (편집 활성화)",
+        "envGhContinueVisitor": "👁️ 방문자 모드로 계속 탐색",
+        "envLocalDesc": "현재 <strong>로컬 정적 미리보기 모드</strong>입니다. 로컬 지속성 서비스(<code>POST /api/save-prd</code>)가 실행되지 않았습니다.<br><br>핀 추가 및 사양 편집 내용을 로컬 디스크 JS 파일에 저장할 수 없습니다.",
+        "envLocalHowToUnlock": "💡 편집 및 저장을 활성화하는 두 가지 방법:",
+        "envLocalOpt1": "<strong>방법 1 (로컬 권장)</strong>: 터미널에서 로컬 서버를 실행하세요:",
+        "envLocalOpt2": "<strong>방법 2 (클라우드 직접 연결)</strong>: GitHub 토큰을 설정하여 저장소에 직접 커밋하세요.",
+        "envLocalCopyCmd": "📋 시작 명령 복사",
+        "envLocalCopied": "✅ 명령이 복사되었습니다: node server.js",
+        "envLocalConfigGh": "☁️ GitHub 클라우드 동기화 설정",
+        "envLocalGotIt": "확인",
               ghModalTitle: '👑 GitHub Pages 소유자 인증 및 클라우드 실시간 동기화',
       ghModalDesc: 'Fine-Grained PAT 토큰을 설정하여 <strong>[서버리스 GitHub 저장소 직접 커밋]</strong> 실시간 클라우드 저장을 활성화합니다.',
       ghOwnerLabel: '📦 저장소 소유자 (Owner)',
@@ -983,15 +1047,11 @@
     return false;
   }
 
-  window.showNoBackendAlertModal = function(actionType = 'edit') {
-    // 若在 web/github.io 环境下未配置 Token，优先呼出 GitHub 创立人配置窗
-    if (window.location.protocol !== 'file:' && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')) {
-      window.showGitHubConfigModal();
-      return;
-    }
-
+  window.showNoBackendAlertModal = function(actionType = 'edit', forceEnv = null) {
     const existing = document.getElementById('prd-no-backend-modal');
     if (existing) existing.remove();
+
+    const isGithubPages = forceEnv === 'GITHUB_PAGES' || window.location.hostname.includes('.github.io') || (window.location.protocol.startsWith('http') && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1'));
 
     const modal = document.createElement('div');
     modal.id = 'prd-no-backend-modal';
@@ -999,7 +1059,7 @@
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(15, 23, 42, 0.65);
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(5px);
       z-index: 10000050;
       display: flex;
       align-items: center;
@@ -1008,30 +1068,77 @@
       font-family: var(--prd-font);
     `;
 
-    modal.innerHTML = `
-      <div style="background:#ffffff; width:520px; max-width:92vw; border-radius:12px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(226,232,240,0.8); overflow:hidden; display:flex; flex-direction:column;">
-        <div style="background:#fff1f2; border-bottom:1px solid #fecdd3; padding:16px 20px; display:flex; align-items:center; justify-content:space-between;">
-          <div style="display:flex; align-items:center; gap:8px; font-weight:800; font-size:15px; color:#be123c;">
-            <span>⚠️</span>
-            <span>${escapeHtml(t('apiCheckFailedTitle'))}</span>
+    if (isGithubPages) {
+      // 1. GitHub Pages 云端环境弹窗
+      modal.innerHTML = `
+        <div style="background:#ffffff; width:540px; max-width:92vw; border-radius:12px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(226,232,240,0.8); overflow:hidden; display:flex; flex-direction:column;">
+          <!-- Header -->
+          <div style="background:#0f172a; color:#ffffff; padding:16px 20px; display:flex; align-items:center; justify-content:space-between;">
+            <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;">
+              <span>${t('envTitle')}</span>
+              <span style="background:#0284c7; color:#fff; font-size:10.5px; padding:2px 8px; border-radius:10px;">${t('envGhBadge')}</span>
+            </div>
+            <button style="background:none; border:none; font-size:18px; color:#94a3b8; cursor:pointer;" onclick="window.closeNoBackendModal()">&times;</button>
           </div>
-          <button style="background:none; border:none; font-size:18px; color:#9f1239; cursor:pointer;" onclick="window.closeNoBackendModal()">&times;</button>
-        </div>
-        <div style="padding:20px; font-size:13px; line-height:1.65; color:#334155;">
-          <div>${t('apiCheckFailedDesc')}</div>
-          <div style="margin:14px 0 6px 0; background:#0f172a; color:#38bdf8; padding:10px 14px; border-radius:8px; font-family:monospace; font-size:13px; display:flex; align-items:center; justify-content:space-between; border:1px solid #1e293b;">
-            <span>$ ${escapeHtml(t('apiCheckCmdGuide'))}</span>
-            <button style="background:#1e293b; color:#f8fafc; border:1px solid #334155; padding:4px 10px; border-radius:4px; font-size:11px; cursor:pointer; font-weight:600;" onclick="window.copyStartCommand(this)">${escapeHtml(t('apiCheckCopyCmd'))}</button>
+
+          <!-- Body -->
+          <div style="padding:20px; font-size:12.5px; line-height:1.65; color:#334155; display:flex; flex-direction:column; gap:12px;">
+            <div>${t('envGhDesc')}</div>
+
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; font-size:12px;">
+              <div style="font-weight:700; color:#0f172a; margin-bottom:4px;">${t('envGhHowToUnlock')}</div>
+              <div style="color:#475569;">${t('envGhUnlockStep')}</div>
+            </div>
           </div>
-          <div style="font-size:11.5px; color:#64748b; margin-top:8px;">
-            💡 提示：在终端启动后刷新页面，即可解锁打点与排序编辑功能并自动落盘磁盘文件。
+
+          <!-- Footer -->
+          <div style="background:#f8fafc; border-top:1px solid #e2e8f0; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;">
+            <button class="prd-btn-action" style="font-size:12px;" onclick="window.closeNoBackendModal()">${t('envGhContinueVisitor')}</button>
+            <button class="prd-btn-primary" style="padding:7px 18px; font-size:12px; background:#0284c7; border-color:#0284c7;" onclick="window.closeNoBackendModal(); window.showGitHubConfigModal();">${t('envGhUnlockBtn')}</button>
           </div>
         </div>
-        <div style="background:#f8fafc; border-top:1px solid #e2e8f0; padding:12px 20px; display:flex; justify-content:flex-end; gap:10px;">
-          <button class="prd-btn-primary" style="background:#0f172a; border-color:#0f172a; padding:6px 20px;" onclick="window.closeNoBackendModal()">${escapeHtml(t('apiCheckGotIt'))}</button>
+      `;
+    } else {
+      // 2. 本地静态 / 离线环境弹窗
+      modal.innerHTML = `
+        <div style="background:#ffffff; width:540px; max-width:92vw; border-radius:12px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(226,232,240,0.8); overflow:hidden; display:flex; flex-direction:column;">
+          <!-- Header -->
+          <div style="background:#fff1f2; border-bottom:1px solid #fecdd3; padding:16px 20px; display:flex; align-items:center; justify-content:space-between;">
+            <div style="display:flex; align-items:center; gap:8px; font-weight:800; font-size:14px; color:#be123c;">
+              <span>⚠️</span>
+              <span>${t('envTitle')}</span>
+              <span style="background:#ffe4e6; color:#9f1239; font-size:10.5px; padding:2px 8px; border-radius:10px; font-weight:600;">${t('envLocalBadge')}</span>
+            </div>
+            <button style="background:none; border:none; font-size:18px; color:#9f1239; cursor:pointer;" onclick="window.closeNoBackendModal()">&times;</button>
+          </div>
+
+          <!-- Body -->
+          <div style="padding:20px; font-size:12.5px; line-height:1.65; color:#334155; display:flex; flex-direction:column; gap:12px;">
+            <div>${t('envLocalDesc')}</div>
+
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+              <div style="font-weight:700; color:#0f172a;">${t('envLocalHowToUnlock')}</div>
+              <div>
+                <div>${t('envLocalOpt1')}</div>
+                <div style="margin:6px 0; background:#0f172a; color:#38bdf8; padding:8px 12px; border-radius:6px; font-family:monospace; font-size:12.5px; display:flex; align-items:center; justify-content:space-between;">
+                  <span>$ node server.js</span>
+                  <button style="background:#1e293b; color:#f8fafc; border:1px solid #334155; padding:3px 8px; border-radius:4px; font-size:11px; cursor:pointer; font-weight:600;" onclick="window.copyStartCommand(this)">${t('envLocalCopyCmd')}</button>
+                </div>
+              </div>
+              <div style="border-top:1px dashed #cbd5e1; padding-top:6px;">
+                <div>${t('envLocalOpt2')}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div style="background:#f8fafc; border-top:1px solid #e2e8f0; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;">
+            <button class="prd-btn-action" style="font-size:12px; color:#2563eb;" onclick="window.closeNoBackendModal(); window.showGitHubConfigModal();">${t('envLocalConfigGh')}</button>
+            <button class="prd-btn-primary" style="background:#0f172a; border-color:#0f172a; padding:6px 20px; font-size:12px;" onclick="window.closeNoBackendModal()">${t('envLocalGotIt')}</button>
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
 
     document.body.appendChild(modal);
   };
