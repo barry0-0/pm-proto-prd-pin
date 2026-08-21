@@ -32,6 +32,22 @@ agent_created: true
 ---
 
 ### Module 1: 💾 双引擎持久化机制与 GitHub Pages 零后端云端直写体系 (Dual-Engine Cloud Persistence)
+> 🌟 **核心战略价值 (Strategic Significance)**：  
+> 彻底解决传统 HTML 原型在静态托管平台（GitHub Pages）上**「有展示、无后端、无法在线编辑、无法团队跨端协同」**的致命痛点。  
+> 借助本引擎，产品经理只需将原型托管在 GitHub Pages，即可在任意电脑/浏览器中直接打点、修改交互、导入历史版本；每一次修改自动通过 GitHub REST API 生成正式 Git Commit 持久化落盘，研发执行 `git pull` 即可无缝同步，**无需采购或维护任何云服务器与数据库**！
+
+- **☁️ GitHub Pages 零服务器云端直写架构 (Serverless GitHub Contents REST API)**:
+  - **👑 创立人身份强鉴权 (Repository & Owner Guard)**：
+    - 前端调用 `GET https://api.github.com/repos/{owner}/{repo}` 严格校验当前 Token 属于本仓库拥有者/协作者，且具备 `Contents: Read and write` 写入权限；
+    - **👁️ 访客全自动只读保护**：外部访客、设计或研发未认证时，自动进入【访客只读模式】，可全功能查阅打点、Mermaid 流程图、数据大纲与导出 PDF，但绝无权篡改数据；
+    - **全链路入口前置鉴权拦截**：在用户触发 **「📍 新增打点」**、**「⚙️ 排序管理」**、**「✏️ 编辑需求」**、**「📂 导入版本数据」**、以及版本增删的瞬间，前置探测权限并弹出环境指引，杜绝操作后报错；
+  - **⚡ 自动化精准 Commit 提交链路 (`getGitHubTargetFilePath`)**：
+    - 智能计算原型页面在仓库中的真实子目录路径（如 `platform/assets/js/prd-data-mall.js`），确保 Commit 精准更新页面正在加载的真实文件；
+    - 提交信息自动标注 `docs(prd): update annotations for {pageKey} [skip ci]`，自动跳过 GitHub Actions 冗余构建；
+- **⚡ 三模态环境智能自适应路由 (Tri-Mode Environment Routing)**:
+  1. **🟢 本地 Node 服务环境 (`http://localhost:*`)**：自动调用本地 `POST /api/save-prd` 写入本地磁盘；
+  2. **👑 GitHub Pages 线上环境 (`*.github.io`)**：自动切换为 GitHub REST API 创立人直连云端 Commit 模式；
+  3. **💻 静态离线/本地只读环境**：前置拦截并弹出双向指引弹窗（本地引导 `node server.js`，云端引导配置 Token）。
 - **☁️ GitHub Pages 零服务器云端直写架构 (Serverless GitHub Contents REST API)**:
   - **创立人身份强鉴权 (Repository & Owner Guard)**：
     - 前端调用 `GET https://api.github.com/repos/{owner}/{repo}` 校验当前用户是否为仓库创立人/拥有者，且必须具备 `permissions.push === true` 写入权限；

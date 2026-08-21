@@ -38,7 +38,7 @@
 | **💡 3 Core Business Templates** | Fast-insert buttons for Business Rules, Statechart Diagrams, and Data Dictionary Tables | Rapid authoring of standardized specification clauses |
 | **👀 Single-Entry Stash & Minimize** | Clean close `✕` in header + `👀 Stash & View Page` in bottom bar (`.prd-editor-mini-dock` pill) | Review underlying prototype elements without losing unsaved drafts; 1-click restore |
 | **🌐 Native 4-Language i18n** | Full 115-key dynamic dictionary covering `en`, `zh-CN`, `ja`, `ko`; runtime hot-switching | Seamless multi-lingual team collaboration across global product workflows |
-| **💾 Serverless Cloud & Dual Persistence** | Direct Git Commit via GitHub REST API (`PUT /contents`) on GitHub Pages + Node.js disk save | 100% Serverless cloud persistence on GitHub Pages for Repo Owner, Visitor Read-Only protection |
+| **☁️ Serverless GitHub Cloud Sync** | Direct Git Commit via GitHub Contents REST API (`PUT /contents`) on GitHub Pages + Node.js disk save | 100% Serverless cloud persistence on GitHub Pages: Auto-commits specs directly to Git repo; Repo Owner unlocked, Visitor Read-Only protected |
 | **🗂️ 3-State Drawer & Dual Handles** | Full (400px), Semi (56px Mini Rail), Hidden (0px); dual inward-facing edge handles | Frees up 95% of prototype canvas while keeping all pins immediately accessible |
 | **🔒 Reorder Safety Lock & Cascade** | Normal browsing locks order; manage mode unlocks `🔝 Top`, `🔢 Move To`, sequential cascade | Accidental reordering prevention; seamless 1 -> 2 -> 3 cascading when reordering |
 | **🏷️ Multi-Version Physical Isolation** | Isolated `versionRegistry`; new versions start clean (0 pins); upload conflict resolver | No pin cross-contamination across sprint iterations |
@@ -89,7 +89,11 @@ Access `http://localhost:3000/merchant.html` and start pinning specs!
 6. **🌐 全球 4 语言架构 (`zh-CN`, `en`, `ja`, `ko`)**：
    - 抽屉顶部实时切换多语言，115 个字典键全要素动态本地化；
    - Phase 0 规范强制前置确认目标语言框架。
-7. **💾 GitHub Pages 零后端云端直写与双引擎持久化**：
+7. **☁️ GitHub Pages 零后端云端直写与双引擎持久化（核心突破）**：
+   - **解决无后端痛点**：无需购买/部署任何后端服务器与数据库，静态 GitHub Pages 原型即可直接在线打点、修改、**导入历史版本**；
+   - **自动化 Git Commit**：保存与导入后直接通过 GitHub REST API 向当前仓库提交 Commit 更新 `prd-data-*.js`，研发本地 `git pull` 即可无缝同步；
+   - **👑 创立人权限安全卡点**：严格校验仓库与 Token 权限，仅创立人可写入，外部访客全自动只读保护；
+   - **全入口前置拦截**：在新增打点、排序管理、编辑规约、**文件导入**等所有入口前置鉴权阻断。
    - **☁️ GitHub Pages 实时 Commit**：通过 GitHub Contents REST API 直接提交代码更新 `prd-data-*.js`，100% 零后端云端持久化；
    - **👑 创立人权限安全卡点**：调用 API 严格校验 `permissions.push` 权限，只有当前仓库创立人/管理员可编辑保存，其他访客均为纯只读；
    - **🟢 三模态自动感知**：本地自动走 Node 服务，GitHub Pages 走 Git Commit，离线/未认证前置弹窗拦截。
