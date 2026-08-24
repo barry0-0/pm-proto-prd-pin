@@ -1346,26 +1346,39 @@
     renderRightDrawerList();
   };
 
-  // 页面初始化时静默从云端拉取最新数据
+  // 页面初始化时静默从云端拉取最新数据并热替换
   async function syncFromCloudKVOnStartup() {
     const kv = getKVStorageConfig();
     if (!kv || !kv.binId) return;
 
     try {
       const remoteData = await fetchRemoteKVData(kv.binId, kv.secretKey);
-      if (remoteData && remoteData.versionRegistry) {
-        versionRegistry = remoteData.versionRegistry;
+      if (remoteData && (remoteData.versionRegistry || Array.isArray(remoteData.savedPins))) {
+        if (remoteData.versionRegistry) {
+          versionRegistry = remoteData.versionRegistry;
+        } else if (Array.isArray(remoteData.savedPins)) {
+          versionRegistry = { activeVersion: 'v1.0.0', versions: { 'v1.0.0': remoteData.savedPins } };
+        }
         currentVersion = versionRegistry.activeVersion || Object.keys(versionRegistry.versions)[0] || 'v1.0.0';
         savedPins = versionRegistry.versions[currentVersion] || [];
         reIndexPins(savedPins);
         window.INITIAL_PRD_DATA = savedPins;
         window.PRD_VERSION_REGISTRY = versionRegistry;
 
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(versionRegistry));
+          localStorage.setItem(cacheVersionKey, PRD_CACHE_VERSION);
+        } catch (e) {}
+
         renderPinMarkers();
         renderRightDrawerList();
         renderMiniRailList();
         updateVersionBarUI();
-        showToast(t('kvPullSuccessToast'), 'info');
+        const badge = document.getElementById('prd-drawer-count');
+        if (badge) badge.innerText = savedPins.length;
+        const edgeCount = document.getElementById('prd-edge-count');
+        if (edgeCount) edgeCount.innerText = savedPins.length;
+        showToast(t('kvPullSuccessToast') || '☁️ 已从云端获取最新打点规约并完成同步！', 'info');
       }
     } catch (e) {}
   }
@@ -4665,54 +4678,7 @@
     activeDraft = null;
   };
 
-window.saveEditorModal = async function() {
-    if (!activeDraft) return;
-
-    const titleInput = document.getElementById('prd-modal-title');
-    const typeSelect = document.getElementById('prd-modal-type');
-
-    const title = titleInput ? titleInput.value.trim() : activeDraft.title;
-    const desc = (window.vditorInstance && typeof window.vditorInstance.getValue === 'function') ? window.vditorInstance.getValue().trim() : ((document.getElementById('prd-fallback-textarea')?.value || activeDraft.desc || '').trim());
-    const type = typeSelect ? typeSelect.value : activeDraft.type;
-
-    if (!title) {
-      alert('请输入需求名称！');
-      return;
-    }
-
-    activeDraft.title = title;
-    activeDraft.desc = desc;
-    activeDraft.type = type;
-    activeDraft.version = currentVersion;
-
-    const backup = JSON.parse(JSON.stringify(savedPins));
-
-    if (activeDraft.id) {
-      const idx = savedPins.findIndex(p => p.id === activeDraft.id);
-      if (idx !== -1) {
-        savedPins[idx] = activeDraft;
-      }
-    } else {
-      savedPins.unshift(activeDraft);
-    }
-
-    reIndexPins(savedPins);
-    const isSaved = await persistData();
-
-    if (isSaved) {
-      window.closeEditorModal();
-      renderPinMarkers();
-      renderRightDrawerList();
-      showToast('✅ 需求规约已成功保存并写入本地 JS 文件！', 'success');
-    } else {
-      savedPins = backup;
-      reIndexPins(savedPins);
-      renderPinMarkers();
-      renderRightDrawerList();
-      alert('❌ 保存失败：未检测到本地服务接口，无法写入本地磁盘 JS 文件！\n请先启动本地服务（./start.sh）后再试。');
-      showToast('❌ 保存失败', 'error');
-    }
-  };
+// (Duplicate saveEditorModal removed to prevent double toast)
 
   window.rePickElementFromModal = function() {
     window.minimizeEditor();
@@ -5939,7 +5905,11 @@ window.saveEditorModal = async function() {
 
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
     initDOM();
+    syncFromCloudKVOnStartup();
   } else {
-    document.addEventListener('DOMContentLoaded', initDOM);
+    document.addEventListener('DOMContentLoaded', () => {
+      initDOM();
+      syncFromCloudKVOnStartup();
+    });
   }
 })();
