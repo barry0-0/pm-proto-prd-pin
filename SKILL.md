@@ -31,7 +31,17 @@ agent_created: true
 
 ---
 
-### Module 1: 💾 双引擎持久化机制与 GitHub Pages 零后端云端直写体系 (Dual-Engine Cloud Persistence)
+### Module 1: 💾 三模态持久化机制与 Serverless 云端 KV / GitHub 云端直写体系 (Tri-Engine Persistence)
+> 🌟 **核心战略价值 (Strategic Significance)**：  
+> 彻底解决传统 HTML 原型在静态托管平台（GitHub Pages / 纯前端静态服务器）上**「有展示、无后端、无法在线编辑、无法团队跨端协同」**的致命痛点。  
+> 提供了两套免后端云端持久化解决方案：  
+> 1. **🔑 Serverless Key-Value 云端存储适配器 (JSONBin / Custom KV)**：支持配置【恒久 Bin ID】与【专属 Secret Master Key】，实现免 Git 仓库提交的极速云端实时读写与跨浏览器秒级同步；  
+> 2. **☁️ GitHub Pages 零服务器云端直写 (GitHub Contents REST API)**：支持配置 Fine-Grained PAT，每次保存自动生成正式 Git Commit 写入代码仓库。
+
+- **🔑 Serverless Key-Value 云端存储适配器 (Remote KV Storage Adapter)**:
+  - **恒久 Bin ID (Public Read)**：作为公开只读标识，任何访客访问页面时，后台自动向云端拉取最新的打点与 PRD 规约并即时渲染；
+  - **创立人 Secret Master Key (Private Write)**：创立人输入专属 Master Key，即可解锁编辑权限，修改后自动通过 `PUT` 请求实时持久化至云端；
+  - **自动创建与绑定**：首次配置时若留空 Bin ID，系统自动向服务商创建新的永久公开 Bin 并完成自动绑定；
 > 🌟 **核心战略价值 (Strategic Significance)**：  
 > 彻底解决传统 HTML 原型在静态托管平台（GitHub Pages）上**「有展示、无后端、无法在线编辑、无法团队跨端协同」**的致命痛点。  
 > 借助本引擎，产品经理只需将原型托管在 GitHub Pages，即可在任意电脑/浏览器中直接打点、修改交互、导入历史版本；每一次修改自动通过 GitHub REST API 生成正式 Git Commit 持久化落盘，研发执行 `git pull` 即可无缝同步，**无需采购或维护任何云服务器与数据库**！

@@ -52,7 +52,23 @@
         "envLocalCopied": "✅ 已复制命令: node server.js",
         "envLocalConfigGh": "☁️ 配置 GitHub 云端直写",
         "envLocalGotIt": "知道了",
-              ghModalTitle: '👑 GitHub Pages 创立人认证与实时同步配置',
+                    kvModalTitle: '🔑 云端 KV 存储与恒久 Key 授权配置',
+      kvModalDesc: '配置云端 Key-Value 中间存储（如 JSONBin.io 或自定义 KV 接口），即可实现<strong>【零服务器、跨端秒级同步、恒久 Key 写入授权】</strong>的云端持久化能力。',
+      kvProviderLabel: '📦 存储服务提供商',
+      kvBinIdLabel: '🆔 恒久公共读取 ID (Bin ID / App ID)',
+      kvSecretKeyLabel: '🔑 创立人专属授权密钥 (Secret Master Key)',
+      kvSecretKeyPlaceholder: '粘贴您的专属 Master Key 以解锁写入权限',
+      kvGuideTitle: '💡 如何免费获取您的专属恒久 Key：',
+      kvGuideStep1: '1. 访问 <a href="https://jsonbin.io" target="_blank" style="color:#2563eb; font-weight:700; text-decoration:none;">JSONBin.io &nearr;</a> 注册/登录；',
+      kvGuideStep2: '2. 在 Dashboard -> API Keys 中复制您的 <strong>Master Key</strong> 粘贴在上方；',
+      kvGuideStep3: '3. 点击下方【🔌 测试并自动创建/绑定】，系统将自动生成恒久 Bin ID 并解锁实时云端同步！',
+      kvVerifyBtn: '🔌 测试并验证授权',
+      kvSaveBtn: '💾 保存配置并解锁同步',
+      kvClearBtn: '🗑️ 清除云端授权',
+      kvSyncingToast: '☁️ 正在实时同步至云端 KV 存储...',
+      kvSyncSuccessToast: '✅ 需求规约已成功实时持久化至云端 KV 存储！',
+      kvPullSuccessToast: '☁️ 已从云端获取最新打点规约并完成同步！',
+      ghModalTitle: '👑 GitHub Pages 创立人认证与实时同步配置',
       ghModalDesc: '为当前 GitHub Pages 原型配置专属访问令牌（Fine-Grained PAT），即可解锁<strong>【零服务器、纯前端直写 GitHub 仓库】</strong>的实时云端保存能力。',
       ghOwnerLabel: '📦 仓库所有者 (Owner)',
       ghRepoLabel: '📂 仓库名称 (Repo)',
@@ -220,7 +236,23 @@
         "envLocalCopied": "✅ Copied command: node server.js",
         "envLocalConfigGh": "☁️ Configure GitHub Cloud Sync",
         "envLocalGotIt": "Got it",
-              ghModalTitle: '👑 GitHub Pages Owner Authentication & Cloud Sync',
+                    kvModalTitle: '🔑 Serverless KV Cloud Storage & Permanent Key Auth',
+      kvModalDesc: 'Configure an intermediate Key-Value cloud store (JSONBin.io or custom KV API) for <strong>[Zero-Server, Instant Cross-Device Sync, Permanent Key Auth]</strong>.',
+      kvProviderLabel: '📦 Cloud KV Provider',
+      kvBinIdLabel: '🆔 Permanent Public Read ID (Bin ID)',
+      kvSecretKeyLabel: '🔑 Creator Secret Master Key',
+      kvSecretKeyPlaceholder: 'Paste your secret Master Key to unlock write permissions',
+      kvGuideTitle: '💡 How to get your free permanent key:',
+      kvGuideStep1: '1. Visit <a href="https://jsonbin.io" target="_blank" style="color:#2563eb; font-weight:700; text-decoration:none;">JSONBin.io &nearr;</a> to register/login;',
+      kvGuideStep2: '2. In Dashboard -> API Keys, copy your <strong>Master Key</strong> and paste above;',
+      kvGuideStep3: '3. Click [🔌 Test & Auto-Bind], the system will automatically create/bind a permanent Bin ID and unlock cloud sync!',
+      kvVerifyBtn: '🔌 Test & Verify Key',
+      kvSaveBtn: '💾 Save & Unlock Sync',
+      kvClearBtn: '🗑️ Clear Cloud Key',
+      kvSyncingToast: '☁️ Syncing real-time to cloud KV store...',
+      kvSyncSuccessToast: '✅ Specifications persisted to cloud KV store in real-time!',
+      kvPullSuccessToast: '☁️ Pulled and synced latest specifications from cloud KV!',
+      ghModalTitle: '👑 GitHub Pages Owner Authentication & Cloud Sync',
       ghModalDesc: 'Configure a Fine-Grained Personal Access Token (PAT) for this prototype to unlock <strong>[Serverless, Direct Commit to GitHub]</strong> real-time cloud persistence.',
       ghOwnerLabel: '📦 Repository Owner',
       ghRepoLabel: '📂 Repository Name',
@@ -388,7 +420,23 @@
         "envLocalCopied": "✅ コマンドをコピーしました: node server.js",
         "envLocalConfigGh": "☁️ GitHub クラウド同期を設定",
         "envLocalGotIt": "了解",
-              ghModalTitle: '👑 GitHub Pages 作成者認証とリアルタイム同期設定',
+                    kvModalTitle: '🔑 クラウドKVストレージと恒久Key認証設定',
+      kvModalDesc: 'Key-Valueクラウドストレージ（JSONBin.io等）を設定し、<strong>【サーバーレス・端末間リアルタイム同期・恒久Key認証】</strong>を実現します。',
+      kvProviderLabel: '📦 ストレージプロバイダー',
+      kvBinIdLabel: '🆔 恒久パブリック読み取りID (Bin ID)',
+      kvSecretKeyLabel: '🔑 作成者専用マスターキー (Secret Key)',
+      kvSecretKeyPlaceholder: '書き込み権限を解除するマスターキーを貼り付け',
+      kvGuideTitle: '💡 恒久キーの無料取得手順：',
+      kvGuideStep1: '1. <a href="https://jsonbin.io" target="_blank" style="color:#2563eb; font-weight:700; text-decoration:none;">JSONBin.io &nearr;</a> で登録/ログイン；',
+      kvGuideStep2: '2. Dashboard -> API Keys で <strong>Master Key</strong> をコピーして上に貼り付け；',
+      kvGuideStep3: '3. 【🔌 テストしてバインド】を押すと、恒久Bin IDが自動生成され同期が有効化されます！',
+      kvVerifyBtn: '🔌 接続テストと検証',
+      kvSaveBtn: '💾 保存して同期を有効化',
+      kvClearBtn: '🗑️ 認証解除',
+      kvSyncingToast: '☁️ クラウドKVへリアルタイム同期中...',
+      kvSyncSuccessToast: '✅ 仕様がクラウドKVへ保存されました！',
+      kvPullSuccessToast: '☁️ クラウドから最新の仕様データを取得しました！',
+      ghModalTitle: '👑 GitHub Pages 作成者認証とリアルタイム同期設定',
       ghModalDesc: 'Fine-Grained PAT（個人アクセストークン）を設定することで、<strong>【サーバーレス・GitHubリポジトリ直接書き込み】</strong>によるリアルタイム保存を有効化します。',
       ghOwnerLabel: '📦 リポジトリ所有者 (Owner)',
       ghRepoLabel: '📂 リポジトリ名 (Repo)',
@@ -556,7 +604,23 @@
         "envLocalCopied": "✅ 명령이 복사되었습니다: node server.js",
         "envLocalConfigGh": "☁️ GitHub 클라우드 동기화 설정",
         "envLocalGotIt": "확인",
-              ghModalTitle: '👑 GitHub Pages 소유자 인증 및 클라우드 실시간 동기화',
+                    kvModalTitle: '🔑 클라우드 KV 스토리지 및 영구 Key 인증 설정',
+      kvModalDesc: 'Key-Value 클라우드 스토리지(JSONBin.io 등)를 설정하여 <strong>[서버리스, 기기 간 실시간 동기화, 영구 Key 인증]</strong>을 활성화합니다.',
+      kvProviderLabel: '📦 스토리지 제공업체',
+      kvBinIdLabel: '🆔 영구 공개 읽기 ID (Bin ID)',
+      kvSecretKeyLabel: '🔑 소유자 전용 마스터 키 (Secret Key)',
+      kvSecretKeyPlaceholder: '쓰기 권한을 잠금 해제할 마스터 키를 붙여넣으세요',
+      kvGuideTitle: '💡 무료 영구 키 발급 방법:',
+      kvGuideStep1: '1. <a href="https://jsonbin.io" target="_blank" style="color:#2563eb; font-weight:700; text-decoration:none;">JSONBin.io &nearr;</a>에 가입/로그인합니다;',
+      kvGuideStep2: '2. Dashboard -> API Keys에서 <strong>Master Key</strong>를 복사하여 위에 붙여넣습니다;',
+      kvGuideStep3: '3. [🔌 테스트 및 연결]을 클릭하면 영구 Bin ID가 생성되고 실시간 동기화가 활성화됩니다!',
+      kvVerifyBtn: '🔌 연결 테스트 및 확인',
+      kvSaveBtn: '💾 저장하고 동기화 활성화',
+      kvClearBtn: '🗑️ 인증 해제',
+      kvSyncingToast: '☁️ 클라우드 KV로 실시간 동기화 중...',
+      kvSyncSuccessToast: '✅ 사양이 클라우드 KV에 실시간으로 저장되었습니다!',
+      kvPullSuccessToast: '☁️ 클라우드에서 최신 사양을 가져왔습니다!',
+      ghModalTitle: '👑 GitHub Pages 소유자 인증 및 클라우드 실시간 동기화',
       ghModalDesc: 'Fine-Grained PAT 토큰을 설정하여 <strong>[서버리스 GitHub 저장소 직접 커밋]</strong> 실시간 클라우드 저장을 활성화합니다.',
       ghOwnerLabel: '📦 저장소 소유자 (Owner)',
       ghRepoLabel: '📂 저장소 이름 (Repo)',
@@ -732,6 +796,269 @@
     if (!str) return '';
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
+
+  // ==========================================
+  // 🔑 云端 KV 中间存储适配器与恒久 Key 授权系统 (Remote KV Storage Adapter)
+  // ==========================================
+  const KV_STORAGE_KEY = `prd_kv_config_${projectScope}_${pageKey.replace('.html', '')}`;
+
+  function getKVStorageConfig() {
+    try {
+      const cached = localStorage.getItem(KV_STORAGE_KEY) || localStorage.getItem('prd_kv_config_global');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed) return parsed;
+      }
+    } catch (e) {}
+    return { provider: 'jsonbin', binId: '', secretKey: '', customUrl: '', isVerified: false };
+  }
+
+  function setKVStorageConfig(config) {
+    try {
+      const dataStr = JSON.stringify(config);
+      localStorage.setItem(KV_STORAGE_KEY, dataStr);
+      localStorage.setItem('prd_kv_config_global', dataStr);
+    } catch (e) {}
+  }
+
+  function clearKVStorageConfig() {
+    try {
+      localStorage.removeItem(KV_STORAGE_KEY);
+      localStorage.removeItem('prd_kv_config_global');
+    } catch (e) {}
+  }
+
+  // 从云端拉取最新数据
+  async function fetchRemoteKVData(binId, secretKey = '') {
+    if (!binId) return null;
+    try {
+      const headers = {};
+      if (secretKey) headers['X-Master-Key'] = secretKey.trim();
+
+      const resp = await fetch(`https://api.jsonbin.io/v3/b/${binId.trim()}/latest`, { headers });
+      if (resp.ok) {
+        const json = await resp.json();
+        return json.record || json;
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  // 提交数据至云端
+  async function saveRemoteKVData(binId, secretKey, payload) {
+    if (!secretKey) throw new Error('缺少 Secret Key 写入授权');
+
+    const cleanKey = secretKey.trim();
+
+    // 若尚无 Bin ID，先自动创建新的永久 Bin
+    if (!binId) {
+      const createResp = await fetch('https://api.jsonbin.io/v3/b', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': cleanKey,
+          'X-Bin-Name': `prd-data-${pageKey.replace('.html', '')}`,
+          'X-Bin-Private': 'false' // 设为公开只读，便于访客免密实时读取
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!createResp.ok) {
+        const errJson = await createResp.json().catch(() => ({}));
+        throw new Error(errJson.message || `HTTP ${createResp.status}: 创建云端 Bin 失败`);
+      }
+      const createData = await createResp.json();
+      const newBinId = createData.metadata?.id;
+      if (newBinId) {
+        const curCfg = getKVStorageConfig();
+        curCfg.binId = newBinId;
+        curCfg.isVerified = true;
+        setKVStorageConfig(curCfg);
+      }
+      return createData;
+    }
+
+    // 已有 Bin ID，执行 PUT 更新
+    const updateResp = await fetch(`https://api.jsonbin.io/v3/b/${binId.trim()}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': cleanKey
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!updateResp.ok) {
+      const errJson = await updateResp.json().catch(() => ({}));
+      throw new Error(errJson.message || `HTTP ${updateResp.status}: 更新云端 KV 数据失败`);
+    }
+
+    return await updateResp.json();
+  }
+
+  window.showKVConfigModal = function() {
+    const existing = document.getElementById('prd-kv-config-modal');
+    if (existing) existing.remove();
+
+    const config = getKVStorageConfig();
+
+    const modal = document.createElement('div');
+    modal.id = 'prd-kv-config-modal';
+    modal.style.cssText = `
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(5px);
+      z-index: 10000070;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: prd-fade-in 0.2s ease-out;
+      font-family: var(--prd-font);
+    `;
+
+    modal.innerHTML = `
+      <div style="background:#ffffff; width:560px; max-width:92vw; border-radius:12px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(226,232,240,0.8); overflow:hidden; display:flex; flex-direction:column;">
+        <!-- Header -->
+        <div style="background:#0f172a; color:#ffffff; padding:16px 20px; display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;">
+            <span>🔑</span>
+            <span>${escapeHtml(t('kvModalTitle'))}</span>
+          </div>
+          <button style="background:none; border:none; font-size:18px; color:#94a3b8; cursor:pointer;" onclick="window.closeKVConfigModal()">&times;</button>
+        </div>
+
+        <!-- Body -->
+        <div style="padding:20px; font-size:12.5px; line-height:1.6; color:#334155; display:flex; flex-direction:column; gap:12px;">
+          <div>${t('kvModalDesc')}</div>
+
+          <div>
+            <label style="font-size:11.5px; font-weight:700; color:#475569; margin-bottom:3px; display:block;">${t('kvSecretKeyLabel')} <span style="color:#ef4444;">*</span></label>
+            <input type="password" id="prd-kv-secret-key" value="${escapeHtml(config.secretKey || '')}" placeholder="${escapeHtml(t('kvSecretKeyPlaceholder'))}" style="width:100%; box-sizing:border-box; padding:7px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; outline:none;">
+          </div>
+
+          <div>
+            <label style="font-size:11.5px; font-weight:700; color:#475569; margin-bottom:3px; display:block;">${t('kvBinIdLabel')}</label>
+            <input type="text" id="prd-kv-bin-id" value="${escapeHtml(config.binId || '')}" placeholder="留空则自动创建新的永久 Bin ID" style="width:100%; box-sizing:border-box; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; outline:none; font-family:monospace;">
+          </div>
+
+          <!-- Guide -->
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; font-size:11.5px; color:#475569;">
+            <div style="font-weight:700; color:#0f172a; margin-bottom:4px;">${t('kvGuideTitle')}</div>
+            <div style="margin-bottom:2px;">${t('kvGuideStep1')}</div>
+            <div style="margin-bottom:2px;">${t('kvGuideStep2')}</div>
+            <div>${t('kvGuideStep3')}</div>
+          </div>
+
+          <div id="prd-kv-status-tip" style="font-size:12px; min-height:18px;"></div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background:#f8fafc; border-top:1px solid #e2e8f0; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;">
+          <button class="prd-btn-action" style="font-size:11.5px; color:#ef4444;" onclick="window.handleClearKVConfig()">${t('kvClearBtn')}</button>
+          <div style="display:flex; gap:8px;">
+            <button class="prd-btn-action" style="padding:6px 14px; font-size:12px;" onclick="window.handleTestKVConfig()">${t('kvVerifyBtn')}</button>
+            <button class="prd-btn-primary" style="padding:6px 18px; font-size:12px; background:#0284c7; border-color:#0284c7;" onclick="window.handleSaveKVConfig()">${t('kvSaveBtn')}</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+  };
+
+  window.closeKVConfigModal = function() {
+    const modal = document.getElementById('prd-kv-config-modal');
+    if (modal) modal.remove();
+  };
+
+  window.handleTestKVConfig = async function() {
+    const secretKey = (document.getElementById('prd-kv-secret-key')?.value || '').trim();
+    const binId = (document.getElementById('prd-kv-bin-id')?.value || '').trim();
+    const tipEl = document.getElementById('prd-kv-status-tip');
+
+    if (!secretKey) {
+      if (tipEl) tipEl.innerHTML = `<span style="color:#ef4444;">⚠️ 请先输入 Secret Master Key</span>`;
+      return false;
+    }
+    if (tipEl) tipEl.innerHTML = `<span style="color:#2563eb;">⏳ 正在连接云端 KV 验证授权...</span>`;
+
+    try {
+      const payload = {
+        pageKey,
+        versionRegistry,
+        savedPins,
+        updatedAt: new Date().toISOString()
+      };
+      const res = await saveRemoteKVData(binId, secretKey, payload);
+      const activeBin = res.metadata?.id || binId;
+      if (tipEl) tipEl.innerHTML = `<span style="color:#059669; font-weight:700;">✅ 授权成功！永久 Bin ID: <code>${escapeHtml(activeBin)}</code></span>`;
+      const binInput = document.getElementById('prd-kv-bin-id');
+      if (binInput && !binInput.value && activeBin) binInput.value = activeBin;
+      return true;
+    } catch (err) {
+      if (tipEl) tipEl.innerHTML = `<span style="color:#ef4444; font-weight:700;">❌ 校验失败: ${escapeHtml(err.message)}</span>`;
+      return false;
+    }
+  };
+
+  window.handleSaveKVConfig = async function() {
+    const secretKey = (document.getElementById('prd-kv-secret-key')?.value || '').trim();
+    const binId = (document.getElementById('prd-kv-bin-id')?.value || '').trim();
+
+    if (!secretKey) {
+      showToast('请先输入 Secret Master Key', 'error');
+      return;
+    }
+
+    const testOk = await window.handleTestKVConfig();
+    if (!testOk) return;
+
+    const finalBinId = (document.getElementById('prd-kv-bin-id')?.value || binId).trim();
+    setKVStorageConfig({ provider: 'jsonbin', binId: finalBinId, secretKey, isVerified: true, updatedAt: new Date().toISOString() });
+    isBackendApiCached = true;
+    showToast(t('kvSyncSuccessToast'), 'success');
+
+    setTimeout(() => {
+      window.closeKVConfigModal();
+      updateVersionBarUI();
+      renderRightDrawerList();
+    }, 400);
+  };
+
+  window.handleClearKVConfig = function() {
+    clearKVStorageConfig();
+    isBackendApiCached = null;
+    showToast('已清除云端 KV 授权', 'info');
+    window.closeKVConfigModal();
+    updateVersionBarUI();
+    renderRightDrawerList();
+  };
+
+  // 页面初始化时静默从云端拉取最新数据
+  async function syncFromCloudKVOnStartup() {
+    const kv = getKVStorageConfig();
+    if (!kv || !kv.binId) return;
+
+    try {
+      const remoteData = await fetchRemoteKVData(kv.binId, kv.secretKey);
+      if (remoteData && remoteData.versionRegistry) {
+        versionRegistry = remoteData.versionRegistry;
+        currentVersion = versionRegistry.activeVersion || Object.keys(versionRegistry.versions)[0] || 'v1.0.0';
+        savedPins = versionRegistry.versions[currentVersion] || [];
+        reIndexPins(savedPins);
+        window.INITIAL_PRD_DATA = savedPins;
+        window.PRD_VERSION_REGISTRY = versionRegistry;
+
+        renderPinMarkers();
+    syncFromCloudKVOnStartup();
+        renderRightDrawerList();
+        renderMiniRailList();
+        updateVersionBarUI();
+        showToast(t('kvPullSuccessToast'), 'info');
+      }
+    } catch (e) {}
+  }
+
 
   // ==========================================
   // 🌐 GitHub Pages 零后端云端直写与创立人鉴权模块
@@ -1091,6 +1418,13 @@
     // 2. 探测是否配置了有效的 GitHub 创立人 Token
     const gh = getGitHubConfig();
     if (gh && gh.token) {
+      isBackendApiCached = true;
+      return true;
+    }
+
+    // 3. 探测是否配置了有效的云端 KV Secret Key 授权
+    const kv = getKVStorageConfig();
+    if (kv && kv.secretKey) {
       isBackendApiCached = true;
       return true;
     }
@@ -2685,6 +3019,24 @@
         return true;
       } catch (ghErr) {
         showToast(`❌ GitHub 同步失败: ${ghErr.message}`, 'error');
+      }
+    }
+
+    // 3. 尝试通过云端 KV 中间存储（JSONBin / Custom KV）实时持久化
+    const kv = getKVStorageConfig();
+    if (kv && kv.secretKey) {
+      try {
+        showToast(t('kvSyncingToast'), 'info');
+        await saveRemoteKVData(kv.binId, kv.secretKey, {
+          pageKey,
+          versionRegistry,
+          savedPins,
+          updatedAt: new Date().toISOString()
+        });
+        showToast(t('kvSyncSuccessToast'), 'success');
+        return true;
+      } catch (kvErr) {
+        showToast(`❌ 云端 KV 同步失败: ${kvErr.message}`, 'error');
       }
     }
 
@@ -5012,6 +5364,9 @@ window.saveEditorModal = async function() {
             <span style="background:#e0f2fe; color:#0284c7; font-size:11px; padding:2px 8px; border-radius:10px; font-weight:700;" id="prd-drawer-count">${savedPins.length}</span>
           </div>
           <div style="display:flex; align-items:center; gap:4px;">
+            <button id="prd-kv-sync-btn" class="prd-btn-action" style="padding:3px 6px; font-size:11px; display:flex; align-items:center; gap:3px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; cursor:pointer;" onclick="window.showKVConfigModal()" title="🔑 云端 KV 存储与恒久 Key 授权配置">
+              <span>🔑</span>
+            </button>
             <button id="prd-gh-sync-btn" class="prd-btn-action" style="padding:3px 6px; font-size:11px; display:flex; align-items:center; gap:3px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; cursor:pointer;" onclick="window.showGitHubConfigModal()" title="GitHub Pages 创立人认证与实时同步配置">
               <span>☁️</span>
             </button>
