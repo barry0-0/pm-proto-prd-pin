@@ -858,26 +858,41 @@
   function getKVStorageConfig() {
     const defaultBin = DEFAULT_JSONBIN_MAPPING[pageKey] || '';
     try {
+      // 1. 优先读取当前会话（Session）的解锁状态
+      const sessionKey = sessionStorage.getItem('prd_jsonbin_session_key');
+      if (sessionKey) {
+        return {
+          provider: 'jsonbin',
+          binId: defaultBin,
+          secretKey: sessionKey,
+          customUrl: '',
+          isVerified: true
+        };
+      }
+
+      // 2. 读取持久化缓存
       const cached = localStorage.getItem(KV_STORAGE_KEY) || localStorage.getItem('prd_kv_config_global');
       if (cached) {
         const parsed = JSON.parse(cached);
-        if (parsed) {
+        if (parsed && parsed.secretKey && parsed.isVerified) {
           return {
             provider: 'jsonbin',
             binId: parsed.binId || defaultBin,
-            secretKey: parsed.secretKey || (isLocalEnvironment() ? '$2a$10$CcmXQMrMg3s3PmVfleWVju6Gj1guvzpC/zfk9hIvvDy7o5Tamwfuq' : ''),
+            secretKey: parsed.secretKey,
             customUrl: parsed.customUrl || '',
-            isVerified: parsed.isVerified || isLocalEnvironment()
+            isVerified: true
           };
         }
       }
     } catch (e) {}
+
+    // 无痕模式或未鉴权访客：默认只读，无 secretKey，必须走鉴权弹窗
     return {
       provider: 'jsonbin',
       binId: defaultBin,
-      secretKey: isLocalEnvironment() ? '$2a$10$CcmXQMrMg3s3PmVfleWVju6Gj1guvzpC/zfk9hIvvDy7o5Tamwfuq' : '',
+      secretKey: '',
       customUrl: '',
-      isVerified: isLocalEnvironment()
+      isVerified: false
     };
   }
 
@@ -1827,7 +1842,11 @@
           updatedAt: new Date().toISOString()
         });
         const activeBin = testRes.metadata?.id || kv.binId;
+        try {
+          sessionStorage.setItem('prd_jsonbin_session_key', inputKey);
+        } catch (e) {}
         setKVStorageConfig({ provider: 'jsonbin', binId: activeBin, secretKey: inputKey, isVerified: true, updatedAt: new Date().toISOString() });
+        isBackendApiCached = true;
       } else if (activeMode === 'github') {
         const gh = getGitHubConfig();
         const testRes = await verifyGitHubTokenAccess(inputKey, gh.owner, gh.repo);
@@ -1890,9 +1909,9 @@
   }
 
   window.showNoBackendAlertModal = function(actionType = 'edit', forceEnv = null) {
-    const isOnline = !isLocalEnvironment();
-    if (isOnline) {
-      // 线上环境统一唤起【创立人 API Key 鉴权】模态框
+    const activeMode = getActiveSyncMode();
+    if (activeMode === 'jsonbin' || activeMode === 'github') {
+      // 云端模式下（无论文件打开还是线上）统一唤起【🔒 创立人 API Key 鉴权】
       window.showOnlineAuthModal(actionType);
       return;
     }
@@ -3591,6 +3610,11 @@
   };
 
   window.createPRDVersion = async function(ver) {
+    const isApiOk = await checkBackendApiAvailable();
+    if (!isApiOk) {
+      window.showOnlineAuthModal('version');
+      return false;
+    }
     if (!ver || !ver.trim()) return false;
     ver = ver.trim();
     if (versionRegistry.versions[ver]) {
