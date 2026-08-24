@@ -34,6 +34,7 @@
 - **SPA Client-Side Route Sync**: Intercepts `history.pushState` / `popstate` to automatically adapt pins across SPA route transitions without page refreshes.
 - **Virtual DOM Dynamic Re-anchoring**: Automatically re-attaches pins when conditional components (`v-if` / React modals) enter or exit the DOM.
 - **Scoped CSS & Hash Filtration**: Automatically filters Vue `data-v-xxxx` and React CSS-in-JS hashes to guarantee robust long-term selector anchoring.
+- **Tailwind CSS Reset Isolation & SPA Resource Hydration**: Full CSS isolation sandbox protecting Vditor toolbar icons from Tailwind Preflight distortion, with ISO-8859-1 safe header sanitization for non-ASCII SPA routes.
 
 ---
 
@@ -99,7 +100,8 @@ To prevent unauthorized tampering on public or hosted prototypes:
 - **未能识别时的前置提问协议**：若无法推断框架，Agent 自动前置发起询问：确认所用技术栈及 PRD 打点需应用的页面/模块；
 - **SPA 客户端路由热感知**：自动代理全局 `history.pushState` / `popstate`，Vue Router / React Router 无刷新切页时自动切换打点数据；
 - **虚拟 DOM 动态挂载自愈**：结合 `MutationObserver`，在 `v-if` / 弹窗动态挂载时毫秒级自动定位并贴附大头针；
-- **Scoped CSS 与随机哈希清洗**：智能剔除 `data-v-xxxx` 与 CSS-in-JS 哈希类名，优先提取语义化结构路径。
+- **Scoped CSS 与随机哈希清洗**：智能剔除 `data-v-xxxx` 与 CSS-in-JS 哈希类名，优先提取语义化结构路径；
+- **Tailwind CSS 样式强隔离与深层 SPA 路由安全**：构建 Vditor 专属样式沙箱，根除 Tailwind Preflight 造成的图标撕裂，并自动对中文 SPA 路由执行 ISO-8859-1 安全编码。
 
 ---
 

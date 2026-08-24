@@ -142,9 +142,10 @@ graph TD
 
 ### Module 4: ✍️ Vditor IR 即时渲染与多级缩进工作台 (Vditor IR Editor Workbench)
 - **三方组件集成架构 (Vditor Instant Rendering Engine)**：
-  - **双通道资源加载机制 (`ensureVditorLoaded`)**：
-    - 优先读取本地静态资源：`assets/vendor/vditor/index.min.js` 与 `assets/vendor/vditor/index.css`；
-    - 离线/缺失时自动优雅降级为公网 CDN：`https://cdn.jsdelivr.net/npm/vditor@3.10.8`；
+  - **双通道与 SPA 绝对路径加载机制 (`ensureVditorLoaded`)**：
+    - 采用绝对根路径与 CDN 双通道加载，杜绝 React / Vue 深层 SPA 嵌套路由下相对路径 404（HTML 污染）导致 CSS 失效；
+  - **Tailwind CSS Preflight 样式强隔离与重置修复**：
+    - 强制对 `#prd-vditor-container` 实施严格样式沙箱隔离，重置并锁定工具栏 SVG 图标为标准的 `14px × 14px`，彻底杜绝 Tailwind CSS 全局 `svg { display:block; width:100% }` 造成的工具栏图标撕裂与字母巨大化（H/B/T 字母变形）问题；
   - **IR (Instant Rendering) 即时渲染模式**：
     - Typora 级的流式文档编写手感，输入 `- 列表` 或 `### 标题` 即刻呈现高保真排版；
 - **⌨️ 完整支持 Tab / Shift+Tab 多级层级缩进**：
@@ -248,6 +249,8 @@ graph TD
 3. **🧹 Scoped CSS 与哈希类名清洗过滤 (Scoped CSS & Hash Filtration)**：
    - 自动识别并过滤 Vue 的 `data-v-xxxx` 以及 React CSS-in-JS (Emotion / styled-components) 生成的动态随机哈希类名（如 `.css-178fa9`）；
    - 优先提取稳定的语义结构路径（`nth-of-type`）、组件 ID、表单名称、或业务自定义属性（`data-prd="key"`），保证打包重构后打点永不漂移。
+4. **🛡️ HTTP Header ISO-8859-1 编码清洗与云端校验**：
+   - 自动对 SPA 中文路由路径（如 `/预警信息/押品预警信息`）进行 `encodeURIComponent` 清洗，杜绝浏览器原生 `fetch` 因中文字符导致的 `non ISO-8859-1 code point` 校验阻断，确保云端 KV 瞬时秒级同步。
 
 ---
 
