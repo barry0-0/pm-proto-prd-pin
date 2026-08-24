@@ -1,6 +1,6 @@
 ---
 name: pm-proto-prd-pin
-description: 为任意 HTML 原型一键植入「交互式 PRD 打点标注器与多版本规约生成系统」。严格遵循标准实现：全球 4 语言架构 (中/英/日/韩: zh-CN, en, ja, ko)、三模态持久化体系 (🔑Serverless 云端KV存储秒级同步 / ☁️GitHub Contents API 推送提交 / 💻本地 Node.js 磁盘直写)、读写分离与创立人 Master Key 身份鉴权强拦截矩阵 (无痕与访客只读保护)、在原型元素上高精度十字准星打点标注 (打标时自动收起右侧抽屉)、智能展开弹窗/Tab精准定位、三态抽屉 (400px全展开 / 56px标号竖条半收起 / 0px全收起)、左侧双按钮控制组 (全收起+半收起朝内区隔)、集成 Vditor IR 即时渲染 Markdown 编辑器与多级 Tab/Shift+Tab 列表缩进、纯白底色 Mermaid 矢量图表引擎与动态防截断渲染、真正交互式可视化表格直编 (零管道符如同 Excel 点击单元格打字并支持快捷增删行列)、业务规约三大核心模板快速插入 (业务规则/状态机流程图/字段数据字典)、136px 绝对统一卡片高度与纯标题模糊搜索、右侧抽屉安全管理锁与置顶/移至依次瞬移顺延排序体系、生成整页可视化 PRD 文档大屏 (带大纲检索与独立新网页大屏/PDF导出)、大头针气泡独立生命周期、编辑器单一入口草稿暂存最小化胶囊 (右下角常驻悬浮保活与一键恢复)、以及多版本严格物理隔离与上传冲突解决模态框 (覆盖/追加/另存)。当用户提到「需求打点」「原型标注」「PRD标记」「元素打标」「交互规约生成」「给原型加上PRD功能」「大头针标注」时使用本 Skill。
+description: 为任意 HTML 原型、Vue (2/3)、React (17/18/Next.js) 项目一键植入「交互式 PRD 打点标注器与多版本规约生成系统」。具备跨框架自主识别与前置确认协议 (无法自动识别时前置询问框架与应用范围)、全球 4 语言架构 (中/英/日/韩: zh-CN, en, ja, ko)、三模态持久化体系 (🔑Serverless 云端KV存储秒级同步 / ☁️GitHub Contents API 推送提交 / 💻本地 Node.js 磁盘直写)、读写分离与创立人 Master Key 身份鉴权强拦截矩阵 (无痕与访客只读保护)、在原型元素上高精度十字准星打点标注 (打标时自动收起右侧抽屉)、智能展开弹窗/Tab精准定位、三态抽屉 (400px全展开 / 56px标号竖条半收起 / 0px全收起)、左侧双按钮控制组 (全收起+半收起朝内区隔)、集成 Vditor IR 即时渲染 Markdown 编辑器与多级 Tab/Shift+Tab 列表缩进、纯白底色 Mermaid 矢量图表引擎与动态防截断渲染、真正交互式可视化表格直编 (零管道符如同 Excel 点击单元格打字并支持快捷增删行列)、业务规约三大核心模板快速插入 (业务规则/状态机流程图/字段数据字典)、136px 绝对统一卡片高度与纯标题模糊搜索、右侧抽屉安全管理锁与置顶/移至依次瞬移顺延排序体系、生成整页可视化 PRD 文档大屏 (带大纲检索与独立新网页大屏/PDF导出)、大头针气泡独立生命周期、编辑器单一入口草稿暂存最小化胶囊 (右下角常驻悬浮保活与一键恢复)、以及多版本严格物理隔离与上传冲突解决模态框 (覆盖/追加/另存)。当用户提到「需求打点」「原型标注」「PRD标记」「元素打标」「交互规约生成」「给原型加上PRD功能」「大头针标注」时使用本 Skill。
 agent_created: true
 ---
 
@@ -8,8 +8,8 @@ agent_created: true
 
 ## 📖 概述
 
-`pm-proto-prd-pin` 是一套**高保真、即插即用、生产就绪**的原型交互规约标注引擎（纯原生 Vanilla JS + CSS + Vditor IR 引擎 + Serverless 云端 KV / GitHub REST API / Node.js 本地微服务）。
-它能为任何已有的静态 HTML 原型（后台管理系统、电商前台、移动端 H5、PC 门户等）瞬间赋予专业的产品经理（PM）交互式打点标注、多版本管理、**集成 Vditor 即时渲染与 Tab 多级缩进工作台**、纯白 Mermaid 流程图动态防截断渲染、全景文档大屏展示以及**三模态持久化与权限强鉴权**能力。
+`pm-proto-prd-pin` 是一套**高保真、即插即用、生产就绪、跨框架兼容**的原型交互规约标注引擎（纯原生 Vanilla JS + CSS + Vditor IR 引擎 + Serverless 云端 KV / GitHub REST API / Node.js 本地微服务）。
+它不仅支持传统的静态 HTML 原型（后台管理系统、电商前台、移动端 H5、PC 门户等），还**原生兼容现代 Vue (2/3/Vite/Nuxt) 与 React (17/18/Next.js) SPA 单页应用**，瞬间赋予专业的产品经理（PM）交互式打点标注、多版本管理、**集成 Vditor 即时渲染与 Tab 多级缩进工作台**、纯白 Mermaid 流程图动态防截断渲染、全景文档大屏展示以及**三模态持久化与权限强鉴权**能力。
 
 ---
 
@@ -31,23 +31,41 @@ agent_created: true
 
 ---
 
+### Phase 0.5: 🧩 跨框架自主感知与前置确认协议 (Autonomous Framework Detection & Inception)
+
+> 🌟 **核心规范 (Core Protocol)**：  
+> 本引擎具备跨技术栈自适应能力。在执行打点工具集成前，Agent 必须执行两步感知与确认流程：
+
+1. **Step 1: 自动化工程架构自主嗅探 (Autonomous Inspection)**：
+   - Agent 必须首先检查目标项目的目录结构与配置文件：
+     - **Vue.js 工程**：检查 `package.json` 中的 `dependencies.vue`、`vue.config.js`、`vite.config.*`（含 `@vitejs/plugin-vue`）、或 `nuxt.config.*`；
+     - **React 工程**：检查 `package.json` 中的 `dependencies.react`、`next.config.*`、`vite.config.*`（含 `@vitejs/plugin-react`）、或 `App.tsx`/`index.jsx`；
+     - **HTML 静态原型**：检查根目录下是否存在独立 `.html` 原型文件（如 `admin.html`、`index.html`）且无前端构建依赖；
+2. **Step 2: 无法确定框架时的强制前置确认 (Interactive Clarification Fallback)**：
+   - **若项目中无 `package.json` 或无法明确推断框架体系，Agent 必须向用户发起明确提问**：
+     > 💬 *“请问当前项目采用的是什么前端框架？（HTML 静态原型 / Vue 2/3 / React / Next.js / Nuxt）以及 PRD 打点标注工具需要应用在哪些页面或模块？（全局所有路由页面 / 仅特定业务端页面）”*
+3. **Step 3: 各框架精准接入指导**：
+   - **HTML 静态原型**：在对应页面 `</body>` 闭合前直接引入 `<script src="./assets/js/prd-pin-tool.js"></script>`；
+   - **Vue 2 / Vue 3 (Vite / Webpack / Nuxt)**：
+     - 在全局入口 `main.js` / `main.ts` 中引入：`import './assets/js/prd-pin-tool.js';`；
+     - 或在 `index.html` 模板中全局挂载；
+   - **React (React 18 / Next.js / CRA / Vite)**：
+     - 在全局入口 `index.tsx` / `App.tsx` / `app/layout.tsx` 中引入：`import './assets/js/prd-pin-tool.js';`；
+     - 支持按需仅在开发/预览环境注入：`if (process.env.NODE_ENV !== 'production') import('./assets/js/prd-pin-tool.js');`。
+
+---
+
 ### Module 1: 💾 三模态持久化体系与一键无缝数据迁移 (Tri-Engine Persistence & Seamless Data Migration)
 
 > 🌟 **核心战略价值 (Strategic Significance)**：  
-> 彻底解决传统 HTML 原型在静态托管平台（GitHub Pages / 纯前端静态服务器 / 预览链接）上**「有展示、无后端、无法在线编辑、无法团队跨端协同」**的致命痛点。  
+> 彻底解决传统 HTML 原型与 SPA 页面在静态托管平台（GitHub Pages / 纯前端静态服务器 / 预览链接）上**「有展示、无后端、无法在线编辑、无法团队跨端协同」**的致命痛点。  
 > 同时提供了**「一键跨模式数据无缝迁移引擎」**：当产品经理在某一模式（如本地 Node 磁盘开发）制作完成打点后，切换至另一模式（如云端 JSONBin 或 GitHub Pages）时，系统自动弹出迁移决策弹窗，**支持一键将当前全量打点与多版本规约整体同步写入至新目标数据源**，实现零断点无缝过渡！
-
-> 🌟 **核心战略价值 (Strategic Significance)**：  
-> 彻底解决传统 HTML 原型在静态托管平台（GitHub Pages / 纯前端静态服务器 / 预览链接）上**「有展示、无后端、无法在线编辑、无法团队跨端协同」**的致命痛点。  
-> 提供了三套完整覆盖不同场景的持久化方案：
 
 | 方案 | 核心技术实现 | 读写延迟与快捷性 | 适用场景与权衡 (Trade-offs) |
 | :--- | :--- | :--- | :--- |
 | **🔑 方案 1：Serverless 云端 KV 存储打点 (JSONBin.io / 自建 KV) —— 【强烈推荐 / 最快捷】** | 基于 RESTful JSONBin API 架构：<br>• 读：`GET /v3/b/{binId}/latest?_t=timestamp`<br>• 写：`PUT /v3/b/{binId}` 带 `X-Master-Key` | **极速 (200~300ms)**<br>秒级实时直读直写，零构建等待，抗浏览器缓存 | **首选推荐**：静态托管（GitHub Pages / Vercel）、多端协同、移动端测试。零服务器运维成本，天然读写权限分离。 |
 | **☁️ 方案 2：GitHub Contents API 推送打点 (Git Commit 模式)** | 基于 GitHub REST API：<br>调用 `PUT /repos/{owner}/{repo}/contents/{filePath}`，将打点 Base64 编码后生成正式 Git Commit 提交入库 | **较慢 (1~3 秒)**<br>需经历 GitHub API 网络调用、生成 Commit 节点与分支推进 | **代码库一体化归档**：需要完整 Git Commit 审计记录与提交历史的场景。**注意：由于走 Git 推送流程耗时较长，且若依赖 GitHub Pages 重新部署构建生效周期较长**。 |
 | **💻 方案 3：本地 Node.js 磁盘直写打点 (Local Node 模式)** | 本地启动 `node server.js` 微服务，前端通过 `POST /api/save-prd` 调用 fs 模块直接修改磁盘上的物理 `prd-data-*.js` 文件 | **极快 (10~50ms)**<br>本机 localhost 内部直接落盘 | **纯脱机独立开发**：无外网网络、企业保密内网、纯本地研发环境。 |
-
----
 
 - **🔄 模式切换二次确认与一键数据迁移决策 (`showModeSwitchConfirmModal`)**:
   - 当在配置中心切换持久化引擎时，系统自动弹出模式迁移决策模态框：
@@ -98,7 +116,7 @@ graph TD
 ### Module 3: 📍 交互式十字准星打点与智能空间锚定 (Pinning & Spatial Anchoring Engine)
 - **十字准星拾取器 (`bindPickListeners`)**：
   - 点击「📍 新增打点」进入打标模式，鼠标指针变为 `crosshair`，底层元素高亮蓝色虚线框；
-  - **打标时自动收起右侧抽屉**：进入十字准星打标模式时，右侧抽屉**自动完全收起**，折叠为边缘胶囊 `📍 点击页面组件打标 (ESC退出)`，彻底杜绝侧边栏遮挡底层页面组件；
+  - **打标时自动收起右侧抽屉**：进入十字准星打标模式时，右侧抽屉**自动完全收起**，折叠为边缘胶囊 `✕ 📍 点击组件打标 (点击或ESC退出)`，彻底杜绝侧边栏遮挡底层页面组件；
   - 拾取完成或按 ESC 后，自动无缝呼出需求规格编辑工作台；
 - **自愈式弹性 CSS 选择器算法 (`getElementSelector`)**：
   - 优先提取精准 `#id`、语义化类名、结构层级路径（`div:nth-of-type(n)`）与表单属性，保证动态重绘后打点依然 100% 准确对齐；
@@ -204,11 +222,27 @@ graph TD
 
 ---
 
+### Module 9: ⚛️ Vue & React 现代框架 SPA 兼容与自适应引擎 (Vue & React Framework Adaptation Engine)
+
+针对现代前端 SPA 单页应用与组件化工程，引擎内建了框架自适应技术：
+
+1. **🌐 SPA 客户端路由自动劫持 (`pushState` / `popstate`)**：
+   - 自动代理拦截全局 `history.pushState` 与 `history.replaceState`，并监听 `popstate` 与 Hash 变更；
+   - 当 Vue Router / React Router / Next.js 执行无刷新路由跳转时，系统毫秒级识别当前页面路由（如 `/mall/detail` -> `mall_detail`），自动热重绘对应路由的打点列表与大头针。
+2. **🔄 虚拟 DOM 动态挂载自愈 (Virtual DOM Dynamic Re-anchoring)**：
+   - 结合全局 `MutationObserver` 监听 DOM 树的动态增删；
+   - 当 Vue 的 `v-if` 或 React 的条件渲染组件（如弹窗、抽屉、异步表格）动态插入页面时，引擎在 50~100ms 内自动重新计算坐标并贴附大头针。
+3. **🧹 Scoped CSS 与哈希类名清洗过滤 (Scoped CSS & Hash Filtration)**：
+   - 自动识别并过滤 Vue 的 `data-v-xxxx` 以及 React CSS-in-JS (Emotion / styled-components) 生成的动态随机哈希类名（如 `.css-178fa9`）；
+   - 优先提取稳定的语义结构路径（`nth-of-type`）、组件 ID、表单名称、或业务自定义属性（`data-prd="key"`），保证打包重构后打点永不漂移。
+
+---
+
 ## 🛠️ 项目工程结构与文件规范
 
 ```text
 my-prototype/
-├── admin.html               # 原型页面 A
+├── admin.html               # 原型页面 A (或 Vue / React 路由页面)
 ├── mall.html                # 原型页面 B
 ├── merchant.html            # 原型页面 C
 ├── h5.html                  # 原型页面 D
@@ -221,7 +255,7 @@ my-prototype/
     │       ├── index.min.js # Vditor 核心引擎 (本地离线支持)
     │       └── index.css    # Vditor 核心样式
     └── js/
-        ├── prd-pin-tool.js  # 核心引擎 (V6 Vditor工作台/Tab缩进/三态抽屉/三模态持久化/多语言)
+        ├── prd-pin-tool.js  # 核心引擎 (跨框架通用: HTML / Vue / React)
         ├── prd-data-admin.js# admin.html 专属数据底包
         ├── prd-data-mall.js # mall.html 专属数据底包
         ├── prd-data-merchant.js

@@ -27,6 +27,16 @@
 
 # 🌐 English Documentation
 
+## ⚛️ Cross-Framework Compatibility (HTML / Vue / React) & Autonomous Detection
+
+- **Autonomous Tech-Stack Inspection**: Automatically analyzes `package.json`, Vite/Webpack configs, or HTML structure to detect if the project is **Pure HTML**, **Vue.js (2/3/Nuxt)**, or **React (18/Next.js)**.
+- **Interactive Clarification Fallback**: If the framework cannot be determined automatically, the agent will prompt the user to confirm the framework and target pages/modules.
+- **SPA Client-Side Route Sync**: Intercepts `history.pushState` / `popstate` to automatically adapt pins across SPA route transitions without page refreshes.
+- **Virtual DOM Dynamic Re-anchoring**: Automatically re-attaches pins when conditional components (`v-if` / React modals) enter or exit the DOM.
+- **Scoped CSS & Hash Filtration**: Automatically filters Vue `data-v-xxxx` and React CSS-in-JS hashes to guarantee robust long-term selector anchoring.
+
+---
+
 ## 🌟 Tri-Engine Persistence System & Comparison
 
 | Persistence Mode | Underlying Architecture | Read/Write Latency | Use Cases & Key Characteristics |
@@ -81,6 +91,16 @@ To prevent unauthorized tampering on public or hosted prototypes:
 ---
 
 # 🇨🇳 简体中文文档
+
+## ⚛️ 跨框架兼容架构 (HTML / Vue / React) 与自主工程感知
+
+- **工程架构自主嗅探 (Autonomous Inspection)**：自动检查 `package.json`、Vite/Webpack 插件及文件类型，智能识别当前工程是 **HTML 静态原型**、**Vue.js (Vue 2/3/Nuxt)** 还是 **React (React 18/Next.js)**；
+- **未能识别时的前置提问协议**：若无法推断框架，Agent 自动前置发起询问：确认所用技术栈及 PRD 打点需应用的页面/模块；
+- **SPA 客户端路由热感知**：自动代理全局 `history.pushState` / `popstate`，Vue Router / React Router 无刷新切页时自动切换打点数据；
+- **虚拟 DOM 动态挂载自愈**：结合 `MutationObserver`，在 `v-if` / 弹窗动态挂载时毫秒级自动定位并贴附大头针；
+- **Scoped CSS 与随机哈希清洗**：智能剔除 `data-v-xxxx` 与 CSS-in-JS 哈希类名，优先提取语义化结构路径。
+
+---
 
 ## 🌟 三模态持久化体系与方案实现对比
 
