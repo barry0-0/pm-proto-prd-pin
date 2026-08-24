@@ -798,6 +798,28 @@
   }
 
   // ==========================================
+  // 🔄 持久化同步模式切换与记忆中心 (Sync Mode Switcher & Persistence)
+  // ==========================================
+  const SYNC_MODE_KEY = 'prd_active_sync_mode';
+
+  function getActiveSyncMode() {
+    try {
+      const mode = localStorage.getItem(SYNC_MODE_KEY);
+      if (mode && ['jsonbin', 'github', 'local', 'auto'].includes(mode)) return mode;
+    } catch (e) {}
+    // 默认推断：若在 github.io 则为 github，本地则为 auto
+    if (window.location.hostname.includes('.github.io')) return 'github';
+    return 'auto';
+  }
+
+  function setActiveSyncMode(mode) {
+    try {
+      localStorage.setItem(SYNC_MODE_KEY, mode);
+      isBackendApiCached = null; // 重置缓存以重新探测
+    } catch (e) {}
+  }
+
+  // ==========================================
   // 🔑 云端 KV 中间存储适配器与恒久 Key 授权系统 (Remote KV Storage Adapter)
   // ==========================================
   const KV_STORAGE_KEY = `prd_kv_config_${projectScope}_${pageKey.replace('.html', '')}`;
@@ -895,11 +917,13 @@
     return await updateResp.json();
   }
 
-  window.showKVConfigModal = function() {
+  window.showKVConfigModal = function(defaultTab = null) {
     const existing = document.getElementById('prd-kv-config-modal');
     if (existing) existing.remove();
 
     const config = getKVStorageConfig();
+    const ghConfig = getGitHubConfig();
+    const activeMode = getActiveSyncMode();
 
     const modal = document.createElement('div');
     modal.id = 'prd-kv-config-modal';
@@ -917,47 +941,103 @@
     `;
 
     modal.innerHTML = `
-      <div style="background:#ffffff; width:560px; max-width:92vw; border-radius:12px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(226,232,240,0.8); overflow:hidden; display:flex; flex-direction:column;">
+      <div style="background:#ffffff; width:580px; max-width:94vw; border-radius:12px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(226,232,240,0.8); overflow:hidden; display:flex; flex-direction:column;">
         <!-- Header -->
         <div style="background:#0f172a; color:#ffffff; padding:16px 20px; display:flex; align-items:center; justify-content:space-between;">
           <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;">
-            <span>🔑</span>
-            <span>${escapeHtml(t('kvModalTitle'))}</span>
+            <span>☁️</span>
+            <span>持久化同步中心与模式切换</span>
           </div>
           <button style="background:none; border:none; font-size:18px; color:#94a3b8; cursor:pointer;" onclick="window.closeKVConfigModal()">&times;</button>
         </div>
 
-        <!-- Body -->
-        <div style="padding:20px; font-size:12.5px; line-height:1.6; color:#334155; display:flex; flex-direction:column; gap:12px;">
-          <div>${t('kvModalDesc')}</div>
+        <!-- Mode Switcher Tabs -->
+        <div style="background:#f1f5f9; padding:8px 16px; border-bottom:1px solid #e2e8f0; display:flex; gap:6px;">
+          <button id="tab-btn-jsonbin" class="prd-btn-action" style="flex:1; padding:6px 8px; font-size:12px; font-weight:700; border-radius:6px; background:${activeMode==='jsonbin'?'#ffffff':'transparent'}; border:${activeMode==='jsonbin'?'1px solid #cbd5e1':'none'}; color:${activeMode==='jsonbin'?'#0284c7':'#64748b'};" onclick="window.switchSyncConfigTab('jsonbin')">
+            🔑 JSONBin.io 模式 ${activeMode==='jsonbin'?'<span style=\"color:#059669;\">●生效中</span>':''}
+          </button>
+          <button id="tab-btn-github" class="prd-btn-action" style="flex:1; padding:6px 8px; font-size:12px; font-weight:700; border-radius:6px; background:${activeMode==='github'?'#ffffff':'transparent'}; border:${activeMode==='github'?'1px solid #cbd5e1':'none'}; color:${activeMode==='github'?'#0284c7':'#64748b'};" onclick="window.switchSyncConfigTab('github')">
+            ☁️ GitHub Commit 模式 ${activeMode==='github'?'<span style=\"color:#059669;\">●生效中</span>':''}
+          </button>
+          <button id="tab-btn-local" class="prd-btn-action" style="flex:0.8; padding:6px 8px; font-size:12px; font-weight:700; border-radius:6px; background:${activeMode==='local'?'#ffffff':'transparent'}; border:${activeMode==='local'?'1px solid #cbd5e1':'none'}; color:${activeMode==='local'?'#0284c7':'#64748b'};" onclick="window.switchSyncConfigTab('local')">
+            💻 本地服务 ${activeMode==='local'?'<span style=\"color:#059669;\">●生效中</span>':''}
+          </button>
+        </div>
 
-          <div>
-            <label style="font-size:11.5px; font-weight:700; color:#475569; margin-bottom:3px; display:block;">${t('kvSecretKeyLabel')} <span style="color:#ef4444;">*</span></label>
-            <input type="password" id="prd-kv-secret-key" value="${escapeHtml(config.secretKey || '')}" placeholder="${escapeHtml(t('kvSecretKeyPlaceholder'))}" style="width:100%; box-sizing:border-box; padding:7px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; outline:none;">
+        <!-- Body Content -->
+        <div style="padding:20px; font-size:12.5px; line-height:1.6; color:#334155;">
+          <!-- Tab Panel 1: JSONBin -->
+          <div id="panel-jsonbin" style="display:${activeMode==='jsonbin'||activeMode==='auto'?'flex':'none'}; flex-direction:column; gap:12px;">
+            <div style="color:#475569;">${t('kvModalDesc')}</div>
+
+            <div>
+              <label style="font-size:11.5px; font-weight:700; color:#475569; margin-bottom:3px; display:block;">${t('kvSecretKeyLabel')} <span style="color:#ef4444;">*</span></label>
+              <input type="password" id="prd-kv-secret-key" value="${escapeHtml(config.secretKey || '')}" placeholder="${escapeHtml(t('kvSecretKeyPlaceholder'))}" style="width:100%; box-sizing:border-box; padding:7px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; outline:none;">
+            </div>
+
+            <div>
+              <label style="font-size:11.5px; font-weight:700; color:#475569; margin-bottom:3px; display:block;">${t('kvBinIdLabel')}</label>
+              <input type="text" id="prd-kv-bin-id" value="${escapeHtml(config.binId || '')}" placeholder="留空则自动创建新的永久 Bin ID" style="width:100%; box-sizing:border-box; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; outline:none; font-family:monospace;">
+            </div>
+
+            <!-- Guide -->
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; font-size:11.5px; color:#475569;">
+              <div style="font-weight:700; color:#0f172a; margin-bottom:4px;">${t('kvGuideTitle')}</div>
+              <div style="margin-bottom:2px;">${t('kvGuideStep1')}</div>
+              <div style="margin-bottom:2px;">${t('kvGuideStep2')}</div>
+              <div>${t('kvGuideStep3')}</div>
+            </div>
+
+            <div id="prd-kv-status-tip" style="font-size:12px; min-height:18px;"></div>
           </div>
 
-          <div>
-            <label style="font-size:11.5px; font-weight:700; color:#475569; margin-bottom:3px; display:block;">${t('kvBinIdLabel')}</label>
-            <input type="text" id="prd-kv-bin-id" value="${escapeHtml(config.binId || '')}" placeholder="留空则自动创建新的永久 Bin ID" style="width:100%; box-sizing:border-box; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; outline:none; font-family:monospace;">
+          <!-- Tab Panel 2: GitHub -->
+          <div id="panel-github" style="display:${activeMode==='github'?'flex':'none'}; flex-direction:column; gap:12px;">
+            <div style="color:#475569;">${t('ghModalDesc')}</div>
+
+            <div style="display:flex; gap:10px;">
+              <div style="flex:1;">
+                <label style="font-size:11.5px; font-weight:700; color:#475569; margin-bottom:3px; display:block;">${t('ghOwnerLabel')}</label>
+                <input type="text" id="prd-gh-owner" value="${escapeHtml(ghConfig.owner || '')}" style="width:100%; box-sizing:border-box; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; outline:none;">
+              </div>
+              <div style="flex:1;">
+                <label style="font-size:11.5px; font-weight:700; color:#475569; margin-bottom:3px; display:block;">${t('ghRepoLabel')}</label>
+                <input type="text" id="prd-gh-repo" value="${escapeHtml(ghConfig.repo || '')}" style="width:100%; box-sizing:border-box; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; outline:none;">
+              </div>
+            </div>
+
+            <div>
+              <label style="font-size:11.5px; font-weight:700; color:#475569; margin-bottom:3px; display:block;">${t('ghTokenLabel')} <span style="color:#ef4444;">*</span></label>
+              <input type="password" id="prd-gh-token" value="${escapeHtml(ghConfig.token || '')}" placeholder="${escapeHtml(t('ghTokenPlaceholder'))}" style="width:100%; box-sizing:border-box; padding:7px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; outline:none;">
+            </div>
+
+            <!-- Guide -->
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; font-size:11.5px; color:#475569;">
+              <div style="font-weight:700; color:#0f172a; margin-bottom:4px;">${t('ghGuideTitle')}</div>
+              <div style="margin-bottom:2px;">${t('ghGuideStep1')}</div>
+              <div style="margin-bottom:2px;">${t('ghGuideStep2')}</div>
+              <div>${t('ghGuideStep3')}</div>
+            </div>
+
+            <div id="prd-gh-verify-status" style="font-size:12px; min-height:18px;"></div>
           </div>
 
-          <!-- Guide -->
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; font-size:11.5px; color:#475569;">
-            <div style="font-weight:700; color:#0f172a; margin-bottom:4px;">${t('kvGuideTitle')}</div>
-            <div style="margin-bottom:2px;">${t('kvGuideStep1')}</div>
-            <div style="margin-bottom:2px;">${t('kvGuideStep2')}</div>
-            <div>${t('kvGuideStep3')}</div>
+          <!-- Tab Panel 3: Local -->
+          <div id="panel-local" style="display:${activeMode==='local'?'flex':'none'}; flex-direction:column; gap:12px;">
+            <div style="color:#475569;">本地 Node.js 服务模式直接将打点数据写入本地磁盘的 <code>assets/js/prd-data-*.js</code> 文件中。</div>
+            <div style="background:#0f172a; color:#38bdf8; padding:10px 14px; border-radius:8px; font-family:monospace; font-size:13px; display:flex; align-items:center; justify-content:space-between;">
+              <span>$ node server.js</span>
+              <button style="background:#1e293b; color:#f8fafc; border:1px solid #334155; padding:3px 8px; border-radius:4px; font-size:11px; cursor:pointer;" onclick="window.copyStartCommand(this)">📋 复制命令</button>
+            </div>
           </div>
-
-          <div id="prd-kv-status-tip" style="font-size:12px; min-height:18px;"></div>
         </div>
 
         <!-- Footer -->
         <div style="background:#f8fafc; border-top:1px solid #e2e8f0; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;">
-          <button class="prd-btn-action" style="font-size:11.5px; color:#ef4444;" onclick="window.handleClearKVConfig()">${t('kvClearBtn')}</button>
+          <button class="prd-btn-action" style="font-size:11.5px; color:#ef4444;" onclick="window.handleClearCurrentModeConfig()">${t('kvClearBtn')}</button>
           <div style="display:flex; gap:8px;">
-            <button class="prd-btn-action" style="padding:6px 14px; font-size:12px;" onclick="window.handleTestKVConfig()">${t('kvVerifyBtn')}</button>
-            <button class="prd-btn-primary" style="padding:6px 18px; font-size:12px; background:#0284c7; border-color:#0284c7;" onclick="window.handleSaveKVConfig()">${t('kvSaveBtn')}</button>
+            <button class="prd-btn-action" style="padding:6px 14px; font-size:12px;" onclick="window.handleTestCurrentModeConfig()">${t('kvVerifyBtn')}</button>
+            <button class="prd-btn-primary" style="padding:6px 18px; font-size:12px; background:#0284c7; border-color:#0284c7;" onclick="window.handleSaveCurrentModeConfig()">${t('kvSaveBtn')}</button>
           </div>
         </div>
       </div>
@@ -966,6 +1046,99 @@
     document.body.appendChild(modal);
   };
 
+  window.switchSyncConfigTab = function(mode) {
+    ['jsonbin', 'github', 'local'].forEach(m => {
+      const btn = document.getElementById(`tab-btn-${m}`);
+      const panel = document.getElementById(`panel-${m}`);
+      if (btn) {
+        btn.style.background = m === mode ? '#ffffff' : 'transparent';
+        btn.style.border = m === mode ? '1px solid #cbd5e1' : 'none';
+        btn.style.color = m === mode ? '#0284c7' : '#64748b';
+      }
+      if (panel) {
+        panel.style.display = m === mode ? 'flex' : 'none';
+      }
+    });
+  };
+
+  function getCurrentModalActiveTab() {
+    const pJson = document.getElementById('panel-jsonbin');
+    if (pJson && pJson.style.display !== 'none') return 'jsonbin';
+    const pGh = document.getElementById('panel-github');
+    if (pGh && pGh.style.display !== 'none') return 'github';
+    return 'local';
+  }
+
+  window.handleTestCurrentModeConfig = async function() {
+    const tab = getCurrentModalActiveTab();
+    if (tab === 'jsonbin') {
+      return await window.handleTestKVConfig();
+    } else if (tab === 'github') {
+      return await window.handleTestGitHubConfig();
+    } else {
+      showToast('本地模式无需验证，只需在终端运行 node server.js', 'info');
+      return true;
+    }
+  };
+
+  window.handleSaveCurrentModeConfig = async function() {
+    const tab = getCurrentModalActiveTab();
+    if (tab === 'jsonbin') {
+      const secretKey = (document.getElementById('prd-kv-secret-key')?.value || '').trim();
+      if (!secretKey) {
+        showToast('请先输入 Secret Master Key', 'error');
+        return;
+      }
+      const testOk = await window.handleTestKVConfig();
+      if (!testOk) return;
+      const binId = (document.getElementById('prd-kv-bin-id')?.value || '').trim();
+      setKVStorageConfig({ provider: 'jsonbin', binId, secretKey, isVerified: true, updatedAt: new Date().toISOString() });
+      setActiveSyncMode('jsonbin');
+      isBackendApiCached = true;
+      showToast('✅ 已成功保存并切换为【🔑 JSONBin.io 实时同步模式】！', 'success');
+    } else if (tab === 'github') {
+      const testOk = await window.handleTestGitHubConfig();
+      if (!testOk) return;
+      const owner = (document.getElementById('prd-gh-owner')?.value || '').trim();
+      const repo = (document.getElementById('prd-gh-repo')?.value || '').trim();
+      const token = (document.getElementById('prd-gh-token')?.value || '').trim();
+      setGitHubConfig({ owner, repo, branch: 'main', token, verifiedUser: owner, verifiedAt: new Date().toISOString() });
+      setActiveSyncMode('github');
+      isBackendApiCached = true;
+      showToast('✅ 已成功保存并切换为【☁️ GitHub Commit 直连模式】！', 'success');
+    } else {
+      setActiveSyncMode('local');
+      isBackendApiCached = true;
+      showToast('✅ 已切换为【💻 本地 Node.js 模式】！', 'success');
+    }
+
+    setTimeout(() => {
+      window.closeKVConfigModal();
+      updateVersionBarUI();
+      renderRightDrawerList();
+    }, 400);
+  };
+
+  window.handleClearCurrentModeConfig = function() {
+    const tab = getCurrentModalActiveTab();
+    if (tab === 'jsonbin') {
+      clearKVStorageConfig();
+      showToast('已清除 JSONBin 授权', 'info');
+    } else if (tab === 'github') {
+      clearGitHubConfig();
+      showToast('已清除 GitHub 授权', 'info');
+    }
+    setActiveSyncMode('auto');
+    isBackendApiCached = null;
+    window.closeKVConfigModal();
+    updateVersionBarUI();
+    renderRightDrawerList();
+  };
+
+  window.showGitHubConfigModal = function() {
+    window.showKVConfigModal();
+    window.switchSyncConfigTab('github');
+  };
   window.closeKVConfigModal = function() {
     const modal = document.getElementById('prd-kv-config-modal');
     if (modal) modal.remove();
