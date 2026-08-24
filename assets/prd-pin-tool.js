@@ -15,11 +15,11 @@
   // 当前页面标识
   // 1. 获取当前页面路径与项目隔离标识 (Project & Page Isolation)
   const fullPath = window.location.pathname || '';
-  let rawPageKey = fullPath.split('/').filter(Boolean).pop() || 'admin.html';
+  let rawPageKey = fullPath.split('/').filter(Boolean).join('_') || 'index.html';
   try {
     rawPageKey = decodeURIComponent(rawPageKey);
   } catch (e) {}
-  const pageKey = rawPageKey.split('?')[0].split('#')[0] || 'admin.html';
+  const pageKey = rawPageKey.split('?')[0].split('#')[0] || 'index.html';
   const projectScope = (fullPath.replace(/\/[^\/]*$/, '') || 'default_proj').replace(/[^a-zA-Z0-9_-]/g, '_');
   const cacheKey = `prd_registry_${projectScope}_${pageKey}`;
   const cacheVersionKey = `${cacheKey}_version`;
@@ -961,7 +961,7 @@
         headers: {
           'Content-Type': 'application/json',
           'X-Master-Key': cleanKey,
-          'X-Bin-Name': `prd-data-${pageKey.replace('.html', '')}`,
+          'X-Bin-Name': `prd-data-${encodeURIComponent(pageKey.replace('.html', ''))}`,
           'X-Bin-Private': 'false' // 设为公开只读，便于访客免密实时读取
         },
         body: JSON.stringify(payload)
@@ -1118,7 +1118,7 @@
 
     const config = getKVStorageConfig();
     const ghConfig = getGitHubConfig();
-    const activeMode = getActiveSyncMode();
+    const activeMode = defaultTab || getActiveSyncMode();
 
     const modal = document.createElement('div');
     modal.id = 'prd-kv-config-modal';
@@ -1256,7 +1256,7 @@
     });
   };
 
-  function getCurrentModalActiveTab() {
+  window.getCurrentModalActiveTab = function getCurrentModalActiveTab() {
     const pJson = document.getElementById('panel-jsonbin');
     if (pJson && pJson.style.display !== 'none') return 'jsonbin';
     const pGh = document.getElementById('panel-github');
@@ -6126,6 +6126,38 @@ window.saveEditorModal = async function() {
   window.addEventListener('scroll', () => {
     if (currentMode !== 'hide') renderPinMarkers();
   }, true);
+
+    // 20. SPA 客户端路由自动监听与无刷新热重绘
+  let lastSPAPathname = window.location.pathname;
+  function checkAndHandleSPARouteChange() {
+    if (window.location.pathname !== lastSPAPathname) {
+      lastSPAPathname = window.location.pathname;
+      setTimeout(() => {
+        if (currentMode !== 'hide') renderPinMarkers();
+        renderRightDrawerList();
+        renderMiniRailList();
+        updateVersionBarUI();
+        syncFromCloudKVOnStartup();
+      }, 150);
+    }
+  }
+
+  const rawPushState = history.pushState;
+  history.pushState = function(...args) {
+    const res = rawPushState.apply(this, args);
+    checkAndHandleSPARouteChange();
+    return res;
+  };
+
+  const rawReplaceState = history.replaceState;
+  history.replaceState = function(...args) {
+    const res = rawReplaceState.apply(this, args);
+    checkAndHandleSPARouteChange();
+    return res;
+  };
+
+  window.addEventListener('popstate', checkAndHandleSPARouteChange);
+  window.addEventListener('hashchange', checkAndHandleSPARouteChange);
 
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
     initDOM();
