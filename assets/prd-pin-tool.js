@@ -3587,7 +3587,7 @@
         return false;
       }
       try {
-        showToast(t('kvSyncingToast'), 'info');
+        showToast(t('kvSyncingToast') || '⏳ 正在同步至云端...', 'info');
         const res = await saveRemoteKVData(kv.binId, kv.secretKey, {
           pageKey,
           versionRegistry,
@@ -3614,32 +3614,6 @@
         return false;
       }
     }
-    // 严格单一排他：只向云端 JSONBin 发送真实请求并严格校验 200 返回
-    if (activeMode === 'jsonbin') {
-      const kv = getKVStorageConfig();
-      if (!kv || !kv.secretKey) {
-        showToast('⚠️ 未配置有效的 JSONBin Master Key，保存失败', 'error');
-        return false;
-      }
-      try {
-        showToast(t('kvSyncingToast'), 'info');
-        const res = await saveRemoteKVData(kv.binId, kv.secretKey, {
-          pageKey,
-          versionRegistry,
-          savedPins,
-          updatedAt: new Date().toISOString()
-        });
-        if (!res || (!res.record && !res.metadata)) {
-          throw new Error('云端存储未返回成功确认');
-        }
-        const binDisplay = kv.binId ? ` (Bin: ${kv.binId.substring(0, 8)}...)` : '';
-        showToast(`✅ [云端KV] 真实同步成功！${binDisplay}`, 'success');
-        return true;
-      } catch (kvErr) {
-        showToast(`❌ 云端 KV 同步失败: ${kvErr.message}`, 'error');
-        return false;
-      }
-    }
 
     // 模式 2: ☁️ GitHub 推送打点 (Git Commit)
     // 严格单一排他：只调用 GitHub REST API 生成正式 Commit 并严格校验返回
@@ -3650,7 +3624,7 @@
         return false;
       }
       try {
-        showToast(t('ghSavingToGithub'), 'info');
+        showToast(t('ghSavingToGithub') || '⏳ 正在向 GitHub 提交 Commit...', 'info');
         const jsFileContent = `/**\n * PRD 需求数据 - ${pageKey}\n * GitHub Pages 实时保存于: ${new Date().toLocaleString()}\n */\nwindow.INITIAL_PRD_DATA = ${JSON.stringify(savedPins, null, 2)};\nwindow.PRD_VERSION_REGISTRY = ${JSON.stringify(versionRegistry, null, 2)};\n`;
         const filePath = getGitHubTargetFilePath(pageKey);
         await saveToGitHubApi(gh.owner, gh.repo, gh.branch || 'main', filePath, gh.token, jsFileContent);
