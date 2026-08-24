@@ -4483,7 +4483,7 @@
   let isVditorLoading = false;
   let isVditorLoaded = false;
 
-  function ensureVditorLoaded(callback) {
+    function ensureVditorLoaded(callback) {
     if (window.Vditor) {
       isVditorLoaded = true;
       if (callback) callback();
@@ -4501,42 +4501,39 @@
     }
     isVditorLoading = true;
 
-    // 相对基准路径
-    const localVendorDir = scriptBasePath.includes('/js/') ? scriptBasePath.replace('/js/', '/vendor/vditor/') : (scriptBasePath + 'vendor/vditor/');
-
+    // 确保 Vditor 样式优先从 CDN / 绝对路径加载，杜绝 SPA 路由下的 404 HTML 污染
     if (!document.getElementById('vditor-css')) {
       const link = document.createElement('link');
       link.id = 'vditor-css';
       link.rel = 'stylesheet';
-      link.href = localVendorDir + 'index.css';
-      link.onerror = () => {
-        link.href = 'https://cdn.jsdelivr.net/npm/vditor@3.10.8/dist/index.css';
-      };
+      link.href = 'https://cdn.jsdelivr.net/npm/vditor@3.10.8/dist/index.css';
       document.head.appendChild(link);
     }
 
-    const script = document.createElement('script');
-    script.src = localVendorDir + 'index.min.js';
-    script.onerror = () => {
-      const fallbackScript = document.createElement('script');
-      fallbackScript.src = 'https://cdn.jsdelivr.net/npm/vditor@3.10.8/dist/index.min.js';
-      fallbackScript.onload = () => {
-        isVditorLoaded = true;
-        isVditorLoading = false;
-        if (callback) callback();
-      };
-      fallbackScript.onerror = () => {
-        isVditorLoading = false;
-        if (callback) callback(); // 即使 CDN 也失败，也触发回调进入 fallback textarea
-      };
-      document.head.appendChild(fallbackScript);
+    // 优先从 CDN 加载以保证 React / Vue 动态多级路由下的 100% 可用性
+    const loadScript = (src, onOk, onErr) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = onOk;
+      s.onerror = onErr;
+      document.head.appendChild(s);
     };
-    script.onload = () => {
+
+    loadScript('https://cdn.jsdelivr.net/npm/vditor@3.10.8/dist/index.min.js', () => {
       isVditorLoaded = true;
       isVditorLoading = false;
       if (callback) callback();
-    };
-    document.head.appendChild(script);
+    }, () => {
+      // 备用本地路径
+      loadScript('/assets/vendor/vditor/index.min.js', () => {
+        isVditorLoaded = true;
+        isVditorLoading = false;
+        if (callback) callback();
+      }, () => {
+        isVditorLoading = false;
+        if (callback) callback();
+      });
+    });
   }
 
   function getVditorLang() {
