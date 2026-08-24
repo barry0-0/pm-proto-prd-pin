@@ -2,9 +2,9 @@
 
 <div align="center">
 
-**The Ultimate Interactive PRD Pinning, Vditor IR Markdown Editor & Multi-Version Specification Engine for HTML Prototypes.**
+**The Ultimate Interactive PRD Pinning, Vditor IR Markdown Editor & Tri-Engine Persistence System for HTML Prototypes.**
 
-[![Version](https://img.shields.io/badge/version-1.0.3-blue.svg)](https://github.com/barry0-0/pm-proto-prd-pin/releases/tag/1.0.3)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/barry0-0/pm-proto-prd-pin/releases/tag/1.1.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![i18n](https://img.shields.io/badge/i18n-en%20%7C%20zh--CN%20%7C%20ja%20%7C%20ko-brightgreen.svg)](#-internationalization-i18n)
 [![Zero-Dependency](https://img.shields.io/badge/dependencies-zero--native-orange.svg)](#-quick-start)
@@ -27,6 +27,32 @@
 
 # 🌐 English Documentation
 
+## 🌟 Tri-Engine Persistence System & Comparison
+
+| Persistence Mode | Underlying Architecture | Read/Write Latency | Use Cases & Key Characteristics |
+| :--- | :--- | :--- | :--- |
+| **🔑 Mode 1: Serverless Cloud KV Storage (JSONBin.io / Custom KV) —— [Recommended / Fastest]** | RESTful KV API (`GET /latest` Public Read, `PUT` Private Write with Master Key) | **Instant (200~300ms)**<br>Zero build wait, instant cross-browser hydration | **Best for Online Staging**: Zero-server deployment (GitHub Pages, Vercel). Instant synchronization across devices without waiting for Git pipelines. |
+| **☁️ Mode 2: GitHub Contents API Git Commit** | GitHub REST API (`PUT /contents/{filePath}` Base64 encoded Git Commits) | **Slower (1~3s)**<br>Git tree hashing, commit chaining, and Pages rebuild delay | **Best for Strict Audit Trails**: Automatically generates formal Git commits. **Trade-off: Slower push latency and delayed build updates on GitHub Pages**. |
+| **💻 Mode 3: Local Node.js Disk Storage** | Native Node.js server (`POST /api/save-prd` writing directly to disk via fs) | **Sub-millisecond (10~50ms)**<br>Direct local filesystem I/O | **Best for Offline Development**: Pure offline local development with zero external network dependency. |
+
+---
+
+## 🔒 Creator Authentication & Read-Write Segregation
+
+To prevent unauthorized tampering on public or hosted prototypes:
+- **👁️ Visitor Read-Only Protection**: Anyone opening the prototype gets instant read access to all pins, rich Markdown specs, Mermaid diagrams, and PDF exports without any login friction.
+- **🔒 Mandatory Creator Auth (100% Interception Matrix)**:
+  - 📍 Adding New Pins (`setPRDMode('pick')`)
+  - ✏️ Editing Specification Clauses (`openEditorForPin(id)`)
+  - 🗑️ Deleting Pins (`deletePin(id)`)
+  - 📂 Importing PRD Data (`handlePRDImportFile()`)
+  - 🔀 Creating Versions (`createPRDVersion(ver)`)
+  - 🗑️ Deleting Versions (`deletePRDVersion(ver)`)
+  - ⚙️ Reordering Pins (`toggleDrawerManageMode()`)
+- **Incognito & Session Isolation**: Unauthenticated sessions (incognito mode, fresh browsers) always start in read-only mode and require entering the Master Key to unlock.
+
+---
+
 ## 🌟 Key Capabilities & Features
 
 | Capability | Technical Implementation | PM & Engineering Benefit |
@@ -38,147 +64,135 @@
 | **💡 3 Core Business Templates** | Fast-insert buttons for Business Rules, Statechart Diagrams, and Data Dictionary Tables | Rapid authoring of standardized specification clauses |
 | **👀 Single-Entry Stash & Minimize** | Clean close `✕` in header + `👀 Stash & View Page` in bottom bar (`.prd-editor-mini-dock` pill) | Review underlying prototype elements without losing unsaved drafts; 1-click restore |
 | **🌐 Native 4-Language i18n** | Full 115-key dynamic dictionary covering `en`, `zh-CN`, `ja`, `ko`; runtime hot-switching | Seamless multi-lingual team collaboration across global product workflows |
-| **☁️ Serverless Cloud & KV Sync** | Tri-engine persistence: GitHub Contents REST API Git Commit + Serverless KV Store (JSONBin.io) + Local Node.js | 100% Serverless cloud persistence with Permanent Key Auth: Instant cross-device sync, Creator Master Key write, Visitor Read-Only protection |
 | **🗂️ 3-State Drawer & Dual Handles** | Full (400px), Semi (56px Mini Rail), Hidden (0px); dual inward-facing edge handles | Frees up 95% of prototype canvas while keeping all pins immediately accessible |
 | **🔒 Reorder Safety Lock & Cascade** | Normal browsing locks order; manage mode unlocks `🔝 Top`, `🔢 Move To`, sequential cascade | Accidental reordering prevention; seamless 1 -> 2 -> 3 cascading when reordering |
 | **🏷️ Multi-Version Physical Isolation** | Isolated `versionRegistry`; new versions start clean (0 pins); upload conflict resolver | No pin cross-contamination across sprint iterations |
 | **📑 Full PRD Document & PDF Export** | Dedicated doc modal + new tab view with TOC outline and print styling | 1-click export to deliverable PDF or Markdown specifications |
 
-## 🚀 Quick Start Guide
-
-### 1. Embed into HTML Prototype
-Add the following snippet before the closing `</body>` tag of your prototype:
-
-```html
-<!-- PRD Data File (Generated per page) -->
-<script src="./assets/js/prd-data-merchant.js"></script>
-
-<!-- PRD Pinning & Visual Editor Engine -->
-<script src="./assets/js/prd-pin-tool.js"></script>
-```
-
-### 2. Start Local Persistence Server
-```bash
-# Start Node.js native zero-dependency server
-node server.js
-```
-Access `http://localhost:3000/merchant.html` and start pinning specs!
-
 ---
 
 # 🇨🇳 简体中文文档
 
-## 🌟 核心特性概览
+## 🌟 三模态持久化体系与方案实现对比
 
-1. **✍️ Vditor IR 即时渲染 Markdown 工作台**：
-   - 类似 Typora 的流式所见即所得体验，输入 Markdown 语法即刻呈现高保真排版；
-   - 动态相对基准寻址，优先加载本地 `assets/vendor/vditor/` 离线文件，离线/缺失时自动降级为 CDN。
-2. **⌨️ 完整支持 Tab / Shift+Tab 多级层级缩进**：
-   - 在 `- 列表`、`1. 序号` 或任务清单下按 **`Tab`** 即刻向右缩进多级嵌套；
-   - 按 **`Shift + Tab`** 或行首 `Backspace` 瞬间回退层级。
-3. **📊 真正的交互式可视化表格直编**：
-   - 零 Markdown 竖线管道符，所见即所得真实 HTML 表格；
-   - 单元格支持直接打字、`Enter/Tab` 换行换格、一键增删行列。
-4. **💡 三大核心业务规约模板一键插入**：
-   - **「📋 业务规则模版」**：触发条件、前置校验、多级流转细则、异常分支；
-   - **「🔄 状态机流程图」**：标准 Mermaid `graph TB` 状态机流转矢量图；
-   - **「📊 字段数据字典表」**：字段名、类型、必填、枚举值、口径与默认值表格。
-5. **👀 单一入口草稿暂存与最小化胶囊**：
-   - 弹窗右上角保留极简 `✕`，底部保留 **「👀 暂存并看页面」**；
-   - 点击后折叠为右下角常驻胶囊（`✏️ 编辑中: 需求名称 · 草稿已暂存`），不遮挡底层原型，一键无损恢复。
-6. **🌐 全球 4 语言架构 (`zh-CN`, `en`, `ja`, `ko`)**：
-   - 抽屉顶部实时切换多语言，115 个字典键全要素动态本地化；
-   - Phase 0 规范强制前置确认目标语言框架。
-7. **☁️ GitHub Pages 零后端云端直写与双引擎持久化（核心突破）**：
-   - **解决无后端痛点**：无需购买/部署任何后端服务器与数据库，静态 GitHub Pages 原型即可直接在线打点、修改、**导入历史版本**；
-   - **自动化 Git Commit**：保存与导入后直接通过 GitHub REST API 向当前仓库提交 Commit 更新 `prd-data-*.js`，研发本地 `git pull` 即可无缝同步；
-   - **👑 创立人权限安全卡点**：严格校验仓库与 Token 权限，仅创立人可写入，外部访客全自动只读保护；
-   - **全入口前置拦截**：在新增打点、排序管理、编辑规约、**文件导入**等所有入口前置鉴权阻断。
-   - **☁️ GitHub Pages 实时 Commit**：通过 GitHub Contents REST API 直接提交代码更新 `prd-data-*.js`，100% 零后端云端持久化；
-   - **👑 创立人权限安全卡点**：调用 API 严格校验 `permissions.push` 权限，只有当前仓库创立人/管理员可编辑保存，其他访客均为纯只读；
-   - **🟢 三模态自动感知**：本地自动走 Node 服务，GitHub Pages 走 Git Commit，离线/未认证前置弹窗拦截。
-   - **提前校验阻断**：在点击「新增打点」、「排序管理」、「编辑需求」的入口即刻探测接口，无服务时直接弹窗拦截并引导 `node server.js`，绝不拖延到保存时才报错；
-   - 优先调用 `POST /api/save-prd` 写入本地磁盘 JS 文件，支持跨项目命名空间隔离。
-   - 优先调用 `POST /api/save-prd` 写入本地磁盘 JS 文件；
-   - 本地服务离线时自动降级为 `localStorage` 缓存与一键导出 JS 脚本。
-8. **🗂️ 三态抽屉与左边缘双按钮控制组**：
-   - 400px 全展开 ⇄ 56px 紧凑标号竖条 ⇄ 0px 完全收起；
-   - 左侧双按钮朝内区隔（上方深色全收起 `›` + 下方亮蓝半收起 `⇥`）。
-9. **🔒 排序管理安全锁与依次瞬移顺延**：
-   - 日常防误触锁定，开启管理模式后支持 `🔝 置顶`、`🔢 移至`、`▲/▼`；
-   - 置顶或上移时后续项自动依次向下顺延（1 -> 2 -> 3...），滚动高度毫秒级锁定。
-10. **🏷️ 多版本严格物理隔离与上传冲突解决**：
-    - 新建版本默认全新空白（0 打点），各版本数据完全隔离互不干扰；
-    - 上传文件支持【覆盖现有】、【追加合并】、【另存新版本】三种冲突方案。
+针对产品经理在不同阶段（本地制作、团队评审、线上发布）的诉求，系统提供了三套严格排他的持久化架构：
+
+```mermaid
+graph TD
+    SaveAction["触发 保存/新增/编辑/排序/导入"] --> ModeCheck{"当前锁定的持久化模式"}
+    
+    ModeCheck -->|🔑 方案 1: Serverless 云端 KV 存储| ModeKV["【JSONBin.io / 自建 KV API】<br>⚡ 200~300ms 秒级直写<br>无需服务器，免编译等待，跨端即时同步"]
+    ModeCheck -->|☁️ 方案 2: GitHub Contents API| ModeGH["【GitHub REST API Git Commit】<br>⏳ 1~3秒 提交较慢<br>自动生成 Commit 节点，代码库归档，审计追踪"]
+    ModeCheck -->|💻 方案 3: 本地 Node.js 模式| ModeLocal["【本地 Node.js /api/save-prd】<br>⚡ 10ms 磁盘直写<br>纯本地脱机运行，修改本地物理 js 文件"]
+```
+
+### 1. 🔑 方案 1：Serverless 云端 KV 存储打点（JSONBin.io / 自定义 KV）—— 【强烈推荐 / 最快捷】
+- **核心实现原理**：
+  - 采用 RESTful KV 读写分离架构：
+    - **公开只读**：`GET https://api.jsonbin.io/v3/b/{binId}/latest?_t=${Date.now()}`，访客免密秒级拉取最新规约（添加抗缓存时间戳）；
+    - **私密写入**：`PUT https://api.jsonbin.io/v3/b/{binId}`，Header 携带 `X-Master-Key` 鉴权更新；
+- **核心优势与快捷性**：
+  - **秒级极速响应 (200~300ms)**：修改后瞬间保存生效，跨电脑、跨浏览器、移动端打开即时同步；
+  - **100% 零服务器运维**：无需购买任何云主机或配置数据库，开箱即用；
+  - **适用场景**：GitHub Pages 静态托管、在线演示评审、跨设备协同标注。
+
+### 2. ☁️ 方案 2：GitHub Contents API 推送打点（Git Commit 模式）
+- **核心实现原理**：
+  - 使用 GitHub Fine-Grained Personal Access Token (PAT)；
+  - 调用 `PUT https://api.github.com/repos/{owner}/{repo}/contents/{filePath}`，将打点数据以 Base64 编码自动生成正式 Git Commit 提交入库；
+- **特性与局限性说明 (Trade-offs)**：
+  - **版本审计追踪优势**：每一次修改在 GitHub 仓库中均有完整的提交者信息与版本 Diff 历史，便于合规审计；
+  - **推送相对较慢 (1~3 秒)**：由于涉及 GitHub API 的 Tree 递归计算与 Commit 链打包，写入耗时相对较长；且若依赖 GitHub Pages 构建重新部署，公网生效存在几分钟流水线延迟。
+
+### 3. 💻 方案 3：本地 Node.js 磁盘直写打点（Local Node 模式）
+- **核心实现原理**：
+  - 本地终端运行 `node server.js`；
+  - 前端通过 `POST /api/save-prd` 调用 Node 原生 fs 模块直接改写磁盘上的物理 `prd-data-*.js` 文件；
+- **适用场景**：企业内网断网开发、保密原型制作、离线纯本地开发。
+
+---
+
+## 🔒 读写权限分离与创立人身份强鉴权
+
+为了防止原型发布到线上后被外部人员随意篡改，系统内建了**企业级权限隔离机制**：
+
+1. **👁️ 访客只读保护（零干扰免密浏览）**：
+   - 外部访客、设计或研发人员打开页面，直接只读加载全部打点、Markdown 规约、Mermaid 流程图与数据字典，无任何弹窗打扰；
+2. **🔒 敏感操作 100% 强拦截矩阵**：
+   - 在未通过 Master Key 验证的会话中，触发以下任一操作系统**立即前置阻断并弹出 `🔒 创立人身份鉴权` 模态框**：
+     - 📍 **新增组件打点** (`setPRDMode('pick')`)
+     - ✏️ **编辑需求规约** (`openEditorForPin(id)`)
+     - 🗑️ **删除需求点** (`deletePin(id)`)
+     - 📂 **导入 PRD 数据** (`handlePRDImportFile()`)
+     - 🔀 **新建版本** (`createPRDVersion(ver)`)
+     - 🗑️ **删除版本** (`deletePRDVersion(ver)`)
+     - ⚙️ **排序管理模式** (`toggleDrawerManageMode()`)
+3. **🔑 无痕模式与会话安全隔离**：
+   - 取消了任何本地协议的自动免密特权；
+   - 在无痕模式或新浏览器中打开，必须输入专属 Master Key 向云端完成鉴权；
+   - 验证通过后写入当前浏览器的 `sessionStorage` 解锁全量工作台，关闭窗口后自动失效，杜绝密钥遗留。
+
+---
+
+## 🛠️ 项目工程结构与集成
+
+```html
+<!-- 在任意 HTML 原型 </body> 前引入： -->
+<script src="./assets/js/prd-pin-tool.js"></script>
+```
+
+```text
+my-prototype/
+├── admin.html               # 原型页面 A
+├── mall.html                # 原型页面 B
+├── merchant.html            # 原型页面 C
+├── h5.html                  # 原型页面 D
+├── merchant-h5.html         # 原型页面 E
+├── server.js                # 本地持久化后端服务 (Node.js 原生零依赖，提供 /api/save-prd)
+├── start.sh                 # 一键启动脚本
+└── assets/
+    ├── vendor/
+    │   └── vditor/          # Vditor 离线资源
+    └── js/
+        ├── prd-pin-tool.js  # 核心引擎 (V6 Vditor/Tab缩进/三态抽屉/三模态持久化/多语言)
+        ├── prd-data-admin.js
+        ├── prd-data-mall.js
+        └── prd-data-merchant.js
+```
 
 ---
 
 # 🇯🇵 日本語ドキュメント
 
-## 🌟 主な機能と特徴
+## 🌟 3 つの永続化モードとアーキテクチャ比較
 
-1. **✍️ Vditor IR リアルタイム Markdown ワークベンチ**：
-   - Typora のような直感的な即時レンダリング体験を提供し、入力した Markdown を即座に美麗なレイアウトで表示；
-   - 相対パス解決により、ローカルの `assets/vendor/vditor/` オフラインファイルを優先読み込み、CDN 自動フォールバックに対応。
-2. **⌨️ Tab / Shift+Tab による多階層インデント対応**：
-   - 箇条書きや番号付きリストで **`Tab`** を押すと瞬時に右へインデント（多階層ネスト作成）；
-   - **`Shift + Tab`** または行頭の `Backspace` で階層を戻すことが可能。
-3. **📊 インタラクティブなビジュアルテーブル直接編集**：
-   - パイプ記号 (`|`) 不要で、セルを直接クリックしてタイピング可能；
-   - `Enter/Tab` による快適な移動、ワンクリックで行・列を追加/削除。
-4. **💡 3 つのコア業務仕様テンプレート**：
-   - **「📋 業務ルールテンプレート」**、**「🔄 ステートマシンフローチャート」**、**「📊 データディクショナリテーブル」** をワンクリックで挿入。
-5. **👀 シングルエントリーのドラフト一時保存・最小化カプセル**：
-   - モーダル右上の閉じるボタン `✕` と下部の **「👀 一時保存して画面確認」** ボタン；
-   - クリックすると右下のフローティングカプセルに最小化され、いつでもワンクリックで無損失復元。
-6. **🌐 4 言語ネイティブ対応 (`ja`, `en`, `zh-CN`, `ko`)**：
-   - ドロワー上部から瞬時に言語切替可能。全 115 辞書キーによる完全ローカライズ。
+1. **🔑 モード 1: Serverless クラウド KV ストレージ (JSONBin.io) —— 【推奨・最速】**：
+   - RESTful API による高速リアルタイム同期（200〜300ms）。Git のプッシュ待ちやビルド待ちなし。クロスデバイス共同作業に最適。
+2. **☁️ モード 2: GitHub Contents API プッシュモード (Git Commit)**：
+   - GitHub REST API を介して正式な Git Commit を自動作成。監査ログに優れるが、**Git のプッシュ処理と Pages 再ビルドのため反映に時間がかかる**特性があります。
+3. **💻 モード 3: ローカル Node.js ディスク直接保存**：
+   - ローカルの `node server.js` を介してローカルディスクの `.js` ファイルを直接更新。オフライン開発に最適。
+
+## 🔒 閲覧・編集の権限分離とマスターキー認証
+- **閲覧者モード（デフォルト）**：認証なしでピン、Markdown 仕様書、Mermaid 図、PDF エクスポートを自由に閲覧可能。
+- **作成者認証ガード**：ピン追加、仕様編集、削除、インポート、バージョン作成時にマスターキー認証モーダルを強制表示。
 
 ---
 
 # 🇰🇷 한국어 문서
 
-## 🌟 주요 기능 및 특징
+## 🌟 3가지 영속성 모드 및 아키텍처 비교
 
-1. **✍️ Vditor IR 실시간 렌더링 마크다운 워크벤치**：
-   - Typora 스타일의 즉시 렌더링으로 마크다운 입력 즉시 고품질 레이아웃 표시；
-   - 상대 경로 자동 감지 및 로컬 `assets/vendor/vditor/` 오프라인 파일 우선 로드, CDN 자동 백업 지원.
-2. **⌨️ Tab / Shift+Tab 다단계 목록 들여쓰기 지원**：
-   - 순서 없는 목록, 번호 매기기 목록에서 **`Tab`** 키로 손쉽게 하위 레벨 들여쓰기；
-   - **`Shift + Tab`** 또는 `Backspace`로 상위 레벨로 복귀.
-3. **📊 인터랙티브 비주얼 테이블 직접 편집**：
-   - 파이프 기호(`|`) 작성 부담 없이 테이블 셀을 직접 클릭하여 입력；
-   - `Enter/Tab` 이동 및 행/열 원클릭 추가/삭제 지원.
-4. **💡 3대 핵심 비즈니스 사양 템플릿**：
-   - **「📋 비즈니스 규칙 템플릿」**、**「🔄 상태 다이어그램 플로우차트」**、**「📊 데이터 사전 테이블」** 원클릭 삽입.
-5. **👀 단일 진입점 임시 저장 및 최소화 캡슐**：
-   - 모달 우측 상단 간결한 `✕` 닫기와 하단 **「👀 임시저장 후 화면보기」** 버튼；
-   - 화면 우측 하단 플로팅 캡슐로 접히며 원클릭으로 완벽하게 편집 상태 복원.
-6. **🌐 4개 국어 네이티브 다국어 지원 (`ko`, `en`, `zh-CN`, `ja`)**：
-   - 드로어 상단에서 실시간 언어 전환 가능. 115개 전체 UI 키 완벽 로컬라이즈.
+1. **🔑 모드 1: Serverless 클라우드 KV 스토리지 (JSONBin.io) —— 【강력 추천 / 초고속】**：
+   - RESTful API 기반 초고속 실시간 동기화 (200~300ms). Git 푸시 대기 시간 없음. 서버리스 정적 배포 환경에 최적.
+2. **☁️ 모드 2: GitHub Contents API 푸시 모드 (Git Commit)**：
+   - GitHub REST API를 통해 정식 Git Commit을 자동 생성. 이력 추적에 유리하지만 **푸시 처리 및 Pages 재빌드로 인해 상대적으로 느림**.
+3. **💻 모드 3: 로컬 Node.js 디스크 직접 저장**：
+   - `node server.js`를 통해 로컬 디스크의 `.js` 파일을 직접 수정. 오프라인 개발에 최적.
 
----
-
-## 🛠️ Project Structure
-
-```text
-my-prototype/
-├── admin.html               # Prototype Page A
-├── mall.html                # Prototype Page B
-├── merchant.html            # Prototype Page C
-├── server.js                # Local persistence microservice (Node.js native zero-dep)
-├── start.sh                 # 1-click startup script
-└── assets/
-    ├── vendor/              # Third-party vendor assets
-    │   └── vditor/
-    │       ├── index.min.js # Vditor Core (Local offline support)
-    │       └── index.css    # Vditor Styles
-    └── js/
-        ├── prd-pin-tool.js  # Core Engine (V6 Vditor/Tab/3-State/i18n)
-        ├── prd-data-admin.js# Dedicated data for admin.html
-        ├── prd-data-mall.js # Dedicated data for mall.html
-        └── prd-data-merchant.js
-```
+## 🔒 읽기/쓰기 권한 분리 및 마스터 키 인증
+- **방문자 읽기 전용 (기본)**：인증 없이 핀, 마크다운 명세, Mermaid 다이어그램을 자유롭게 열람.
+- **작성자 인증 가드**：핀 추가, 명세 편집, 삭제, 가져오기, 버전 생성 시 마스터 키 인증 모달 강제 팝업.
 
 ---
 

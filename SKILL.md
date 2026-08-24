@@ -1,6 +1,6 @@
 ---
 name: pm-proto-prd-pin
-description: 为任意 HTML 原型一键植入「交互式 PRD 打点标注器与多版本规约生成系统」。严格遵循标准实现：全球 4 语言架构 (中/英/日/韩: zh-CN, en, ja, ko)、REST API 真实落盘与本地 JS 双层持久化、在原型元素上高精度十字准星打点标注 (打标时自动收起右侧抽屉)、智能展开弹窗/Tab精准定位、三态抽屉 (400px全展开 / 56px标号竖条半收起 / 0px全收起)、左侧双按钮控制组 (全收起+半收起朝内区隔)、集成 Vditor IR 即时渲染 Markdown 编辑器与多级 Tab/Shift+Tab 列表缩进、纯白底色 Mermaid 矢量图表引擎与动态防截断渲染、真正交互式可视化表格直编 (零管道符如同 Excel 点击单元格打字并支持快捷增删行列)、业务规约三大核心模板快速插入 (业务规则/状态机流程图/字段数据字典)、136px 绝对统一卡片高度与纯标题模糊搜索、右侧抽屉安全管理锁与置顶/移至依次瞬移顺延排序体系、生成整页可视化 PRD 文档大屏 (带大纲检索与独立新网页大屏/PDF导出)、大头针气泡独立生命周期、编辑器单一入口草稿暂存最小化胶囊 (右下角常驻悬浮保活与一键恢复)、以及多版本严格物理隔离与上传冲突解决模态框 (覆盖/追加/另存)。当用户提到「需求打点」「原型标注」「PRD标记」「元素打标」「交互规约生成」「给原型加上PRD功能」「大头针标注」时使用本 Skill。
+description: 为任意 HTML 原型一键植入「交互式 PRD 打点标注器与多版本规约生成系统」。严格遵循标准实现：全球 4 语言架构 (中/英/日/韩: zh-CN, en, ja, ko)、三模态持久化体系 (🔑Serverless 云端KV存储秒级同步 / ☁️GitHub Contents API 推送提交 / 💻本地 Node.js 磁盘直写)、读写分离与创立人 Master Key 身份鉴权强拦截矩阵 (无痕与访客只读保护)、在原型元素上高精度十字准星打点标注 (打标时自动收起右侧抽屉)、智能展开弹窗/Tab精准定位、三态抽屉 (400px全展开 / 56px标号竖条半收起 / 0px全收起)、左侧双按钮控制组 (全收起+半收起朝内区隔)、集成 Vditor IR 即时渲染 Markdown 编辑器与多级 Tab/Shift+Tab 列表缩进、纯白底色 Mermaid 矢量图表引擎与动态防截断渲染、真正交互式可视化表格直编 (零管道符如同 Excel 点击单元格打字并支持快捷增删行列)、业务规约三大核心模板快速插入 (业务规则/状态机流程图/字段数据字典)、136px 绝对统一卡片高度与纯标题模糊搜索、右侧抽屉安全管理锁与置顶/移至依次瞬移顺延排序体系、生成整页可视化 PRD 文档大屏 (带大纲检索与独立新网页大屏/PDF导出)、大头针气泡独立生命周期、编辑器单一入口草稿暂存最小化胶囊 (右下角常驻悬浮保活与一键恢复)、以及多版本严格物理隔离与上传冲突解决模态框 (覆盖/追加/另存)。当用户提到「需求打点」「原型标注」「PRD标记」「元素打标」「交互规约生成」「给原型加上PRD功能」「大头针标注」时使用本 Skill。
 agent_created: true
 ---
 
@@ -8,8 +8,8 @@ agent_created: true
 
 ## 📖 概述
 
-`pm-proto-prd-pin` 是一套**高保真、即插即用**的原型交互规约标注引擎（纯原生 Vanilla JS + CSS + Vditor IR 引擎 + Node/Python 本地持久化微服务）。
-它能为任何已有的静态 HTML 原型（后台管理系统、电商前台、移动端 H5 等）瞬间赋予专业的产品经理（PM）交互式打点标注、多版本管理、**集成 Vditor 即时渲染与 Tab 多级缩进工作台**、纯白 Mermaid 流程图动态防截断渲染、全景文档大屏展示与真实磁盘持久化能力。
+`pm-proto-prd-pin` 是一套**高保真、即插即用、生产就绪**的原型交互规约标注引擎（纯原生 Vanilla JS + CSS + Vditor IR 引擎 + Serverless 云端 KV / GitHub REST API / Node.js 本地微服务）。
+它能为任何已有的静态 HTML 原型（后台管理系统、电商前台、移动端 H5、PC 门户等）瞬间赋予专业的产品经理（PM）交互式打点标注、多版本管理、**集成 Vditor 即时渲染与 Tab 多级缩进工作台**、纯白 Mermaid 流程图动态防截断渲染、全景文档大屏展示以及**三模态持久化与权限强鉴权**能力。
 
 ---
 
@@ -27,93 +27,63 @@ agent_created: true
   - 抽屉顶部提供多语言切换下拉菜单，切换后即刻热重绘所有组件与徽标，并将偏好持久化至 `localStorage('prd_ui_lang')`；
 - **强制前置语言确认规范 (Mandatory Phase 0 Inception)**：
   - **在使用本 Skill 执行构建时，Agent 必须首先向用户确认期望使用的语言框架（中文 / 英文 / 日文 / 韩文）**；
-  - 最终生成出来的原型框架、`window.INITIAL_PRD_DATA` 初始需求规约数据、业务规则模板、以及表头字典，必须严格采用用户指定的对应语言！
+  - 最终生成出来的原型框架、初始需求规约数据、业务规则模板、以及表头字典，必须严格采用用户指定的对应语言！
 
 ---
 
-### Module 1: 💾 三模态持久化机制与 Serverless 云端 KV / GitHub 云端直写体系 (Tri-Engine Persistence)
+### Module 1: 💾 三模态持久化体系与架构实现对比 (Tri-Engine Persistence System)
+
 > 🌟 **核心战略价值 (Strategic Significance)**：  
-> 彻底解决传统 HTML 原型在静态托管平台（GitHub Pages / 纯前端静态服务器）上**「有展示、无后端、无法在线编辑、无法团队跨端协同」**的致命痛点。  
-> 提供了两套免后端云端持久化解决方案：  
-> 1. **🔑 Serverless Key-Value 云端存储适配器 (JSONBin / Custom KV)**：支持配置【恒久 Bin ID】与【专属 Secret Master Key】，实现免 Git 仓库提交的极速云端实时读写与跨浏览器秒级同步；  
-> 2. **☁️ GitHub Pages 零服务器云端直写 (GitHub Contents REST API)**：支持配置 Fine-Grained PAT，每次保存自动生成正式 Git Commit 写入代码仓库。
+> 彻底解决传统 HTML 原型在静态托管平台（GitHub Pages / 纯前端静态服务器 / 预览链接）上**「有展示、无后端、无法在线编辑、无法团队跨端协同」**的致命痛点。  
+> 提供了三套完整覆盖不同场景的持久化方案：
 
-- **🔑 Serverless Key-Value 云端存储适配器 (Remote KV Storage Adapter)**:
-  - **恒久 Bin ID (Public Read)**：作为公开只读标识，任何访客访问页面时，后台自动向云端拉取最新的打点与 PRD 规约并即时渲染；
-  - **创立人 Secret Master Key (Private Write)**：创立人输入专属 Master Key，即可解锁编辑权限，修改后自动通过 `PUT` 请求实时持久化至云端；
-  - **自动创建与绑定**：首次配置时若留空 Bin ID，系统自动向服务商创建新的永久公开 Bin 并完成自动绑定；
-> 🌟 **核心战略价值 (Strategic Significance)**：  
-> 彻底解决传统 HTML 原型在静态托管平台（GitHub Pages）上**「有展示、无后端、无法在线编辑、无法团队跨端协同」**的致命痛点。  
-> 借助本引擎，产品经理只需将原型托管在 GitHub Pages，即可在任意电脑/浏览器中直接打点、修改交互、导入历史版本；每一次修改自动通过 GitHub REST API 生成正式 Git Commit 持久化落盘，研发执行 `git pull` 即可无缝同步，**无需采购或维护任何云服务器与数据库**！
-
-- **☁️ GitHub Pages 零服务器云端直写架构 (Serverless GitHub Contents REST API)**:
-  - **👑 创立人身份强鉴权 (Repository & Owner Guard)**：
-    - 前端调用 `GET https://api.github.com/repos/{owner}/{repo}` 严格校验当前 Token 属于本仓库拥有者/协作者，且具备 `Contents: Read and write` 写入权限；
-    - **👁️ 访客全自动只读保护**：外部访客、设计或研发未认证时，自动进入【访客只读模式】，可全功能查阅打点、Mermaid 流程图、数据大纲与导出 PDF，但绝无权篡改数据；
-    - **全链路入口前置鉴权拦截**：在用户触发 **「📍 新增打点」**、**「⚙️ 排序管理」**、**「✏️ 编辑需求」**、**「📂 导入版本数据」**、以及版本增删的瞬间，前置探测权限并弹出环境指引，杜绝操作后报错；
-  - **⚡ 自动化精准 Commit 提交链路 (`getGitHubTargetFilePath`)**：
-    - 智能计算原型页面在仓库中的真实子目录路径（如 `platform/assets/js/prd-data-mall.js`），确保 Commit 精准更新页面正在加载的真实文件；
-    - 提交信息自动标注 `docs(prd): update annotations for {pageKey} [skip ci]`，自动跳过 GitHub Actions 冗余构建；
-- **⚡ 三模态环境智能自适应路由 (Tri-Mode Environment Routing)**:
-  1. **🟢 本地 Node 服务环境 (`http://localhost:*`)**：自动调用本地 `POST /api/save-prd` 写入本地磁盘；
-  2. **👑 GitHub Pages 线上环境 (`*.github.io`)**：自动切换为 GitHub REST API 创立人直连云端 Commit 模式；
-  3. **💻 静态离线/本地只读环境**：前置拦截并弹出双向指引弹窗（本地引导 `node server.js`，云端引导配置 Token）。
-- **☁️ GitHub Pages 零服务器云端直写架构 (Serverless GitHub Contents REST API)**:
-  - **创立人身份强鉴权 (Repository & Owner Guard)**：
-    - 前端调用 `GET https://api.github.com/repos/{owner}/{repo}` 校验当前用户是否为仓库创立人/拥有者，且必须具备 `permissions.push === true` 写入权限；
-    - **访客只读隔离**：未认证或非创立人访问时，界面保持纯粹的【👁️ 访客只读模式】，可自由查阅打点、Mermaid 图表与 PRD 文档，但绝无权篡改；
-    - **创立人极简配置**：提供 `👑 GitHub Pages 创立人认证与实时同步配置` 模态框，配置专属 Fine-Grained PAT（仅需 `Contents: Read and write` 权限），密钥仅保留在本地浏览器 `localStorage`，零第三方中转；
-  - **REST API 自动化 Commit 提交链路**：
-    - 点击保存或调整排序时，前端自动向 `PUT https://api.github.com/repos/{owner}/{repo}/contents/assets/js/prd-data-{pageKey}.js` 发送 Commit 请求；
-    - 提交信息自动标注 `docs(prd): update annotations for {pageKey} [skip ci]`，自动跳过 Actions 冗余构建；
-- **⚡ 三模态环境智能自适应路由 (Tri-Mode Environment Routing)**:
-  1. **🟢 本地 Node 服务环境 (`http://localhost:*`)**：自动调用本地 `POST /api/save-prd` 写入本地磁盘；
-  2. **👑 GitHub Pages 线上环境 (`*.github.io`)**：自动切换为 GitHub REST API 创立人直连云端 Commit 模式；
-  3. **👁️ 静态离线/只读环境**：点击新增或编辑时，前置弹出引导窗（本地引导 `node server.js`，线上引导创立人 Token 认证）。
-- **⚡ 前置服务健康探测与只读阻断拦截机制 (Pre-Action API Health Check & ReadOnly Guard)**:
-  - 在用户点击 **「📍 新增打点」**、**「⚙️ 排序管理」**、**「✏️ 编辑需求」** 或版本新建/复制/删除操作的瞬间，系统**提前异步探测后端接口健康状态**；
-  - 若处于静态只读预览环境（如 `file://` 协议或未启动本地服务的静态托管）：
-    - **直接弹出阻断弹窗**：提示 `⚠️ 未检测到本地持久化服务接口`，明确告知当前处于只读预览模式；
-    - **提供极简启动引导**：内置一键点击 `📋 复制启动命令 (node server.js)` 按钮；
-    - **彻底告别马后炮**：阻断进入打标拾取或排序模式，坚决杜绝让用户辛辛苦苦编辑完打点在最后保存时才弹窗报错！
-- **标准数据模型 (Data Schema)**：
-  ```typescript
-  interface PinItem {
-    id: number;              // 1..N 连续自然序号
-    title: string;           // 需求标题
-    type: '业务规则' | '交互逻辑' | '数据口径' | '权限规则' | '异常流' | 'UI规范';
-    desc: string;            // Markdown 格式内容 (支持表格/Mermaid/列表)
-    selector: string;        // 自愈弹性 CSS 选择器
-    rect: { top: number; left: number; width: number; height: number };
-    pageKey: string;         // 如 "merchant.html"
-    pageTitle: string;       // 如 "商家端后台"
-    version: string;         // 如 "v1.0.0"
-    updatedAt: string;       // ISO 时间戳
-  }
-
-  interface VersionRegistry {
-    activeVersion: string;
-    versions: {
-      [versionName: string]: PinItem[];
-    };
-  }
-  ```
-- **REST API 标准接口规范 (优先调用)**：
-  - `POST /api/save-prd`：
-    - **请求体 (Payload)**：`{ pageKey: string, version: string, data: PinItem[], versionRegistry: VersionRegistry }`
-    - **返回体 (Response)**：`{ success: true, message: "PRD data saved successfully" }`
-    - **保存成功反馈**：右下角弹出 Toast `✅ 需求规约已成功保存并写入本地 JS 文件！`；
-    - **保存失败反馈**：若未检测到本地服务接口（404/NetworkError），右下角弹出 Toast `❌ 保存失败：未检测到本地服务接口，无法写入本地磁盘 JS 文件！` 并提供一键下载备份；
-  - `GET /api/get-all-prd`：
-    - **返回体**：`{ success: true, registry: VersionRegistry }`
-  - `GET /api/get-prd?page=merchant.html`：
-    - **返回体**：`{ success: true, pins: PinItem[] }`
-- **本地静态文件持久化 (Fallback)**：
-  - 当无 Node.js 后端服务时，自动降级为 `localStorage` 缓存与点击「💾 导出 JS 数据」一键生成标准 `prd-data-[pageKey].js` 磁盘文件。
+| 方案 | 核心技术实现 | 读写延迟与快捷性 | 适用场景与权衡 (Trade-offs) |
+| :--- | :--- | :--- | :--- |
+| **🔑 方案 1：Serverless 云端 KV 存储打点 (JSONBin.io / 自建 KV) —— 【强烈推荐 / 最快捷】** | 基于 RESTful JSONBin API 架构：<br>• 读：`GET /v3/b/{binId}/latest?_t=timestamp`<br>• 写：`PUT /v3/b/{binId}` 带 `X-Master-Key` | **极速 (200~300ms)**<br>秒级实时直读直写，零构建等待，抗浏览器缓存 | **首选推荐**：静态托管（GitHub Pages / Vercel）、多端协同、移动端测试。零服务器运维成本，天然读写权限分离。 |
+| **☁️ 方案 2：GitHub Contents API 推送打点 (Git Commit 模式)** | 基于 GitHub REST API：<br>调用 `PUT /repos/{owner}/{repo}/contents/{filePath}`，将打点 Base64 编码后生成正式 Git Commit 提交入库 | **较慢 (1~3 秒)**<br>需经历 GitHub API 网络调用、生成 Commit 节点与分支推进 | **代码库一体化归档**：需要完整 Git Commit 审计记录与提交历史的场景。**注意：由于走 Git 推送流程耗时较长，且若依赖 GitHub Pages 重新部署构建生效周期较长**。 |
+| **💻 方案 3：本地 Node.js 磁盘直写打点 (Local Node 模式)** | 本地启动 `node server.js` 微服务，前端通过 `POST /api/save-prd` 调用 fs 模块直接修改磁盘上的物理 `prd-data-*.js` 文件 | **极快 (10~50ms)**<br>本机 localhost 内部直接落盘 | **纯脱机独立开发**：无外网网络、企业保密内网、纯本地研发环境。 |
 
 ---
 
-### Module 2: 📍 交互式十字准星打点与智能空间锚定 (Pinning & Spatial Anchoring Engine)
+### Module 2: 🔒 读写权限分离与创立人 Master Key 身份鉴权架构 (Auth & Permission Guard)
+
+为防止外部人员、评审方或访客恶意篡改线上 PRD 原型规约，系统实现了**严格的读写权限物理隔离**：
+
+```mermaid
+graph TD
+    UserAction["用户触发敏感操作<br>(📍 新增打点 / ✏️ 编辑规约 / 🗑️ 删除 / 📂 导入 / 🔀 新建版本 / ⚙️ 排序管理)"] --> AuthCheck{"当前会话是否已输入 Master Key 解锁？"}
+    
+    AuthCheck -->|❌ 未解锁 (无痕/访客/全新打开)| PopAuthModal["【强制弹出 🔒 创立人身份鉴权弹窗】<br>展示当前项目模式与绑定的云端 Bin ID"]
+    PopAuthModal --> EnterKey["输入专属 API Key / Master Key"]
+    EnterKey --> VerifyCloud["向云端发起真实鉴权写入验证"]
+    VerifyCloud -->|✅ 验证通过| UnlockSession["当前会话解锁 (sessionStorage)<br>自动执行刚刚点击的操作并开放全量编辑工作台"]
+    
+    AuthCheck -->|✅ 已解锁 (当前会话已授权)| Proceed["直接执行操作并写入持久化数据"]
+```
+
+1. **👁️ 访客只读模式（默认免密）**：
+   - 任何访客、设计、测试或研发人员打开页面，系统自动从云端或底包加载最新打点、富文本 Markdown、Mermaid 流程图与数据字典；
+   - 访客可全功能查阅、检索、定位发光框、查看气泡、全屏浏览 PRD 大屏、导出 PDF，但无权修改；
+2. **🔒 创立人身份强鉴权拦截矩阵（100% 敏感操作拦截）**：
+   - 无论在公网环境还是在本地无痕模式下打开，触发以下任一操作时系统**立即前置弹出 `🔒 创立人身份鉴权` 模态框**：
+     - 📍 **新增组件打点**（`setPRDMode('pick')`）
+     - ✏️ **打开规约编辑窗**（`openEditorForPin(id)`）
+     - 🗑️ **删除需求点**（`deletePin(id)`）
+     - 📂 **导入 PRD 文件**（`handlePRDImportFile()`）
+     - 🔀 **新建版本**（`createPRDVersion(ver)`）
+     - 🗑️ **删除版本**（`deletePRDVersion(ver)`）
+     - ⚙️ **排序管理模式**（`toggleDrawerManageMode()`）
+3. **🔑 Master Key 云端真实验证与会话保活**：
+   - 创立人输入 Key 后，系统向云端发起真实鉴权验证；
+   - 验证通过后将授权状态注入当前浏览器的 `sessionStorage`，当前会话即刻解锁全量编辑工作台；
+   - 关闭无痕窗口或标签页后会话自动重置，防止 Key 遗留泄露。
+4. **⚡ 绝对单一排他模式（Strict Single Mode Exclusivity）**：
+   - 当项目锁定为 `jsonbin` 模式时，哪怕在 `localhost` 打开也绝对禁止调用本地 `/api/save-prd` 写入磁盘，100% 仅向云端 JSONBin 同步；
+   - 彻底杜绝多端或本地产生的交叉覆盖与脏数据。
+
+---
+
+### Module 3: 📍 交互式十字准星打点与智能空间锚定 (Pinning & Spatial Anchoring Engine)
 - **十字准星拾取器 (`bindPickListeners`)**：
   - 点击「📍 新增打点」进入打标模式，鼠标指针变为 `crosshair`，底层元素高亮蓝色虚线框；
   - **打标时自动收起右侧抽屉**：进入十字准星打标模式时，右侧抽屉**自动完全收起**，折叠为边缘胶囊 `📍 点击页面组件打标 (ESC退出)`，彻底杜绝侧边栏遮挡底层页面组件；
@@ -127,7 +97,7 @@ agent_created: true
 
 ---
 
-### Module 3: ✍️ Vditor IR 即时渲染与多级缩进工作台 (Vditor IR Editor Workbench)
+### Module 4: ✍️ Vditor IR 即时渲染与多级缩进工作台 (Vditor IR Editor Workbench)
 - **三方组件集成架构 (Vditor Instant Rendering Engine)**：
   - **双通道资源加载机制 (`ensureVditorLoaded`)**：
     - 优先读取本地静态资源：`assets/vendor/vditor/index.min.js` 与 `assets/vendor/vditor/index.css`；
@@ -154,7 +124,7 @@ agent_created: true
 
 ---
 
-### Module 4: 🗂️ 三态抽屉与左边缘双按钮控制体系 (3-State Drawer & Dual Inward Handles)
+### Module 5: 🗂️ 三态抽屉与左边缘双按钮控制体系 (3-State Drawer & Dual Inward Handles)
 - **左边缘双按钮控制把手组 (朝内指向抽屉，颜色与功能清晰区隔)**：
   - **上方按钮 (全收起)**：深色科技质感（`#0f172a`）+ 朝内向右箭头 `›`，点击完全收起抽屉；
   - **下方按钮 (半收起)**：专业亮蓝质感（`#2563eb`）+ 朝内紧凑标号条图标 `⇥`，点击收窄为 56px 纯数字标号竖条；
@@ -174,10 +144,10 @@ agent_created: true
 
 ---
 
-### Module 5: 🔒 排序管理安全锁与依次顺延瞬移体系 (Sequential Cascade Reordering)
+### Module 6: 🔒 排序管理安全锁与依次顺延瞬移体系 (Sequential Cascade Reordering)
 - **日常安全浏览模式（默认）**：
   - 卡片隐藏排序/删除按钮，禁用拖拽，彻底防止日常查阅和定位误触；
-- **排序与删除管理模式（点击 `⚙️ 排序管理` 开启）**：
+- **排序与删除管理模式（点击 `⚙️ 排序管理` 开启，需创立人鉴权）**：
   - 抽屉浮现提示条与 `✓ 完成退出` 按钮；
   - **智能连续排序与依次瞬移顺延**：
     - `🔝 置顶`：直接将目标项瞬移至第 1 项，后续所有项目**自动依次向下顺延 (1 -> 2 -> 3...)**；
@@ -188,7 +158,7 @@ agent_created: true
 
 ---
 
-### Module 6: 🏷️ 严格多版本物理隔离与导入冲突控制 (Multi-Version & Import Resolver)
+### Module 7: 🏷️ 严格多版本物理隔离与导入冲突控制 (Multi-Version & Import Resolver)
 - **版本数据模型与向后兼容**：
   - 统一由 `versionRegistry` 全局维护：
     ```javascript
@@ -213,7 +183,7 @@ agent_created: true
 
 ---
 
-### Module 7: 📑 全景 PRD 文档大屏与交付导出 (PRD Document Screen & Export)
+### Module 8: 📑 全景 PRD 文档大屏与交付导出 (PRD Document Screen & Export)
 - **抽屉常驻入口**：右侧抽屉底部常驻 `📑 查看完整PRD` 按钮；
 - **独立新网页打开 (`↗️ 在新网页打开`)**：
   - 在独立新标签页中打开纯净 PRD 大屏文档，带固定 TOC 目录大纲；
@@ -239,9 +209,9 @@ my-prototype/
     │       ├── index.min.js # Vditor 核心引擎 (本地离线支持)
     │       └── index.css    # Vditor 核心样式
     └── js/
-        ├── prd-pin-tool.js  # 核心引擎 (V6 Vditor工作台/Tab缩进/三态抽屉/多版本/多语言)
-        ├── prd-data-admin.js# admin.html 专属数据文件
-        ├── prd-data-mall.js # mall.html 专属数据文件
+        ├── prd-pin-tool.js  # 核心引擎 (V6 Vditor工作台/Tab缩进/三态抽屉/三模态持久化/多语言)
+        ├── prd-data-admin.js# admin.html 专属数据底包
+        ├── prd-data-mall.js # mall.html 专属数据底包
         ├── prd-data-merchant.js
         ├── prd-data-h5.js
         └── prd-data-merchant-h5.js
