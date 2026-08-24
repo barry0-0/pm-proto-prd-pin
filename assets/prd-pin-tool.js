@@ -870,47 +870,45 @@
     "mall.html": "6a8b9f88da38895dfe088cde",
     "merchant.html": "6a8b9f89f5f4af5e293a1f2a",
     "merchant-h5.html": "6a8b9f89da38895dfe088cdf",
-    "h5.html": "6a8b9f8ada38895dfe088ce0"
+    "h5.html": "6a8b9f8ada38895dfe088ce0",
+    "预警信息_押品预警信息": "6a8bfab8da38895dfe09944d",
+    "预警信息_设备预警信息": "6a8bfab8da38895dfe09944d",
+    "default": "6a8bfab8da38895dfe09944d"
   };
 
-  function getKVStorageConfig() {
-    const defaultBin = DEFAULT_JSONBIN_MAPPING[pageKey] || '';
-    try {
-      // 1. 优先读取当前会话（Session）的解锁状态
-      const sessionKey = sessionStorage.getItem('prd_jsonbin_session_key');
-      if (sessionKey) {
-        return {
-          provider: 'jsonbin',
-          binId: defaultBin,
-          secretKey: sessionKey,
-          customUrl: '',
-          isVerified: true
-        };
-      }
+    window.getKVStorageConfig = function getKVStorageConfig() {
+    const getKVStorageConfig = window.getKVStorageConfig;
+    let defaultBin = DEFAULT_JSONBIN_MAPPING[pageKey] || DEFAULT_JSONBIN_MAPPING['default'] || '';
+    let cachedBin = '';
+    let cachedSecretKey = '';
+    let isVerified = false;
+    let customUrl = '';
 
-      // 2. 读取持久化缓存
+    try {
       const cached = localStorage.getItem(KV_STORAGE_KEY) || localStorage.getItem('prd_kv_config_global');
       if (cached) {
         const parsed = JSON.parse(cached);
-        if (parsed && parsed.secretKey && parsed.isVerified) {
-          return {
-            provider: 'jsonbin',
-            binId: parsed.binId || defaultBin,
-            secretKey: parsed.secretKey,
-            customUrl: parsed.customUrl || '',
-            isVerified: true
-          };
+        if (parsed) {
+          if (parsed.binId) cachedBin = parsed.binId;
+          if (parsed.secretKey) cachedSecretKey = parsed.secretKey;
+          if (parsed.customUrl) customUrl = parsed.customUrl;
+          if (parsed.isVerified) isVerified = true;
         }
       }
     } catch (e) {}
 
-    // 无痕模式或未鉴权访客：默认只读，无 secretKey，必须走鉴权弹窗
+    const sessionBin = sessionStorage.getItem(`prd_jsonbin_session_bin_${pageKey}`) || sessionStorage.getItem('prd_jsonbin_session_bin_global');
+    const sessionKey = sessionStorage.getItem('prd_jsonbin_session_key');
+
+    const finalBinId = sessionBin || cachedBin || defaultBin;
+    const finalSecretKey = sessionKey || cachedSecretKey || '';
+
     return {
       provider: 'jsonbin',
-      binId: defaultBin,
-      secretKey: '',
-      customUrl: '',
-      isVerified: false
+      binId: finalBinId,
+      secretKey: finalSecretKey,
+      customUrl: customUrl || '',
+      isVerified: Boolean(finalSecretKey && (isVerified || sessionKey))
     };
   }
 
@@ -919,6 +917,13 @@
       const dataStr = JSON.stringify(config);
       localStorage.setItem(KV_STORAGE_KEY, dataStr);
       localStorage.setItem('prd_kv_config_global', dataStr);
+      if (config.binId) {
+        sessionStorage.setItem(`prd_jsonbin_session_bin_${pageKey}`, config.binId);
+        sessionStorage.setItem('prd_jsonbin_session_bin_global', config.binId);
+      }
+      if (config.secretKey) {
+        sessionStorage.setItem('prd_jsonbin_session_key', config.secretKey);
+      }
     } catch (e) {}
   }
 
@@ -3515,7 +3520,8 @@
   }
 
   // 4. 多版本数据持久化落盘
-  async function persistData() {
+  window.persistData = async function persistData() {
+    const persistData = window.persistData;
     reIndexPins(savedPins);
     versionRegistry.activeVersion = currentVersion;
     versionRegistry.versions[currentVersion] = savedPins;

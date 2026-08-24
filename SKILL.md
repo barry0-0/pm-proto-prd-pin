@@ -68,7 +68,11 @@ agent_created: true
 
 ---
 
-### Module 1: 💾 三模态持久化体系与一键无缝数据迁移 (Tri-Engine Persistence & Seamless Data Migration)
+### Module 1: 💾 三模态持久化体系、一键数据迁移与跨浏览器免密直读架构 (Tri-Engine Persistence & Zero-Config Cloud Sync)
+
+> 🌟 **跨浏览器/多端免密实时同步核心架构原理 (Cross-Browser Zero-Config Protocol)**：  
+> 1. **创立人写入流程 (Creator Write Flow)**：创立人通过专属 Master Key 向指定的云端 Bin 发送 `PUT` 请求，成功后数据即时在 JSONBin 全球 CDN 上更新；  
+> 2. **团队/访客免密直读流程 (Visitor Zero-Config Read Flow)**：代码中通过 `DEFAULT_JSONBIN_MAPPING` 内置该项目或各页面的公开只读 Bin ID。**任何团队成员、评审方、或在任意新电脑、新浏览器（包括无痕模式）打开时，无需输入任何 Key 或进行任何配置，系统在页面启动时自动秒级拉取最新规约并热重绘**，实现真正的「一次配置、全员秒读、权限隔离、云端协同」！
 
 > 🌟 **核心战略价值 (Strategic Significance)**：  
 > 彻底解决传统 HTML 原型与 SPA 页面在静态托管平台（GitHub Pages / 纯前端静态服务器 / 预览链接）上**「有展示、无后端、无法在线编辑、无法团队跨端协同」**的致命痛点。  
