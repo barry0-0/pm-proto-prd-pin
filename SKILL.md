@@ -70,6 +70,12 @@ agent_created: true
 
 ### Module 1: 💾 三模态持久化体系、一键数据迁移与跨浏览器免密直读架构 (Tri-Engine Persistence & Zero-Config Cloud Sync)
 
+> 🌟 **云端强确认后置缓存核心原则 (Post-Cloud Confirmation Cache Principle)**：  
+> 1. **严禁前置假保存**：严禁在云端请求返回前静默写入 `localStorage` 假装保存成功；  
+> 2. **真实 HTTP 200 强校验**：必须在收到云端 Serverless KV 返回的 `HTTP 200 OK` 且携带合法 `record` / `metadata` 实体后，才允许将数据镜像写入 `localStorage` 作为客户端离线/秒开缓存；  
+> 3. **失败原子回滚**：若云端网络超时或鉴权失败，系统立即阻断并自动回滚内存状态，弹出红色错误 Toast，杜绝本地与云端数据不一致；  
+> 4. **跨浏览器/多端免密直读**：代码中通过 `DEFAULT_JSONBIN_MAPPING` 固化绑定公开只读 Bin ID，任何同事、评审方在新电脑/新浏览器（含无痕模式）中打开，启动时自动从该 Bin ID 秒级拉取最新规约，实现真正的「全员零配置直读、创立人权限写入」。
+
 > 🌟 **跨浏览器/多端免密实时同步核心架构原理 (Cross-Browser Zero-Config Protocol)**：  
 > 1. **创立人写入流程 (Creator Write Flow)**：创立人通过专属 Master Key 向指定的云端 Bin 发送 `PUT` 请求，成功后数据即时在 JSONBin 全球 CDN 上更新；  
 > 2. **团队/访客免密直读流程 (Visitor Zero-Config Read Flow)**：代码中通过 `DEFAULT_JSONBIN_MAPPING` 内置该项目或各页面的公开只读 Bin ID。**任何团队成员、评审方、或在任意新电脑、新浏览器（包括无痕模式）打开时，无需输入任何 Key 或进行任何配置，系统在页面启动时自动秒级拉取最新规约并热重绘**，实现真正的「一次配置、全员秒读、权限隔离、云端协同」！
@@ -145,6 +151,9 @@ graph TD
 ---
 
 ### Module 4: ✍️ Vditor IR 即时渲染与多级缩进工作台 (Vditor IR Editor Workbench)
+- **独立自包含原生 Toast 浮动反馈系统 (`#prd-global-toast-container`)**：
+  - 彻底解耦外部环境，内建原生浮动 Toast UI 容器（`z-index: 10000099`），不依赖任何第三方 UI 库或 `window.UI`；
+  - 在保存、删除、模式切换、鉴权拦截等关键操作节点提供翡翠绿/珊瑚红/深空灰渐变的高可见度即时反馈；
 - **三方组件集成架构 (Vditor Instant Rendering Engine)**：
   - **双通道与 SPA 绝对路径加载机制 (`ensureVditorLoaded`)**：
     - 采用绝对根路径与 CDN 双通道加载，杜绝 React / Vue 深层 SPA 嵌套路由下相对路径 404（HTML 污染）导致 CSS 失效；

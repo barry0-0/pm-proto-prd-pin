@@ -105,7 +105,11 @@ To prevent unauthorized tampering on public or hosted prototypes:
 
 ---
 
-## 🌟 三模态持久化体系与跨浏览器免密直读架构
+## 🌟 三模态持久化体系与云端强确认后置缓存原则
+
+- **云端强确认后置缓存原则 (Post-Cloud Confirmation)**：严禁前置假成功写入，必须经由真实 HTTP 200 强校验后方才同步更新本地离线镜像；若云端同步失败则立即触发原子回滚并弹窗报错；
+- **自包含原生 Toast 反馈引擎**：内建独立的 `#prd-global-toast-container`，杜绝依赖任何外部宿主 UI 库；
+- **跨浏览器全员零配置直读**：通过代码内置的 `DEFAULT_JSONBIN_MAPPING` 绑定云端 Bin ID，任何新浏览器或访客打开页面，启动时自动秒级拉取最新打点规约，无需配置任何密钥。
 
 - **跨浏览器全员零配置直读**：通过代码内置的 `DEFAULT_JSONBIN_MAPPING` 绑定云端 Bin ID，任何新浏览器或访客打开页面，启动时自动秒级拉取最新打点规约，无需配置任何密钥；
 - **创立人权限写入与实时同步**：创立人输入 Master Key 即可直接向云端 Bin 执行秒级落盘写入。
