@@ -33,6 +33,10 @@ agent_created: true
 
 ### Phase 0.5: 🧩 跨框架自主感知与前置确认协议 (Autonomous Framework Detection & Inception)
 
+> 🌟 **核心铁律 (Strict Zero-HTML Generation In Modern Frameworks)**：  
+> **当识别到项目为 React (Vite / Next.js / CRA) 或 Vue (Vue 2/3 / Nuxt) 等现代前端 SPA 工程时，严禁生成任何独立的 `.html` 原型文件！**  
+> 现代工程已有完整的组件与路由体系，打点工具仅作为全局外挂图层（通过 `main.tsx` / `main.js` 导入），实现零新增 HTML、零模板污染、零业务侵入。
+
 > 🌟 **核心规范 (Core Protocol)**：  
 > 本引擎具备跨技术栈自适应能力。在执行打点工具集成前，Agent 必须执行两步感知与确认流程：
 
@@ -44,14 +48,23 @@ agent_created: true
 2. **Step 2: 无法确定框架时的强制前置确认 (Interactive Clarification Fallback)**：
    - **若项目中无 `package.json` 或无法明确推断框架体系，Agent 必须向用户发起明确提问**：
      > 💬 *“请问当前项目采用的是什么前端框架？（HTML 静态原型 / Vue 2/3 / React / Next.js / Nuxt）以及 PRD 打点标注工具需要应用在哪些页面或模块？（全局所有路由页面 / 仅特定业务端页面）”*
-3. **Step 3: 各框架精准接入指导**：
-   - **HTML 静态原型**：在对应页面 `</body>` 闭合前直接引入 `<script src="./assets/js/prd-pin-tool.js"></script>`；
-   - **Vue 2 / Vue 3 (Vite / Webpack / Nuxt)**：
-     - 在全局入口 `main.js` / `main.ts` 中引入：`import './assets/js/prd-pin-tool.js';`；
-     - 或在 `index.html` 模板中全局挂载；
-   - **React (React 18 / Next.js / CRA / Vite)**：
-     - 在全局入口 `index.tsx` / `App.tsx` / `app/layout.tsx` 中引入：`import './assets/js/prd-pin-tool.js';`；
-     - 支持按需仅在开发/预览环境注入：`if (process.env.NODE_ENV !== 'production') import('./assets/js/prd-pin-tool.js');`。
+3. **Step 3: 各框架精准接入指导 (严禁跨形态误生成文件)**：
+   - **React 工程 (Vite / Next.js / CRA / React 18)**：
+     - 🚫 **严禁新建任何 `.html` 页面文件**；
+     - 资源放置：将 `prd-pin-tool.js` 与 `vendor/vditor` 置于 `public/assets/js/` 和 `public/assets/vendor/`；
+     - 入口引入：在 `src/main.tsx` 或 `src/App.tsx` 中写入：
+       ```tsx
+       import '../public/assets/js/prd-pin-tool.js';
+       ```
+     - 零修改 `index.html`，零侵入原有业务组件。
+   - **Vue 工程 (Vue 2 / Vue 3 / Vite / Nuxt)**：
+     - 🚫 **严禁新建任何 `.html` 页面文件**；
+     - 入口引入：在 `src/main.js` 或 `src/main.ts` 中写入：
+       ```javascript
+       import '../public/assets/js/prd-pin-tool.js';
+       ```
+   - **纯静态 HTML 原型 (Vanilla Multi-Page HTML)**：
+     - 仅在纯静态 HTML 仓库中，才在各 HTML 页面 `</body>` 闭合前引入 `<script src="./assets/js/prd-pin-tool.js"></script>`。
 
 ---
 

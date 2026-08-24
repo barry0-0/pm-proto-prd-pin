@@ -94,6 +94,7 @@ To prevent unauthorized tampering on public or hosted prototypes:
 
 ## ⚛️ 跨框架兼容架构 (HTML / Vue / React) 与自主工程感知
 
+- **🚫 SPA 工程严禁生成冗余 HTML (Zero-HTML In React/Vue)**：在 React/Vue 现代工程中，绝对禁止生成任何独立的 `.html` 页面，仅在全局入口（`main.tsx` / `main.js`）以一行 `import` 挂载，零 HTML 污染；
 - **工程架构自主嗅探 (Autonomous Inspection)**：自动检查 `package.json`、Vite/Webpack 插件及文件类型，智能识别当前工程是 **HTML 静态原型**、**Vue.js (Vue 2/3/Nuxt)** 还是 **React (React 18/Next.js)**；
 - **未能识别时的前置提问协议**：若无法推断框架，Agent 自动前置发起询问：确认所用技术栈及 PRD 打点需应用的页面/模块；
 - **SPA 客户端路由热感知**：自动代理全局 `history.pushState` / `popstate`，Vue Router / React Router 无刷新切页时自动切换打点数据；
