@@ -1831,39 +1831,42 @@
   };
 
   async function checkBackendApiAvailable(force = false) {
-    if (!force && isBackendApiCached !== null) {
-      return isBackendApiCached;
+    if (!force && isBackendApiCached !== null) return isBackendApiCached;
+
+    const activeMode = getActiveSyncMode();
+
+    if (activeMode === 'jsonbin') {
+      const kv = getKVStorageConfig();
+      const isOk = !!(kv && kv.secretKey);
+      isBackendApiCached = isOk;
+      return isOk;
     }
 
-    // 1. 优先探测本地 Node.js 持久化服务
-    if (window.location.protocol !== 'file:') {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1200);
-        const res = await fetch('/api/get-all-prd', {
-          method: 'GET',
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          isBackendApiCached = true;
-          return true;
-        }
-      } catch (e) {}
+    if (activeMode === 'github') {
+      const gh = getGitHubConfig();
+      const isOk = !!(gh && gh.token);
+      isBackendApiCached = isOk;
+      return isOk;
     }
 
-    // 2. 探测是否配置了有效的 GitHub 创立人 Token
-    const gh = getGitHubConfig();
-    if (gh && gh.token) {
-      isBackendApiCached = true;
-      return true;
-    }
-
-    // 3. 探测是否配置了有效的云端 KV Secret Key 授权
-    const kv = getKVStorageConfig();
-    if (kv && kv.secretKey) {
-      isBackendApiCached = true;
-      return true;
+    if (activeMode === 'local') {
+      if (window.location.protocol !== 'file:') {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 1200);
+          const res = await fetch('/api/get-all-prd', {
+            method: 'GET',
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            isBackendApiCached = true;
+            return true;
+          }
+        } catch (e) {}
+      }
+      isBackendApiCached = false;
+      return false;
     }
 
     isBackendApiCached = false;
@@ -3436,39 +3439,16 @@
       window.PRD_VERSION_REGISTRY = versionRegistry;
     } catch (e) {}
 
-    // 1. 尝试通过本地 Node.js 接口写入磁盘
-    if (window.location.protocol !== 'file:') {
-      try {
-        const resp = await fetch('/api/save-prd', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ page: pageKey, data: savedPins, versionRegistry: versionRegistry })
-        });
-        if (resp.ok) {
-          const resJson = await resp.json();
-          if (resJson && resJson.success) return true;
-        }
-      } catch (e) {}
-    }
+    const activeMode = getActiveSyncMode();
 
-    // 2. 尝试通过 GitHub Contents REST API 直接提交 Commit 持久化
-    const gh = getGitHubConfig();
-    if (gh && gh.token && gh.owner && gh.repo) {
-      try {
-        showToast(t('ghSavingToGithub'), 'info');
-        const jsFileContent = `/**\n * PRD 需求数据 - ${pageKey}\n * GitHub Pages 实时保存于: ${new Date().toLocaleString()}\n */\nwindow.INITIAL_PRD_DATA = ${JSON.stringify(savedPins, null, 2)};\nwindow.PRD_VERSION_REGISTRY = ${JSON.stringify(versionRegistry, null, 2)};\n`;
-        const filePath = getGitHubTargetFilePath(pageKey);
-        await saveToGitHubApi(gh.owner, gh.repo, gh.branch || 'main', filePath, gh.token, jsFileContent);
-        showToast(t('ghSaveSuccess'), 'success');
-        return true;
-      } catch (ghErr) {
-        showToast(`❌ GitHub 同步失败: ${ghErr.message}`, 'error');
+    // 模式 1: 🔑 云端 KV 存储打点 (JSONBin.io)
+    // 严格单一排他：哪怕在 localhost 打开，也绝不调用本地 /api/save-prd，只写入云端 JSONBin
+    if (activeMode === 'jsonbin') {
+      const kv = getKVStorageConfig();
+      if (!kv || !kv.secretKey) {
+        showToast('⚠️ 未配置有效的 JSONBin Master Key，保存失败', 'error');
+        return false;
       }
-    }
-
-    // 3. 尝试通过云端 KV 中间存储（JSONBin / Custom KV）实时持久化
-    const kv = getKVStorageConfig();
-    if (kv && kv.secretKey) {
       try {
         showToast(t('kvSyncingToast'), 'info');
         await saveRemoteKVData(kv.binId, kv.secretKey, {
@@ -3481,7 +3461,54 @@
         return true;
       } catch (kvErr) {
         showToast(`❌ 云端 KV 同步失败: ${kvErr.message}`, 'error');
+        return false;
       }
+    }
+
+    // 模式 2: ☁️ GitHub 推送打点 (Git Commit)
+    // 严格单一排他：只调用 GitHub Contents REST API 生成 Commit
+    if (activeMode === 'github') {
+      const gh = getGitHubConfig();
+      if (!gh || !gh.token || !gh.owner || !gh.repo) {
+        showToast('⚠️ 未配置有效的 GitHub Token，保存失败', 'error');
+        return false;
+      }
+      try {
+        showToast(t('ghSavingToGithub'), 'info');
+        const jsFileContent = `/**\n * PRD 需求数据 - ${pageKey}\n * GitHub Pages 实时保存于: ${new Date().toLocaleString()}\n */\nwindow.INITIAL_PRD_DATA = ${JSON.stringify(savedPins, null, 2)};\nwindow.PRD_VERSION_REGISTRY = ${JSON.stringify(versionRegistry, null, 2)};\n`;
+        const filePath = getGitHubTargetFilePath(pageKey);
+        await saveToGitHubApi(gh.owner, gh.repo, gh.branch || 'main', filePath, gh.token, jsFileContent);
+        showToast(t('ghSaveSuccess'), 'success');
+        return true;
+      } catch (ghErr) {
+        showToast(`❌ GitHub 同步失败: ${ghErr.message}`, 'error');
+        return false;
+      }
+    }
+
+    // 模式 3: 💻 本地 Node.js 服务模式
+    // 严格单一排他：只调用本地 /api/save-prd 写入磁盘，不写云端
+    if (activeMode === 'local') {
+      if (window.location.protocol === 'file:') {
+        showToast('❌ file:// 静态协议下无法使用本地服务模式，请在终端运行 node server.js 并在 http://localhost 打开', 'error');
+        return false;
+      }
+      try {
+        const resp = await fetch('/api/save-prd', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ page: pageKey, data: savedPins, versionRegistry: versionRegistry })
+        });
+        if (resp.ok) {
+          const resJson = await resp.json();
+          if (resJson && resJson.success) {
+            showToast(t('saveSuccessToast'), 'success');
+            return true;
+          }
+        }
+      } catch (e) {}
+      showToast('❌ 本地 Node.js 写入服务未连接 (请检查 node server.js)', 'error');
+      return false;
     }
 
     return false;
