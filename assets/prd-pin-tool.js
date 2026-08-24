@@ -1751,9 +1751,15 @@
         <div style="padding:20px; font-size:12.5px; line-height:1.6; color:#334155; display:flex; flex-direction:column; gap:14px;">
           <div>${t('onlineAuthDesc')}</div>
 
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 14px; font-size:12px; display:flex; justify-content:space-between; align-items:center;">
-            <span style="color:#64748b;">当前项目锁定模式：</span>
-            <span style="font-weight:700; color:#0284c7;">${escapeHtml(modeName)}</span>
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; font-size:12px; display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="color:#64748b;">当前项目锁定模式：</span>
+              <span style="font-weight:700; color:#0284c7;">${escapeHtml(modeName)}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #e2e8f0; padding-top:6px; font-family:monospace; font-size:11.5px;">
+              <span style="color:#64748b;">绑定云端数据源：</span>
+              <span style="color:#0f172a; font-weight:700;">${activeMode==='jsonbin' ? `Bin ID: ${getKVStorageConfig().binId || '默认'}` : `Repo: ${getGitHubConfig().owner}/${getGitHubConfig().repo}`}</span>
+            </div>
           </div>
 
           <div>
