@@ -52,7 +52,14 @@
         "envLocalCopied": "✅ 已复制命令: node server.js",
         "envLocalConfigGh": "☁️ 配置 GitHub 云端直写",
         "envLocalGotIt": "知道了",
-                    kvModalTitle: '🔑 云端 KV 存储与恒久 Key 授权配置',
+                          onlineAuthTitle: '🔒 创立人身份鉴权 (输入 API Key 解锁编辑)',
+      onlineAuthDesc: '当前页面处于线上托管环境，为防止外部人员随意篡改原型规约，<strong>必须输入在本地配置的相同 API Key (或 Secret Key)</strong> 以解锁增删改查与导入权限。',
+      onlineAuthKeyLabel: '🔑 创立人专属 API Key (与本地配置一致)',
+      onlineAuthKeyPlaceholder: '请输入本地配置的相同 API Key / Master Key',
+      onlineAuthSubmitBtn: '🔓 验证 Key 并解锁编辑权限',
+      onlineAuthSuccessToast: '✅ 创立人身份验证通过，已解锁全量编辑工作台！',
+      onlineAuthFailedToast: '❌ 验证失败：输入的 API Key 与当前项目不匹配或无效',
+      kvModalTitle: '🔑 云端 KV 存储与恒久 Key 授权配置',
       kvModalDesc: '配置云端 Key-Value 中间存储（如 JSONBin.io 或自定义 KV 接口），即可实现<strong>【零服务器、跨端秒级同步、恒久 Key 写入授权】</strong>的云端持久化能力。',
       kvProviderLabel: '📦 存储服务提供商',
       kvBinIdLabel: '🆔 恒久公共读取 ID (Bin ID / App ID)',
@@ -236,7 +243,14 @@
         "envLocalCopied": "✅ Copied command: node server.js",
         "envLocalConfigGh": "☁️ Configure GitHub Cloud Sync",
         "envLocalGotIt": "Got it",
-                    kvModalTitle: '🔑 Serverless KV Cloud Storage & Permanent Key Auth',
+                          onlineAuthTitle: '🔒 Creator Authentication (Enter API Key)',
+      onlineAuthDesc: 'This prototype is online. To prevent unauthorized modifications, <strong>you must enter the same API Key configured in your local environment</strong> to unlock editing, reordering, and importing.',
+      onlineAuthKeyLabel: '🔑 Creator API Key (Same as local config)',
+      onlineAuthKeyPlaceholder: 'Enter the same API Key / Master Key configured locally',
+      onlineAuthSubmitBtn: '🔓 Verify Key & Unlock Editing',
+      onlineAuthSuccessToast: '✅ Creator authenticated! Editing workbench unlocked.',
+      onlineAuthFailedToast: '❌ Verification failed: Invalid API Key or mismatch',
+      kvModalTitle: '🔑 Serverless KV Cloud Storage & Permanent Key Auth',
       kvModalDesc: 'Configure an intermediate Key-Value cloud store (JSONBin.io or custom KV API) for <strong>[Zero-Server, Instant Cross-Device Sync, Permanent Key Auth]</strong>.',
       kvProviderLabel: '📦 Cloud KV Provider',
       kvBinIdLabel: '🆔 Permanent Public Read ID (Bin ID)',
@@ -1566,6 +1580,126 @@
   // ==========================================
   let isBackendApiCached = null;
 
+  // ==========================================
+  // 🔒 线上统一 API Key 鉴权系统 (Online Unified API Key Authentication)
+  // ==========================================
+  function isLocalEnvironment() {
+    const host = window.location.hostname || '';
+    const protocol = window.location.protocol || '';
+    return protocol === 'file:' || host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0';
+  }
+
+  window.showOnlineAuthModal = function(actionType = 'edit', callback = null) {
+    const existing = document.getElementById('prd-online-auth-modal');
+    if (existing) existing.remove();
+
+    const activeMode = getActiveSyncMode();
+    const modeName = activeMode === 'jsonbin' ? '🔑 云端存储打点 (JSONBin.io)' : (activeMode === 'github' ? '☁️ GitHub 推送打点' : '💻 本地服务模式');
+
+    const modal = document.createElement('div');
+    modal.id = 'prd-online-auth-modal';
+    modal.style.cssText = `
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 10000080;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: prd-fade-in 0.2s ease-out;
+      font-family: var(--prd-font);
+    `;
+
+    modal.innerHTML = `
+      <div style="background:#ffffff; width:520px; max-width:92vw; border-radius:12px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(226,232,240,0.8); overflow:hidden; display:flex; flex-direction:column;">
+        <!-- Header -->
+        <div style="background:#0f172a; color:#ffffff; padding:16px 20px; display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;">
+            <span>🔒</span>
+            <span>${escapeHtml(t('onlineAuthTitle'))}</span>
+          </div>
+          <button style="background:none; border:none; font-size:18px; color:#94a3b8; cursor:pointer;" onclick="window.closeOnlineAuthModal()">&times;</button>
+        </div>
+
+        <!-- Body -->
+        <div style="padding:20px; font-size:12.5px; line-height:1.6; color:#334155; display:flex; flex-direction:column; gap:14px;">
+          <div>${t('onlineAuthDesc')}</div>
+
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 14px; font-size:12px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="color:#64748b;">当前项目锁定模式：</span>
+            <span style="font-weight:700; color:#0284c7;">${escapeHtml(modeName)}</span>
+          </div>
+
+          <div>
+            <label style="font-size:11.5px; font-weight:700; color:#475569; margin-bottom:4px; display:block;">${t('onlineAuthKeyLabel')} <span style="color:#ef4444;">*</span></label>
+            <input type="password" id="prd-online-auth-key-input" placeholder="${escapeHtml(t('onlineAuthKeyPlaceholder'))}" style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px; outline:none; font-family:monospace;">
+          </div>
+
+          <div id="prd-online-auth-tip" style="font-size:12px; min-height:18px;"></div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background:#f8fafc; border-top:1px solid #e2e8f0; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;">
+          <button class="prd-btn-action" style="font-size:12px;" onclick="window.closeOnlineAuthModal()">👁️ 保持访客只读</button>
+          <button class="prd-btn-primary" style="padding:7px 20px; font-size:12.5px; background:#0284c7; border-color:#0284c7;" onclick="window.handleVerifyOnlineKey()">${t('onlineAuthSubmitBtn')}</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    setTimeout(() => {
+      const input = document.getElementById('prd-online-auth-key-input');
+      if (input) input.focus();
+    }, 100);
+  };
+
+  window.closeOnlineAuthModal = function() {
+    const modal = document.getElementById('prd-online-auth-modal');
+    if (modal) modal.remove();
+  };
+
+  window.handleVerifyOnlineKey = async function() {
+    const inputKey = (document.getElementById('prd-online-auth-key-input')?.value || '').trim();
+    const tipEl = document.getElementById('prd-online-auth-tip');
+    const activeMode = getActiveSyncMode();
+
+    if (!inputKey) {
+      if (tipEl) tipEl.innerHTML = `<span style="color:#ef4444;">⚠️ 请先输入 API Key</span>`;
+      return;
+    }
+
+    if (tipEl) tipEl.innerHTML = `<span style="color:#2563eb;">⏳ 正在校验 Key 有效性...</span>`;
+
+    try {
+      if (activeMode === 'jsonbin') {
+        const kv = getKVStorageConfig();
+        const testRes = await saveRemoteKVData(kv.binId, inputKey, {
+          pageKey,
+          versionRegistry,
+          savedPins,
+          updatedAt: new Date().toISOString()
+        });
+        const activeBin = testRes.metadata?.id || kv.binId;
+        setKVStorageConfig({ provider: 'jsonbin', binId: activeBin, secretKey: inputKey, isVerified: true, updatedAt: new Date().toISOString() });
+      } else if (activeMode === 'github') {
+        const gh = getGitHubConfig();
+        const testRes = await verifyGitHubTokenAccess(inputKey, gh.owner, gh.repo);
+        if (!testRes.success) throw new Error(testRes.message);
+        setGitHubConfig({ owner: gh.owner, repo: gh.repo, branch: gh.branch || 'main', token: inputKey, verifiedUser: gh.owner, verifiedAt: new Date().toISOString() });
+      }
+
+      isBackendApiCached = true;
+      showToast(t('onlineAuthSuccessToast'), 'success');
+      window.closeOnlineAuthModal();
+      updateVersionBarUI();
+      renderRightDrawerList();
+    } catch (err) {
+      if (tipEl) tipEl.innerHTML = `<span style="color:#ef4444; font-weight:700;">❌ 校验失败: ${escapeHtml(err.message)}</span>`;
+      showToast(t('onlineAuthFailedToast'), 'error');
+    }
+  };
+
   async function checkBackendApiAvailable(force = false) {
     if (!force && isBackendApiCached !== null) {
       return isBackendApiCached;
@@ -1607,10 +1741,17 @@
   }
 
   window.showNoBackendAlertModal = function(actionType = 'edit', forceEnv = null) {
+    const isOnline = !isLocalEnvironment();
+    if (isOnline) {
+      // 线上环境统一唤起【创立人 API Key 鉴权】模态框
+      window.showOnlineAuthModal(actionType);
+      return;
+    }
+
     const existing = document.getElementById('prd-no-backend-modal');
     if (existing) existing.remove();
 
-    const isGithubPages = forceEnv === 'GITHUB_PAGES' || window.location.hostname.includes('.github.io') || (window.location.protocol.startsWith('http') && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1'));
+    const isGithubPages = false;
 
     const modal = document.createElement('div');
     modal.id = 'prd-no-backend-modal';
