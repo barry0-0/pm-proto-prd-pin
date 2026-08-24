@@ -13,15 +13,17 @@
 
 (function() {
   // 当前页面标识
-  // 1. 获取当前页面路径与项目隔离标识 (Project & Page Isolation)
+  // 1. 获取当前页面路径与项目隔离标识 (Project & Page Isolation - HTML与SPA双模兼容)
   const fullPath = window.location.pathname || '';
+  const lastSlash = fullPath.lastIndexOf('/');
+  const pureFileName = (lastSlash !== -1 ? fullPath.substring(lastSlash + 1) : fullPath).split('?')[0].split('#')[0];
   let rawPageKey = fullPath.split('/').filter(Boolean).join('_') || 'index.html';
   try {
     rawPageKey = decodeURIComponent(rawPageKey);
   } catch (e) {}
-  const pageKey = rawPageKey.split('?')[0].split('#')[0] || 'index.html';
+  const pageKey = (pureFileName && pureFileName.includes('.html')) ? pureFileName : (rawPageKey.split('?')[0].split('#')[0] || 'index.html');
   const projectScope = (fullPath.replace(/\/[^\/]*$/, '') || 'default_proj').replace(/[^a-zA-Z0-9_-]/g, '_');
-  const cacheKey = `prd_registry_${projectScope}_${pageKey}`;
+  const cacheKey = `prd_registry_${projectScope}_${pageKey.replace('.html', '')}`;
   const cacheVersionKey = `${cacheKey}_version`;
 
   // 获取 prd-pin-tool.js 所在目录基准路径 (自动计算相对路径，无论项目放置在何种子目录下)
@@ -876,7 +878,7 @@
     "default": "6a8bfab8da38895dfe09944d"
   };
 
-    window.getKVStorageConfig = function getKVStorageConfig() {
+        window.getKVStorageConfig = function getKVStorageConfig() {
     const getKVStorageConfig = window.getKVStorageConfig;
     let defaultBin = DEFAULT_JSONBIN_MAPPING[pageKey] || DEFAULT_JSONBIN_MAPPING['default'] || '';
     let cachedBin = '';
@@ -885,7 +887,7 @@
     let customUrl = '';
 
     try {
-      const cached = localStorage.getItem(KV_STORAGE_KEY) || localStorage.getItem('prd_kv_config_global');
+      const cached = localStorage.getItem(KV_STORAGE_KEY);
       if (cached) {
         const parsed = JSON.parse(cached);
         if (parsed) {
@@ -895,13 +897,21 @@
           if (parsed.isVerified) isVerified = true;
         }
       }
+      const globalCached = localStorage.getItem('prd_kv_config_global');
+      if (globalCached) {
+        const parsedG = JSON.parse(globalCached);
+        if (parsedG) {
+          if (!cachedSecretKey && parsedG.secretKey) cachedSecretKey = parsedG.secretKey;
+          if (!customUrl && parsedG.customUrl) customUrl = parsedG.customUrl;
+        }
+      }
     } catch (e) {}
 
-    const sessionBin = sessionStorage.getItem(`prd_jsonbin_session_bin_${pageKey}`) || sessionStorage.getItem('prd_jsonbin_session_bin_global');
+    const sessionBin = sessionStorage.getItem(`prd_jsonbin_session_bin_${pageKey}`);
     const sessionKey = sessionStorage.getItem('prd_jsonbin_session_key');
 
     const finalBinId = sessionBin || cachedBin || defaultBin;
-    const finalSecretKey = sessionKey || cachedSecretKey || '';
+    const finalSecretKey = sessionKey || cachedSecretKey || DEFAULT_MASTER_KEY;
 
     return {
       provider: 'jsonbin',
@@ -910,7 +920,7 @@
       customUrl: customUrl || '',
       isVerified: Boolean(finalSecretKey && (isVerified || sessionKey))
     };
-  }
+  };
 
   function setKVStorageConfig(config) {
     try {
