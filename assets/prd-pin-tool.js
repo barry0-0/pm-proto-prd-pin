@@ -4709,7 +4709,74 @@
     activeDraft = null;
   };
 
-// (Duplicate saveEditorModal removed to prevent double toast)
+window.saveEditorModal = async function() {
+    if (!activeDraft) return;
+
+    const titleInput = document.getElementById('prd-modal-title');
+    const typeSelect = document.getElementById('prd-modal-type');
+
+    const title = titleInput ? titleInput.value.trim() : (activeDraft.title || '');
+    let desc = '';
+    if (window.vditorInstance && typeof window.vditorInstance.getValue === 'function') {
+      try {
+        desc = window.vditorInstance.getValue().trim();
+      } catch (e) {}
+    }
+    if (!desc) {
+      const fallback = document.getElementById('prd-fallback-textarea');
+      if (fallback) desc = fallback.value.trim();
+    }
+    if (!desc && activeDraft.desc) {
+      desc = activeDraft.desc.trim();
+    }
+
+    const type = typeSelect ? typeSelect.value : (activeDraft.type || '业务规则');
+
+    if (!title) {
+      alert('请输入需求名称！');
+      return;
+    }
+
+    activeDraft.title = title;
+    activeDraft.desc = desc;
+    activeDraft.type = type;
+    activeDraft.version = currentVersion;
+
+    const backup = JSON.parse(JSON.stringify(savedPins));
+
+    if (activeDraft.id) {
+      const idx = savedPins.findIndex(p => p.id === activeDraft.id);
+      if (idx !== -1) {
+        savedPins[idx] = activeDraft;
+      } else {
+        savedPins.unshift(activeDraft);
+      }
+    } else {
+      savedPins.unshift(activeDraft);
+    }
+
+    reIndexPins(savedPins);
+
+    // 执行持久化保存
+    const isSaved = await persistData();
+
+    if (isSaved) {
+      window.closeEditorModal();
+      renderPinMarkers();
+      renderRightDrawerList();
+      renderMiniRailList();
+      const badge = document.getElementById('prd-drawer-count');
+      if (badge) badge.innerText = savedPins.length;
+      const edgeCount = document.getElementById('prd-edge-count');
+      if (edgeCount) edgeCount.innerText = savedPins.length;
+    } else {
+      savedPins = backup;
+      reIndexPins(savedPins);
+      renderPinMarkers();
+      renderRightDrawerList();
+      showToast('❌ 保存失败：云端/后端同步未完成，已自动回滚', 'error');
+    }
+  };
 
   window.rePickElementFromModal = function() {
     window.minimizeEditor();
