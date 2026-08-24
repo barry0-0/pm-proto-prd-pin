@@ -1362,7 +1362,6 @@
         window.PRD_VERSION_REGISTRY = versionRegistry;
 
         renderPinMarkers();
-    syncFromCloudKVOnStartup();
         renderRightDrawerList();
         renderMiniRailList();
         updateVersionBarUI();
