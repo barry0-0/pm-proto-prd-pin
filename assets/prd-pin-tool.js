@@ -15,7 +15,11 @@
   // 当前页面标识
   // 1. 获取当前页面路径与项目隔离标识 (Project & Page Isolation)
   const fullPath = window.location.pathname || '';
-  const pageKey = fullPath.split('/').pop().split('?')[0].split('#')[0] || 'admin.html';
+  let rawPageKey = fullPath.split('/').filter(Boolean).pop() || 'admin.html';
+  try {
+    rawPageKey = decodeURIComponent(rawPageKey);
+  } catch (e) {}
+  const pageKey = rawPageKey.split('?')[0].split('#')[0] || 'admin.html';
   const projectScope = (fullPath.replace(/\/[^\/]*$/, '') || 'default_proj').replace(/[^a-zA-Z0-9_-]/g, '_');
   const cacheKey = `prd_registry_${projectScope}_${pageKey}`;
   const cacheVersionKey = `${cacheKey}_version`;
@@ -822,6 +826,20 @@
     }
   }
 
+  window.updateModeBadgeUI = function updateModeBadgeUI() {
+    const badgeBtn = document.getElementById('prd-mode-badge-btn');
+    if (!badgeBtn) return;
+    const badgeInfo = getSyncModeBadgeInfo();
+    badgeBtn.style.background = badgeInfo.bg;
+    badgeBtn.style.borderColor = badgeInfo.border;
+    badgeBtn.style.color = badgeInfo.color;
+    badgeBtn.title = badgeInfo.tip;
+    badgeBtn.innerHTML = `
+      <span>${badgeInfo.icon}</span>
+      <span>${badgeInfo.label}</span>
+    `;
+  }
+
   // ==========================================
   // 🔄 持久化同步模式切换与记忆中心 (Sync Mode Switcher & Persistence)
   // ==========================================
@@ -1375,12 +1393,17 @@
 
     const finalBinId = (document.getElementById('prd-kv-bin-id')?.value || binId).trim();
     setKVStorageConfig({ provider: 'jsonbin', binId: finalBinId, secretKey, isVerified: true, updatedAt: new Date().toISOString() });
+    try {
+      if (secretKey) sessionStorage.setItem('prd_jsonbin_session_key', secretKey);
+    } catch (e) {}
+    setActiveSyncMode('jsonbin');
     isBackendApiCached = true;
     showToast(t('kvSyncSuccessToast'), 'success');
 
     setTimeout(() => {
       window.closeKVConfigModal();
       updateVersionBarUI();
+      updateModeBadgeUI();
       renderRightDrawerList();
     }, 400);
   };
@@ -3703,7 +3726,8 @@
     }
   };
 
-  function updateVersionBarUI() {
+  window.updateVersionBarUI = function updateVersionBarUI() {
+    updateModeBadgeUI();
     const select = document.getElementById('prd-version-select');
     if (!select) return;
     const verKeys = Object.keys(versionRegistry.versions);
