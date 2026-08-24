@@ -896,14 +896,17 @@
     } catch (e) {}
   }
 
-  // 从云端拉取最新数据
+  // 从云端拉取最新数据 (带抗缓存时间戳与请求头)
   async function fetchRemoteKVData(binId, secretKey = '') {
     if (!binId) return null;
     try {
-      const headers = {};
+      const headers = {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      };
       if (secretKey) headers['X-Master-Key'] = secretKey.trim();
 
-      const resp = await fetch(`https://api.jsonbin.io/v3/b/${binId.trim()}/latest`, { headers });
+      const resp = await fetch(`https://api.jsonbin.io/v3/b/${binId.trim()}/latest?_t=${Date.now()}`, { headers });
       if (resp.ok) {
         const json = await resp.json();
         return json.record || json;
@@ -3445,16 +3448,44 @@
     versionRegistry.activeVersion = currentVersion;
     versionRegistry.versions[currentVersion] = savedPins;
 
-    try {
-      localStorage.setItem(cacheKey, JSON.stringify(versionRegistry));
-      localStorage.setItem(cacheVersionKey, PRD_CACHE_VERSION);
-      window.INITIAL_PRD_DATA = savedPins;
-      window.PRD_VERSION_REGISTRY = versionRegistry;
-    } catch (e) {}
-
     const activeMode = getActiveSyncMode();
 
     // 模式 1: 🔑 云端 KV 存储打点 (JSONBin.io)
+    // 严格单一排他：只向云端 JSONBin 发送真实请求，云端成功后才更新本地缓存镜像
+    if (activeMode === 'jsonbin') {
+      const kv = getKVStorageConfig();
+      if (!kv || !kv.secretKey) {
+        showToast('⚠️ 未配置有效的 JSONBin Master Key，保存失败', 'error');
+        return false;
+      }
+      try {
+        showToast(t('kvSyncingToast'), 'info');
+        const res = await saveRemoteKVData(kv.binId, kv.secretKey, {
+          pageKey,
+          versionRegistry,
+          savedPins,
+          updatedAt: new Date().toISOString()
+        });
+        if (!res || (!res.record && !res.metadata)) {
+          throw new Error('云端存储未返回成功确认');
+        }
+
+        // 云端真实写入确认后，同步更新内存与本地镜像
+        window.INITIAL_PRD_DATA = savedPins;
+        window.PRD_VERSION_REGISTRY = versionRegistry;
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(versionRegistry));
+          localStorage.setItem(cacheVersionKey, PRD_CACHE_VERSION);
+        } catch (e) {}
+
+        const binDisplay = kv.binId ? ` (Bin: ${kv.binId.substring(0, 8)}...)` : '';
+        showToast(`✅ [云端KV] 真实同步成功！${binDisplay}`, 'success');
+        return true;
+      } catch (kvErr) {
+        showToast(`❌ 云端 KV 同步失败: ${kvErr.message}`, 'error');
+        return false;
+      }
+    }
     // 严格单一排他：只向云端 JSONBin 发送真实请求并严格校验 200 返回
     if (activeMode === 'jsonbin') {
       const kv = getKVStorageConfig();
