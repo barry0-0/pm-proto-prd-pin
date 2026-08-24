@@ -31,7 +31,11 @@ agent_created: true
 
 ---
 
-### Module 1: 💾 三模态持久化体系与架构实现对比 (Tri-Engine Persistence System)
+### Module 1: 💾 三模态持久化体系与一键无缝数据迁移 (Tri-Engine Persistence & Seamless Data Migration)
+
+> 🌟 **核心战略价值 (Strategic Significance)**：  
+> 彻底解决传统 HTML 原型在静态托管平台（GitHub Pages / 纯前端静态服务器 / 预览链接）上**「有展示、无后端、无法在线编辑、无法团队跨端协同」**的致命痛点。  
+> 同时提供了**「一键跨模式数据无缝迁移引擎」**：当产品经理在某一模式（如本地 Node 磁盘开发）制作完成打点后，切换至另一模式（如云端 JSONBin 或 GitHub Pages）时，系统自动弹出迁移决策弹窗，**支持一键将当前全量打点与多版本规约整体同步写入至新目标数据源**，实现零断点无缝过渡！
 
 > 🌟 **核心战略价值 (Strategic Significance)**：  
 > 彻底解决传统 HTML 原型在静态托管平台（GitHub Pages / 纯前端静态服务器 / 预览链接）上**「有展示、无后端、无法在线编辑、无法团队跨端协同」**的致命痛点。  
@@ -42,6 +46,14 @@ agent_created: true
 | **🔑 方案 1：Serverless 云端 KV 存储打点 (JSONBin.io / 自建 KV) —— 【强烈推荐 / 最快捷】** | 基于 RESTful JSONBin API 架构：<br>• 读：`GET /v3/b/{binId}/latest?_t=timestamp`<br>• 写：`PUT /v3/b/{binId}` 带 `X-Master-Key` | **极速 (200~300ms)**<br>秒级实时直读直写，零构建等待，抗浏览器缓存 | **首选推荐**：静态托管（GitHub Pages / Vercel）、多端协同、移动端测试。零服务器运维成本，天然读写权限分离。 |
 | **☁️ 方案 2：GitHub Contents API 推送打点 (Git Commit 模式)** | 基于 GitHub REST API：<br>调用 `PUT /repos/{owner}/{repo}/contents/{filePath}`，将打点 Base64 编码后生成正式 Git Commit 提交入库 | **较慢 (1~3 秒)**<br>需经历 GitHub API 网络调用、生成 Commit 节点与分支推进 | **代码库一体化归档**：需要完整 Git Commit 审计记录与提交历史的场景。**注意：由于走 Git 推送流程耗时较长，且若依赖 GitHub Pages 重新部署构建生效周期较长**。 |
 | **💻 方案 3：本地 Node.js 磁盘直写打点 (Local Node 模式)** | 本地启动 `node server.js` 微服务，前端通过 `POST /api/save-prd` 调用 fs 模块直接修改磁盘上的物理 `prd-data-*.js` 文件 | **极快 (10~50ms)**<br>本机 localhost 内部直接落盘 | **纯脱机独立开发**：无外网网络、企业保密内网、纯本地研发环境。 |
+
+---
+
+- **🔄 模式切换二次确认与一键数据迁移决策 (`showModeSwitchConfirmModal`)**:
+  - 当在配置中心切换持久化引擎时，系统自动弹出模式迁移决策模态框：
+    - 🚀 **【同步迁移当前数据到新方案 (推荐)】**：将当前已编辑的全部打点与版本（共 N 项规约）即刻同步写入到新的持久化数据源中（如向新 JSONBin 执行 `PUT` 或向 GitHub 提交 Commit），实现零断点无缝过渡；
+    - 📥 **【不同步现有数据 (从新数据源拉取)】**：仅切换底层模式配置，不覆盖新目标存储，切换后直接从新数据源拉取最新规约或保持空白；
+    - 🛡️ **【本地防丢安全备份】**：弹窗内置一键 `💾 下载本地备份 (.json)`，确保跨模式切换 100% 零数据丢失。
 
 ---
 

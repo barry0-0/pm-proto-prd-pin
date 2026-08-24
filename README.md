@@ -37,6 +37,15 @@
 
 ---
 
+## 🔄 1-Click Seamless Data Migration Across Modes
+
+When switching between persistence engines (e.g. from Local Node to Cloud JSONBin or GitHub):
+- **🚀 Migrate & Sync Current Data (Recommended)**: Automatically writes all in-memory pins and versions into the newly selected backend, ensuring zero-break transition.
+- **📥 Clean Switch (Pull from New Source)**: Switches configuration only and pulls the latest data directly from the new target storage.
+- **💾 Local Backup Safety**: Includes a 1-click `💾 Download Local Backup (.json)` button for absolute data safety.
+
+---
+
 ## 🔒 Creator Authentication & Read-Write Segregation
 
 To prevent unauthorized tampering on public or hosted prototypes:
@@ -109,6 +118,15 @@ graph TD
   - 本地终端运行 `node server.js`；
   - 前端通过 `POST /api/save-prd` 调用 Node 原生 fs 模块直接改写磁盘上的物理 `prd-data-*.js` 文件；
 - **适用场景**：企业内网断网开发、保密原型制作、离线纯本地开发。
+
+---
+
+## 🔄 模式切换与一键无缝数据迁移决策
+
+当产品经理在配置中心切换持久化引擎时（如从本地磁盘模式切至云端 KV 模式）：
+- **🚀 同步迁移当前数据到新方案（推荐）**：自动将当前已编辑的全部打点与多版本（共 N 项规约）即刻整体写入到新的持久化数据源中，实现零断点无缝过渡；
+- **📥 不同步现有数据（从新数据源拉取）**：仅切换底层引擎配置，不覆盖新数据源原有内容，稍后直接从新数据源加载最新或作为独立环境；
+- **🛡️ 一键本地备份安全保障**：弹窗内置一键 `💾 下载本地备份 (.json)`，确保跨模式切换 100% 零数据丢失。
 
 ---
 

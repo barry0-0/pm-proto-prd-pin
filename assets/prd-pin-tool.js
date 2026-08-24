@@ -1014,41 +1014,67 @@
     `;
 
     modal.innerHTML = `
-      <div style="background:#ffffff; width:520px; max-width:92vw; border-radius:12px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(226,232,240,0.8); overflow:hidden; display:flex; flex-direction:column;">
+      <div style="background:#ffffff; width:540px; max-width:92vw; border-radius:12px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(226,232,240,0.8); overflow:hidden; display:flex; flex-direction:column;">
         <!-- Header -->
-        <div style="background:#fffbeb; border-bottom:1px solid #fde68a; padding:16px 20px; display:flex; align-items:center; justify-content:space-between;">
-          <div style="display:flex; align-items:center; gap:8px; font-weight:800; font-size:14.5px; color:#b45309;">
-            <span>⚠️</span>
-            <span>模式切换与数据本地备份提醒</span>
+        <div style="background:#0f172a; color:#ffffff; padding:16px 20px; display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;">
+            <span>🔄</span>
+            <span>模式切换与数据无缝迁移决策</span>
           </div>
-          <button style="background:none; border:none; font-size:18px; color:#92400e; cursor:pointer;" onclick="window.closeModeSwitchModal()">&times;</button>
+          <button style="background:none; border:none; font-size:18px; color:#94a3b8; cursor:pointer;" onclick="window.closeModeSwitchModal()">&times;</button>
         </div>
 
         <!-- Body -->
-        <div style="padding:20px; font-size:12.5px; line-height:1.65; color:#334155; display:flex; flex-direction:column; gap:12px;">
+        <div style="padding:20px; font-size:12.5px; line-height:1.6; color:#334155; display:flex; flex-direction:column; gap:14px;">
           <div>您即将把当前项目的持久化引擎从 <span style="color:#b45309; font-weight:700;">【${escapeHtml(oldName)}】</span> 切换为 <span style="color:#0284c7; font-weight:700;">【${escapeHtml(newName)}】</span>。</div>
 
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:6px;">
-            <div style="font-weight:700; color:#0f172a;">🛡️ 自动本地安全保护机制：</div>
-            <div style="color:#475569;">1. 系统已自动将当前全部打点规约暂存备份至本地浏览器（LocalStorage）；</div>
-            <div style="color:#475569;">2. 为了数据绝对安全，建议您在切换前<strong>下载一份本地 JSON 备份文件</strong>。</div>
+          <!-- 迁移选择卡片组 -->
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label style="display:flex; align-items:flex-start; gap:10px; padding:12px; border:2px solid #0284c7; background:#f0f9ff; border-radius:8px; cursor:pointer; transition:all 0.2s;" id="prd-migrate-card-sync">
+              <input type="radio" name="prd_switch_sync_choice" value="migrate" checked style="margin-top:2px;" onchange="window.updateSwitchCardStyles()">
+              <div style="display:flex; flex-direction:column; gap:2px;">
+                <strong style="color:#0369a1; font-size:13px;">🚀 同步迁移当前数据到新方案 (推荐)</strong>
+                <span style="color:#475569; font-size:11.5px;">将当前已编辑的全部打点与版本（共 ${savedPins.length} 项规约）即刻同步写入到新的持久化数据源中，实现零断点无缝过渡！</span>
+              </div>
+            </label>
+
+            <label style="display:flex; align-items:flex-start; gap:10px; padding:12px; border:1px solid #e2e8f0; background:#f8fafc; border-radius:8px; cursor:pointer; transition:all 0.2s;" id="prd-migrate-card-clean">
+              <input type="radio" name="prd_switch_sync_choice" value="clean" style="margin-top:2px;" onchange="window.updateSwitchCardStyles()">
+              <div style="display:flex; flex-direction:column; gap:2px;">
+                <strong style="color:#334155; font-size:13px;">📥 不同步现有数据 (从新数据源拉取)</strong>
+                <span style="color:#64748b; font-size:11.5px;">仅切换底层模式配置，不覆盖新目标存储，切换后直接从新数据源拉取最新或保持空白。</span>
+              </div>
+            </label>
+          </div>
+
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px; font-size:11.5px; color:#64748b; display:flex; align-items:center; justify-content:space-between;">
+            <span>🛡️ 数据安全建议：切换前可先备份一份本地 JSON</span>
+            <button class="prd-btn-action" style="padding:3px 10px; font-size:11px; background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; color:#0f172a; cursor:pointer;" onclick="window.downloadLocalBackupJSON()">💾 下载本地备份 (.json)</button>
           </div>
         </div>
 
         <!-- Footer -->
-        <div style="background:#f8fafc; border-top:1px solid #e2e8f0; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;">
-          <button class="prd-btn-action" style="font-size:12px; color:#2563eb; display:flex; align-items:center; gap:4px;" onclick="window.exportPRDJson()">
-            <span>💾</span><span>下载本地备份 (.json)</span>
-          </button>
-          <div style="display:flex; gap:8px;">
-            <button class="prd-btn-action" style="font-size:12px;" onclick="window.closeModeSwitchModal()">取消</button>
-            <button class="prd-btn-primary" style="background:#b45309; border-color:#b45309; font-size:12px; padding:6px 16px;" onclick="window.confirmExecuteModeSwitch()">✅ 确认切换并保存到本地</button>
-          </div>
+        <div style="background:#f8fafc; border-top:1px solid #e2e8f0; padding:12px 20px; display:flex; justify-content:flex-end; gap:8px;">
+          <button class="prd-btn-action" style="padding:6px 14px; font-size:12px; border:1px solid #cbd5e1; background:#ffffff; border-radius:6px; cursor:pointer;" onclick="window.closeModeSwitchModal()">取消</button>
+          <button class="prd-btn-primary" style="background:#0284c7; border-color:#0284c7; font-size:12px; padding:6px 18px; border-radius:6px; font-weight:700;" onclick="window.confirmExecuteModeSwitch()">✅ 确认执行模式切换</button>
         </div>
       </div>
     `;
 
     document.body.appendChild(modal);
+  };
+
+  window.updateSwitchCardStyles = function() {
+    const selected = document.querySelector('input[name="prd_switch_sync_choice"]:checked')?.value;
+    const syncCard = document.getElementById('prd-migrate-card-sync');
+    const cleanCard = document.getElementById('prd-migrate-card-clean');
+    if (selected === 'migrate') {
+      if (syncCard) { syncCard.style.border = '2px solid #0284c7'; syncCard.style.background = '#f0f9ff'; }
+      if (cleanCard) { cleanCard.style.border = '1px solid #e2e8f0'; cleanCard.style.background = '#f8fafc'; }
+    } else {
+      if (syncCard) { syncCard.style.border = '1px solid #e2e8f0'; syncCard.style.background = '#f8fafc'; }
+      if (cleanCard) { cleanCard.style.border = '2px solid #0284c7'; cleanCard.style.background = '#f0f9ff'; }
+    }
   };
 
   window.closeModeSwitchModal = function() {
@@ -1057,11 +1083,15 @@
     pendingModeSwitchData = null;
   };
 
-  window.confirmExecuteModeSwitch = function() {
-    if (typeof pendingModeSwitchData === 'function') {
-      pendingModeSwitchData();
-    }
+  window.confirmExecuteModeSwitch = async function() {
+    const selected = document.querySelector('input[name="prd_switch_sync_choice"]:checked')?.value || 'migrate';
+    const shouldMigrate = (selected === 'migrate');
+    const callback = pendingModeSwitchData;
     window.closeModeSwitchModal();
+
+    if (typeof callback === 'function') {
+      await callback(shouldMigrate);
+    }
   };
 
   window.showKVConfigModal = function(defaultTab = null) {
