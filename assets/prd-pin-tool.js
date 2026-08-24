@@ -4299,7 +4299,7 @@
     return editorBlocks.map(b => b.text).join('\n\n');
   }
 
-  window.openEditorForPin = async function(id) {
+  window.openEditorForPin = async function(id, initialSelector = '') {
     const isApiOk = await checkBackendApiAvailable();
     if (!isApiOk) {
       window.showNoBackendAlertModal('edit');
@@ -4311,10 +4311,13 @@
       title: '',
       type: '业务规则',
       desc: '',
-      selector: ''
+      selector: initialSelector || ''
     };
 
     activeDraft = JSON.parse(JSON.stringify(pin));
+    if (initialSelector && !activeDraft.selector) {
+      activeDraft.selector = initialSelector;
+    }
     editorBlocks = splitMarkdownIntoBlocks(activeDraft.desc || '');
     activeEditingBlockIndex = null;
     renderEditorModal(activeDraft);
@@ -4987,7 +4990,7 @@ window.saveEditorModal = async function() {
     }
   }
 
-  function handlePickClick(e) {
+  async function handlePickClick(e) {
     if (e.target.closest('.prd-right-drawer, .prd-inspect-bubble, .prd-editor-modal, .prd-doc-overlay, .prd-editor-mini-dock, .prd-drawer-edge-tab')) return;
     e.preventDefault();
     e.stopPropagation();
@@ -5001,13 +5004,9 @@ window.saveEditorModal = async function() {
       const oldDock = document.getElementById('prd-editor-mini-dock');
       if (oldDock) oldDock.remove();
       renderEditorModal(activeDraft);
-      showToast('组件重新绑定成功！', 'success');
+      showToast(t('rePickSuccessToast') || '组件重新绑定成功！', 'success');
     } else {
-      window.openEditorForPin(null);
-      if (activeDraft) {
-        activeDraft.selector = selector;
-        renderEditorModal(activeDraft);
-      }
+      await window.openEditorForPin(null, selector);
     }
   }
 
