@@ -4405,6 +4405,9 @@
       return;
     }
     window.closeInspectBubble();
+    unbindPickListeners();
+    rePickModeActive = false;
+    currentMode = 'show';
     const pin = savedPins.find(p => p.id === id) || {
       id: null,
       title: '',
@@ -5093,6 +5096,14 @@ window.saveEditorModal = async function() {
       highlightedElement = null;
     }
     document.body.style.cursor = 'default';
+    const edgeTab = document.getElementById('prd-drawer-edge-tab');
+    if (edgeTab && currentMode !== 'pick' && !rePickModeActive) {
+      edgeTab.title = '点击展开/收起需求打点面板';
+      edgeTab.innerHTML = `
+        <span class="prd-edge-arrow" id="prd-edge-arrow">‹</span>
+        <span class="prd-edge-text">${t('edgeText')} (<span id="prd-edge-count">${savedPins.length}</span>)</span>
+      `;
+    }
   }
 
   function handlePickOver(e) {
@@ -5161,7 +5172,8 @@ window.saveEditorModal = async function() {
       }
       if (edgeTab) {
         edgeTab.style.display = 'flex';
-        edgeTab.innerHTML = `<span class="prd-edge-text" style="color:#ef4444; font-weight:700;">📍 点击页面组件打标 (ESC退出)</span>`;
+        edgeTab.title = '点击退出打标模式 (或按 ESC 退出)';
+        edgeTab.innerHTML = `<span class="prd-edge-arrow" style="color:#ef4444; font-size:12px; font-weight:800;">✕</span><span class="prd-edge-text" style="color:#ef4444; font-weight:700;">📍 点击组件打标 (点击或ESC退出)</span>`;
       }
       renderPinMarkers();
       showToast('📍 点击页面任意组件即可完成打标并呼出规约编辑窗', 'info');
@@ -5895,7 +5907,16 @@ window.saveEditorModal = async function() {
     edgeTab.className = 'prd-drawer-edge-tab';
     edgeTab.id = 'prd-drawer-edge-tab';
     edgeTab.title = '点击展开/收起需求打点面板';
-    edgeTab.onclick = window.togglePRDDrawer;
+    edgeTab.onclick = function() {
+      if (currentMode === 'pick' || rePickModeActive) {
+        rePickModeActive = false;
+        unbindPickListeners();
+        window.setPRDMode('show');
+        showToast('已退出打标模式', 'info');
+        return;
+      }
+      window.togglePRDDrawer();
+    };
     edgeTab.innerHTML = `
       <span class="prd-edge-arrow" id="prd-edge-arrow">‹</span>
       <span class="prd-edge-text">${t('edgeText')} (<span id="prd-edge-count">${savedPins.length}</span>)</span>
@@ -6017,6 +6038,33 @@ window.saveEditorModal = async function() {
     }
   });
   observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style', 'hidden'] });
+
+    // 全局 ESC 按键监听：退出打标模式 / 关闭气泡 / 退出模态框
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' || e.keyCode === 27) {
+      // 1. 若处于打标拾取模式，按 ESC 退出
+      if (currentMode === 'pick' || rePickModeActive) {
+        e.preventDefault();
+        rePickModeActive = false;
+        unbindPickListeners();
+        window.setPRDMode('show');
+        showToast('已退出打标模式', 'info');
+        return;
+      }
+      // 2. 若有打开的气泡，按 ESC 关闭
+      const inspectBubble = document.getElementById('prd-inspect-popover');
+      if (inspectBubble) {
+        window.closeInspectBubble();
+        return;
+      }
+      // 3. 若有打开的鉴权弹窗，按 ESC 关闭
+      const authModal = document.getElementById('prd-online-auth-modal');
+      if (authModal) {
+        window.closeOnlineAuthModal();
+        return;
+      }
+    }
+  }, true);
 
   window.addEventListener('resize', () => {
     if (currentMode !== 'hide') renderPinMarkers();
