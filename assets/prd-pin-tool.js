@@ -3511,15 +3511,65 @@
     }
   }
 
-  function showToast(msg, type = 'info') {
+    window.showToast = function showToast(msg, type = 'info') {
+    const showToast = window.showToast;
+    try {
+      let toastContainer = document.getElementById('prd-global-toast-container');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'prd-global-toast-container';
+        toastContainer.style.cssText = `
+          position: fixed;
+          bottom: 24px;
+          right: 24px;
+          z-index: 10000099;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          pointer-events: none;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        `;
+        document.body.appendChild(toastContainer);
+      }
+
+      const toast = document.createElement('div');
+      const bgMap = {
+        success: 'linear-gradient(135deg, #059669, #10b981)',
+        error: 'linear-gradient(135deg, #dc2626, #ef4444)',
+        info: 'linear-gradient(135deg, #0f172a, #1e293b)'
+      };
+
+      toast.style.cssText = `
+        background: ${bgMap[type] || bgMap.info};
+        color: #ffffff;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        pointer-events: auto;
+        max-width: 400px;
+        word-break: break-word;
+        transition: all 0.25s ease-out;
+      `;
+      toast.innerHTML = `<span>${msg}</span>`;
+      toastContainer.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 250);
+      }, 2500);
+    } catch (e) {}
+
     if (window.UI && typeof window.UI.toast === 'function') {
-      window.UI.toast(msg, type);
-    } else {
-      console.log(`[PRD Tool]: ${msg}`);
+      try { window.UI.toast(msg, type); } catch(e) {}
     }
   }
 
-  // 4. 多版本数据持久化落盘
   window.persistData = async function persistData() {
     const persistData = window.persistData;
     reIndexPins(savedPins);
@@ -5116,23 +5166,31 @@ window.saveEditorModal = async function() {
     await window.reorderPinToIndex(id, targetIdx);
   };
 
-  window.deletePinItem = async function(id) {
+    window.deletePinItem = async function(id) {
     if (confirm('确认删除此项需求规约吗？')) {
       const backup = JSON.parse(JSON.stringify(savedPins));
-      savedPins = savedPins.filter(p => p.id !== id);
+      savedPins = savedPins.filter(p => String(p.id) !== String(id));
       reIndexPins(savedPins);
+      versionRegistry.activeVersion = currentVersion;
+      versionRegistry.versions[currentVersion] = savedPins;
+
       const isSaved = await persistData();
       if (isSaved) {
         renderPinMarkers();
         renderRightDrawerList();
-        showToast('✅ 需求点已成功删除！', 'info');
+        renderMiniRailList();
+        const badge = document.getElementById('prd-drawer-count');
+        if (badge) badge.innerText = savedPins.length;
+        const edgeCount = document.getElementById('prd-edge-count');
+        if (edgeCount) edgeCount.innerText = savedPins.length;
+        showToast('✅ 需求点已成功删除并同步至云端！', 'success');
       } else {
         savedPins = backup;
         reIndexPins(savedPins);
+        versionRegistry.versions[currentVersion] = savedPins;
         renderPinMarkers();
         renderRightDrawerList();
-        alert('❌ 删除失败：未检测到本地服务接口，无法写入本地磁盘 JS 文件！');
-        showToast('❌ 删除失败', 'error');
+        showToast('❌ 删除失败：云端同步未完成', 'error');
       }
     }
   };
