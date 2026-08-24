@@ -3442,7 +3442,7 @@
     const activeMode = getActiveSyncMode();
 
     // 模式 1: 🔑 云端 KV 存储打点 (JSONBin.io)
-    // 严格单一排他：哪怕在 localhost 打开，也绝不调用本地 /api/save-prd，只写入云端 JSONBin
+    // 严格单一排他：只向云端 JSONBin 发送真实请求并严格校验 200 返回
     if (activeMode === 'jsonbin') {
       const kv = getKVStorageConfig();
       if (!kv || !kv.secretKey) {
@@ -3451,13 +3451,17 @@
       }
       try {
         showToast(t('kvSyncingToast'), 'info');
-        await saveRemoteKVData(kv.binId, kv.secretKey, {
+        const res = await saveRemoteKVData(kv.binId, kv.secretKey, {
           pageKey,
           versionRegistry,
           savedPins,
           updatedAt: new Date().toISOString()
         });
-        showToast(t('kvSyncSuccessToast'), 'success');
+        if (!res || (!res.record && !res.metadata)) {
+          throw new Error('云端存储未返回成功确认');
+        }
+        const binDisplay = kv.binId ? ` (Bin: ${kv.binId.substring(0, 8)}...)` : '';
+        showToast(`✅ [云端KV] 真实同步成功！${binDisplay}`, 'success');
         return true;
       } catch (kvErr) {
         showToast(`❌ 云端 KV 同步失败: ${kvErr.message}`, 'error');
@@ -3466,7 +3470,7 @@
     }
 
     // 模式 2: ☁️ GitHub 推送打点 (Git Commit)
-    // 严格单一排他：只调用 GitHub Contents REST API 生成 Commit
+    // 严格单一排他：只调用 GitHub REST API 生成正式 Commit 并严格校验返回
     if (activeMode === 'github') {
       const gh = getGitHubConfig();
       if (!gh || !gh.token || !gh.owner || !gh.repo) {
@@ -3478,7 +3482,7 @@
         const jsFileContent = `/**\n * PRD 需求数据 - ${pageKey}\n * GitHub Pages 实时保存于: ${new Date().toLocaleString()}\n */\nwindow.INITIAL_PRD_DATA = ${JSON.stringify(savedPins, null, 2)};\nwindow.PRD_VERSION_REGISTRY = ${JSON.stringify(versionRegistry, null, 2)};\n`;
         const filePath = getGitHubTargetFilePath(pageKey);
         await saveToGitHubApi(gh.owner, gh.repo, gh.branch || 'main', filePath, gh.token, jsFileContent);
-        showToast(t('ghSaveSuccess'), 'success');
+        showToast(`✅ [GitHub] Commit 提交成功！(${filePath})`, 'success');
         return true;
       } catch (ghErr) {
         showToast(`❌ GitHub 同步失败: ${ghErr.message}`, 'error');
@@ -3487,10 +3491,10 @@
     }
 
     // 模式 3: 💻 本地 Node.js 服务模式
-    // 严格单一排他：只调用本地 /api/save-prd 写入磁盘，不写云端
+    // 严格单一排他：只调用本地 /api/save-prd 写入磁盘，并严格校验返回
     if (activeMode === 'local') {
       if (window.location.protocol === 'file:') {
-        showToast('❌ file:// 静态协议下无法使用本地服务模式，请在终端运行 node server.js 并在 http://localhost 打开', 'error');
+        showToast('❌ file:// 静态协议下无法使用本地服务模式，请在终端运行 node server.js', 'error');
         return false;
       }
       try {
@@ -3502,7 +3506,7 @@
         if (resp.ok) {
           const resJson = await resp.json();
           if (resJson && resJson.success) {
-            showToast(t('saveSuccessToast'), 'success');
+            showToast('✅ [本地服务] 需求规约已成功写入本地磁盘 JS 文件！', 'success');
             return true;
           }
         }
@@ -4973,7 +4977,7 @@ window.saveEditorModal = async function() {
       if (isSaved) {
         renderPinMarkers();
         renderRightDrawerList();
-        showToast('✅ 需求点已删除并同步至本地文件！', 'info');
+        showToast('✅ 需求点已成功删除！', 'info');
       } else {
         savedPins = backup;
         reIndexPins(savedPins);
