@@ -1,13 +1,19 @@
 ---
 name: pm-proto-prd-pin
-description: 为任意 HTML 原型、Vue 2/3、React 17/18/Next.js 项目植入 2.0 版交互式 PRD 打点标注器、多版本规约生成系统与分组管理引擎。包含亮色玻璃 UI、内联 SVG 矢量图标、圆角方标牌、三态抽屉、分组新增与元素拾取定位、拖拽调序与插入指示线、按组自动重排打点编号、管理模式统一保存与二次确认、未保存变动横条、取消打点入口、动态视图与弹窗锚点定位、当前视图与顶部模块过滤、访客只读权限隔离、Cloudflare D1 顶层 groups 真源、五模态持久化、导出 Markdown 与新网页 PRD 按组显示、Vditor IR 编辑器、Mermaid 与可视化表格、PRD 文档大屏、四语言热切换、Cloudflare Pages 网关与 D1 表规范。当用户提到「需求打点」「原型标注」「PRD标记」「元素打标」「分组打点」「打点管理」「交互规约生成」「给原型加上PRD功能」「大头针标注」时使用本 Skill。
+description: 为任意 HTML 原型、Vue 2/3、React 17/18/Next.js 项目植入 2.0 版交互式 PRD 打点标注器、多版本规约生成系统与分组管理引擎。包含亮色玻璃 UI、内联 SVG 矢量图标、圆角方标牌、三态抽屉、分组新增与元素拾取定位、拖拽调序与插入指示线、按组自动重排打点编号、管理模式统一保存与二次确认、未保存变动横条、取消打点入口、动态视图与弹窗锚点定位、当前视图与顶部模块过滤、四语言热切换 i18n、访客只读权限隔离、Cloudflare D1 顶层 groups 真源、五模态持久化、导出 Markdown 与新网页 PRD 按组显示、Vditor IR 编辑器、Mermaid 与可视化表格、PRD 文档大屏、Cloudflare Pages 网关与 D1 表规范。当用户提到「需求打点」「原型标注」「PRD标记」「元素打标」「分组打点」「打点管理」「交互规约生成」「给原型加上PRD功能」「大头针标注」时使用本 Skill。
 agent_created: true
 ---
 
 # 交互式原型 PRD 打点与分组管理引擎 2.0
 
-2.0 是全新重构版本。核心引擎、分组扩展层、定位钩子模板、注入脚本、本地服务与示例截图全部按同一套实现交付。
+**English summary.** Version 2.0 is a full rewrite. It provides an in-situ PRD pin editor, a multi-version spec generator, and a first-class grouping engine. The UI uses a light glass theme, inline SVG icons, rounded square pin badges, a three-state drawer, grouped pins, drag reordering with insertion indicators, automatic renumbering by group, unified save on exiting manage mode, dynamic view and modal anchoring, view and module filtering, four-language hot switching, visitor read-only isolation, Cloudflare D1 with a top-level `groups` field, five persistence modes, grouped Markdown and standalone PRD exports, a Vditor IR editor, Mermaid diagrams, and an interactive table editor. No secrets, tokens, account IDs, personal names, or company names are stored in this Skill.
+
+**日本語の概要。** バージョン 2.0 は全面改修版です。プロトタイプ上で PRD 仕様を直接注釈できます。グループ管理、ドラッグ並べ替え、管理モード終了時の一括保存、四言語切替、来訪者読み取り専用、Cloudflare D1 の `groups` 保存に対応します。機密情報は Skill に含まれません。
+
+**한국어 요약.** 2.0은 전면 재작성 버전입니다. 프로토타입에서 PRD 규격을 직접 표시하고 그룹으로 관리합니다. 드래그 정렬, 관리 모드 종료 시 일괄 저장, 4개 언어 전환, 방문자 읽기 전용, Cloudflare D1 `groups` 저장을 지원합니다. Skill에는 어떤 비밀 정보도 포함되지 않습니다.
+
 本文件是 Agent 执行规范。目标项目接入后，UI 样式、交互、数据口径与本 Skill 资产一致。
+多语言架构见第 3.8 节。示例截图见第 1 节。
 
 ## 0. 安全红线
 
@@ -20,6 +26,7 @@ agent_created: true
 7. 未经用户明确说「可以部署」或「可以发布上线」，禁止生产构建与部署。禁止 `git push`。
 8. 云端写操作前先 `GET` 备份，写入后 `GET` 回读比对。
 9. 示例截图使用占位文案。禁止出现真实业务主体信息。
+10. 禁止无 `WHERE` 条件的 `UPDATE` 或 `DELETE`。未经批准禁止 `DROP TABLE`、`TRUNCATE`、删列。
 
 ## 1. 架构总览
 
@@ -33,8 +40,8 @@ agent_created: true
 | `assets/vendor/vditor/` | Vditor 离线资源。 |
 | `assets/images/` | 2.0 脱敏示例截图。 |
 | `scripts/inject.py` | 一键植入与配置注入。 |
-| `SKILL.md` | 本规范。 |
-| `README.md` | 快速开始与功能说明。 |
+| `SKILL.md` | 本规范。完整功能、契约与接入流程。 |
+| `README.md` | 快速开始、截图与功能说明。 |
 
 ### 加载顺序
 
@@ -52,10 +59,25 @@ graph LR
 
 ### 示例截图
 
-- `assets/images/screenshot_drawer_overview.png`：抽屉、分组列表与圆点标牌。
-- `assets/images/screenshot_manage_mode.png`：管理模式与操作行。
-- `assets/images/screenshot_group_dialog.png`：分组管理弹窗。
-- `assets/images/screenshot_markers.png`：页面圆点与边缘控制台。
+图片托管在本仓库 `assets/images/`。下列地址使用 2.0.0 tag，便于外部平台直接渲染。
+
+**抽屉、分组列表与圆点标牌**
+
+![抽屉与分组](https://raw.githubusercontent.com/barry0-0/pm-proto-prd-pin/2.0.0/assets/images/screenshot_drawer_overview.png)
+
+**管理模式与操作行**
+
+![管理模式](https://raw.githubusercontent.com/barry0-0/pm-proto-prd-pin/2.0.0/assets/images/screenshot_manage_mode.png)
+
+**分组管理弹窗**
+
+![分组管理](https://raw.githubusercontent.com/barry0-0/pm-proto-prd-pin/2.0.0/assets/images/screenshot_group_dialog.png)
+
+**页面圆点与边缘控制台**
+
+![圆点标牌](https://raw.githubusercontent.com/barry0-0/pm-proto-prd-pin/2.0.0/assets/images/screenshot_markers.png)
+
+本地相对路径：`assets/images/screenshot_drawer_overview.png` 等四个文件。全部为占位文案，无姓名、公司、项目信息。
 
 ## 2. 快速接入
 
@@ -79,7 +101,7 @@ cd <目标原型目录>
 1. 按目标项目补齐 `PRD_VIEW_JUMPS`、`PRD_VIEW_LABELS`、`PRD_GROUP_PRESET`。
 2. 按目标项目补齐 `PRD_HOOK_CONFIG` 的容器映射、弹窗打开器与视图切换函数。
 3. 配置 Cloudflare 网关与 D1 表。
-4. 浏览器走查分组、定位、导出与访客只读。
+4. 浏览器走查分组、定位、导出、多语言切换与访客只读。
 5. 需要线上生效时，取得明确部署授权后再部署。
 
 ## 3. 完整功能清单
@@ -96,6 +118,7 @@ cd <目标原型目录>
 - 纯白底 Mermaid 矢量图。动态防截断。
 - 三大规约模板：业务规则、状态机流程图、字段数据字典。
 - 草稿暂存与一键恢复胶囊。
+- 独立原生 Toast 容器，不依赖 `window.UI`。
 - 编辑器注入「所属分组」下拉。新建默认「未分组」。
 - 新建打点追加到数组末尾。保存后按组强制重排并重新编号 1..N。
 - 重新拾取元素、最小化、关闭编辑器均清理待归属组状态。
@@ -128,6 +151,17 @@ cd <目标原型目录>
 - 重绘保持列表滚动位置，不跳回顶部。
 - 排序、编辑、删除复用核心引擎既有 API 完成持久化。
 
+```mermaid
+stateDiagram-v2
+  [*] --> 浏览态
+  浏览态 --> 管理中: 点击管理
+  管理中 --> 管理中: 拖拽 / 改组 / 预览
+  管理中 --> 统一确认: 点击管理中关闭
+  统一确认 --> 浏览态: 确认，按组重排并写 D1
+  统一确认 --> 管理中: 取消，保留未保存提示
+  浏览态 --> [*]
+```
+
 ### 3.4 圆点渲染与过滤
 
 - 圆角方标牌 28×20，靛蓝渐变，白字，柔和阴影。工具默认 CSS 同步生效，避免异步竞态闪黑。
@@ -152,6 +186,7 @@ cd <目标原型目录>
 
 - 亮色玻璃 + 靛蓝强调。CSS 变量收口。内联 SVG 矢量图标。emoji 已收敛。
 - 边缘控制台 38px 窄竖条。三态抽屉：全展开 / 半收起 / 全收起。
+- 半收起为 56px 标号竖条。点击标号定位并弹出气泡。
 - 版本栏控件同高、同圆角、同边框。收起 / 展开为图标加文字，两个动作随时可用。
 - 头部两行。标题不带 pageKey 字母。
 - 气泡、编辑器、PRD 大屏、新网页 PRD 不显示 selector 与 pageKey 字母。
@@ -169,7 +204,95 @@ cd <目标原型目录>
 - 云端真实 HTTP 200 后才写本地镜像。失败原子回滚。
 - 任何保存都保留 D1 顶层 `groups`。
 - 多版本严格物理隔离。导入冲突支持覆盖 / 追加 / 另存。
-- 四语言热切换（中 / 英 / 日 / 韩）并持久化偏好。
+- 四语言热切换（中 / 英 / 日 / 韩）并持久化偏好。详见 3.8。
+
+权限矩阵：
+
+| 入口 | 访客只读 | 已解锁 | 管理中 |
+|---|---|---|---|
+| 查看打点、定位、PRD 大屏 | 显示 | 显示 | 显示 |
+| 新增 / 编辑 / 删除打点 | 隐藏 | 显示 | 显示 |
+| 排序管理、版本新建 / 导入 | 隐藏 | 显示 | 显示 |
+| 分组按钮、分组管理 | 隐藏 | 隐藏 | 显示 |
+| 拖拽调序、改组、关闭管理保存 | 隐藏 | 隐藏 | 显示 |
+
+五模态持久化对比：
+
+| 模式 | 读 | 写 | 适用 |
+|---|---|---|---|
+| Cloudflare D1 | `GET /api/prd/:docId` | `POST` + Bearer | 团队协作、公网演示 |
+| Supabase | PostgREST GET | PostgREST 合并写 | 大容量备选 |
+| JSONBin | `/latest` | PUT + Master Key | 免建表 |
+| GitHub Contents | 仓库文件 | REST Commit | 需要审计历史 |
+| 本地 Node 服务 | `/api/save-prd` | 磁盘 JS | 纯脱机开发 |
+
+### 3.8 多语言支持（i18n）
+
+工具内建 **四语言完整字典**，不是简单文案替换。
+
+| 语言 | key | Vditor 映射 |
+|---|---|---|
+| 简体中文 | `zh-CN` | `zh_CN` |
+| English | `en` | `en_US` |
+| 日本語 | `ja` | `ja_JP` |
+| 한국어 | `ko` | `ko_KR` |
+
+字典结构：
+
+```javascript
+const I18N = {
+  'zh-CN': { addPinBtn: '新增打点', manageOrder: '管理', /* ... */ },
+  'en':    { addPinBtn: 'Add Pin',   manageOrder: 'Manage', /* ... */ },
+  'ja':    { addPinBtn: 'ピン追加', manageOrder: '管理', /* ... */ },
+  'ko':    { addPinBtn: '핀 추가', manageOrder: '관리', /* ... */ }
+};
+function t(key) {
+  const dict = I18N[currentLang] || I18N['en'] || I18N['zh-CN'];
+  return dict[key] !== undefined ? dict[key] : (I18N['zh-CN'][key] !== undefined ? I18N['zh-CN'][key] : key);
+}
+```
+
+覆盖范围：抽屉左侧控制按钮、顶部操作栏、管理提示条与按钮、搜索占位符、需求卡片脚标、Vditor 全量语言包、PRD 大屏所有元数据与目录大纲、版本冲突弹窗、Toast、权限弹窗、语言名称。
+词条数量 115+。切换后即刻热重绘所有组件与徽标。
+
+- 偏好持久化：`localStorage('prd_ui_lang')`。
+- 切换入口：抽屉顶部语言下拉。切换无需刷新。
+- Vditor 语言联动：`getVditorLang()` 返回对应语言包标识。
+- 回退规则：当前语言 → 中文 → key 本身。缺词条不会显示空白。
+- 文档页面标题也按语言字典解析。
+
+新增词条流程：
+
+1. 在四份字典使用同一个 key。
+2. 使用 `t('key')` 读取，禁止把可见文案硬编码进 HTML 字符串。
+3. 变量插值使用字符串拼接，不依赖第三方模板引擎。
+4. 回读四份字典，确认 key 集合一致。
+5. 浏览器逐语言切换走查。
+
+扩展第 5 种语言：
+
+1. 在 `I18N` 增加新字典与语言名称。
+2. 在抽屉语言下拉增加 `<option>`。
+3. 在 `getVditorLang` 增加映射。若 Vditor 无对应包，回退 `en_US`。
+4. 补齐全部词条后做整页走查。
+
+多语言与界面自解释规则共同生效：说明信息下沉到代码注释，界面只保留必要表单标签与危险操作后果提示。
+
+### 3.9 版本管理与导入冲突
+
+- `PRD_VERSION_REGISTRY` 维护 `{ activeVersion, versions }`。
+- 页面大头针、抽屉列表、气泡、PRD 大屏只展示当前激活版本数据。
+- 新建版本为空白版本。复制版本生成副本。
+- 上传 `.js` / `.json` 时弹出冲突模态框：覆盖现有版本、追加合并、另存为新版本。
+- 版本切换、删除、导入均走鉴权与二次确认。
+
+### 3.10 SPA 与 DOM 自适应
+
+- 代理 `history.pushState` / `replaceState`，监听 `popstate` 与 `hashchange`。
+- `MutationObserver` 监听 DOM 动态挂载，50–100ms 内重算坐标。
+- 过滤 Vue `data-v-*` 与 React CSS-in-JS 哈希类名，优先语义路径。
+- 中文路由做 `encodeURIComponent` 清洗，避免请求头编码错误。
+- 业务视图切换后主动刷新圆点。
 
 ## 4. 数据契约
 
@@ -259,6 +382,22 @@ CREATE TABLE IF NOT EXISTS prd_docs (
 - 写入后 `GET` 回读，核对 `savedPins` 与 `versionRegistry` 逐字段一致。
 - `deploy/public/` 是构建产物，不参与数据口径，不入库。
 
+### 命令速查
+
+```bash
+# 只读备份
+curl -sS "$PRD_GATEWAY/api/prd/$DOC_ID" > "archive/d1-$DOC_ID-before-$TS.json"
+
+# 写入（变量由环境提供，命令不出现值）
+curl -X POST "$PRD_GATEWAY/api/prd/$DOC_ID" \
+  -H "Authorization: Bearer $PRD_ADMIN_SECRET" \
+  -H 'Content-Type: application/json' \
+  --data-binary @payload.json
+
+# 部署
+CLOUDFLARE_API_TOKEN="$CLOUDFLARE_API_TOKEN" wrangler pages deploy public --project-name "$PROJECT" --branch main
+```
+
 ## 7. 工程结构与产物
 
 ```text
@@ -300,8 +439,10 @@ pm-proto-prd-pin/
 - `git diff --check`。
 - 试注入到临时目录，确认三个脚本引用、配置块与数据文件。
 - 浏览器走查：分组渲染、按组新增、排序模式分组保留、拖拽指示线、关闭管理统一保存、元素拾取、分组跳转、访客只读、导出分组、动态视图定位。
+- 多语言走查：四语言逐一切换，核对抽屉、编辑器、PRD 大屏、Toast 文案。
 - 线上部署后核对端点、静态资源版本与 D1 回读。
 - 全量扫描注入产物，确认无任何密钥值、姓名、公司或项目名。
+- 用 `rg` 复查打点描述，禁止表现层词与旧版对比词。
 
 ## 9. 故障排查
 
@@ -315,6 +456,8 @@ pm-proto-prd-pin/
 | 空组不显示 | 2.0 起所有分组始终显示。 |
 | 列表跳回顶部 | 2.0 保留 `scrollTop`。 |
 | 页面卡顿 | 检查 observer 是否忽略了工具浮层自身 DOM 变化。 |
+| 语言切换后文案缺失 | 补齐四份字典同一 key，检查 `t(key)` 回退。 |
+| Vditor 工具栏图标异常 | 检查样式沙箱隔离与 `getVditorLang` 映射。 |
 
 ## 10. 安全与回滚
 
@@ -322,6 +465,9 @@ pm-proto-prd-pin/
 - 回滚：还原注入前文件；D1 用备份 JSON 按网关 POST 恢复；静态部署回滚到上一版本。
 - 删除分组、排序变动、退出打标模式等操作必须保留清晰后果提示。
 - 说明信息下沉到代码注释。界面只保留必要标签与危险操作提示。
+- 写操作入口防重复提交，绑定 loading / disabled，在 `finally` 恢复状态。
+- 多图片/附件按 fileId 批量获取预览地址，禁止逐行重复请求。
+- 大整数 ID 作为字符串处理。`0` 是合法状态，空值检查用 `value !== null && value !== undefined`。
 
 ## 11. 2.0 变更清单
 
@@ -334,14 +480,18 @@ pm-proto-prd-pin/
 7. 导出 Markdown 与新网页 PRD 按组显示。
 8. UI 全面改为亮色玻璃 + 靛蓝强调 + 内联 SVG。
 9. 管理模式重绘保持列表滚动位置。
-10. 注入脚本生成双常量数据文件与通用钩子配置块。
-11. 本地服务改为通用实现。示例截图全部换成 2.0 脱敏图。
-12. Skill 内嵌 `.git` 历史移除。全部资产无密钥、无项目主体信息。
+10. 四语言 i18n 热切换、Vditor 语言联动与词条回退规则完整保留。
+11. 注入脚本生成双常量数据文件与通用钩子配置块。
+12. 本地服务改为通用实现。示例截图全部换成 2.0 脱敏图。
+13. 文档补齐 English / 日本語 / 한국어 摘要、多语言章节、权限矩阵、状态机与可渲染截图。
+14. Skill 内嵌 `.git` 历史移除。全部资产无密钥、无项目主体信息。
 
 ## 12. 文档与表达规则
 
 - 短句，主动语态，一次一个意思。
-- 技术名词保留英文：API、Worker、D1、PRD、ADR、Turn。
+- 技术名词保留英文：API、Worker、D1、PRD、ADR、Turn、i18n。
 - 说明信息写进代码注释，不进入前端可见文案。
 - 危险操作保留后果提示。
 - 方案、契约、决策记录只用 Markdown。复杂流程用 Mermaid。
+- 一个打点描述只讲一个关键流程。只写触发条件、状态流转、结果、字段、权限。不写颜色、样式、尺寸、布局、toast、提示文案。
+- 写入前复查表现层词与旧版对比词。写入后核对双常量、`GET` 回读、缓存版本与当次 Turn。

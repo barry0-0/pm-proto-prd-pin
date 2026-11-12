@@ -3,6 +3,12 @@
 纯原生 Vanilla JS 的原型 PRD 打点与分组管理引擎。2.0 是全新重构版本。
 前端零依赖。不初始化 `package.json`，不安装 npm 包。
 
+**English.** Version 2.0 is a full rewrite. It adds in-situ PRD pinning, a multi-version spec generator, first-class grouping, light glass UI, inline SVG icons, rounded pin badges, drag reordering with insertion indicators, automatic renumbering by group, unified save on exiting manage mode, dynamic view and modal anchoring, four-language hot switching, visitor read-only isolation, Cloudflare D1 with a top-level `groups` field, five persistence modes, grouped Markdown and standalone PRD exports, a Vditor IR editor, Mermaid diagrams, and an interactive table editor. No secrets or personal data are stored in this Skill.
+
+**日本語.** 2.0 は全面改修版です。プロトタイプ上で PRD 仕様を注釈し、グループ単位で管理します。ドラッグ並べ替え、管理モード終了時の一括保存、四言語切替、来訪者読み取り専用、Cloudflare D1 の `groups` 保存に対応します。機密情報は含まれません。
+
+**한국어.** 2.0은 전면 재작성 버전입니다. 프로토타입에서 PRD 규격을 표시하고 그룹으로 관리합니다. 드래그 정렬, 관리 모드 종료 시 일괄 저장, 4개 언어 전환, 방문자 읽기 전용, Cloudflare D1 `groups` 저장을 지원합니다. 비밀 정보는 포함되지 않습니다.
+
 ## 功能总览
 
 | 模块 | 能力 |
@@ -14,14 +20,15 @@
 | 圆点 | 圆角方标牌、同坐标错开、视图 / 模块 / 侧栏过滤、动态渲染重绘 |
 | 定位 | 容器映射、弹窗分类打开、强制重渲染、失败延迟重试 |
 | 显示 | 亮色玻璃、内联 SVG、三态抽屉、窄竖条控制台、两行头部 |
+| 多语言 | 中 / 英 / 日 / 韩四份完整字典、热切换、Vditor 联动、词条回退 |
 | 导出 | Markdown 分组目录、新网页 PRD 按组分段、PRD 文档大屏、PDF 打印 |
 | 权限 | 访客只读、创立人鉴权、一键锁定 |
 | 持久化 | Cloudflare D1、Supabase、JSONBin、GitHub Contents、本地 Node 服务 |
-| 其它 | 多版本隔离、导入冲突处理、四语言热切换 |
+| 其它 | 多版本隔离、导入冲突处理、SPA 路由拦截、DOM 自适应 |
 
 ## 示例截图
 
-全部使用占位文案。无姓名、公司、项目信息。
+全部使用占位文案。无姓名、公司、项目信息。图片同时托管在本仓库 `assets/images/`。ClawHub 等外部平台用 2.0.0 tag 的 raw 地址渲染，见 `SKILL.md` 第 1 节。
 
 ### 抽屉与分组
 
@@ -167,6 +174,26 @@ D1 存储对象：
 本地 `prd-data-*.js` 双常量同源，仅作 `file://` 兜底。
 分组配置另存 `localStorage`，key 前缀 `prd_groups_v1_`。
 
+## 多语言支持（i18n）
+
+工具内建四语言完整字典，不是简单文案替换。
+
+| 语言 | key | Vditor 映射 |
+|---|---|---|
+| 简体中文 | `zh-CN` | `zh_CN` |
+| English | `en` | `en_US` |
+| 日本語 | `ja` | `ja_JP` |
+| 한국어 | `ko` | `ko_KR` |
+
+- 字典 `I18N` 覆盖抽屉、工具栏、搜索、卡片脚标、Vditor、PRD 大屏、Toast、冲突弹窗、语言名称。词条 115+。
+- `t(key)` 回退：当前语言 → 中文 → key 本身。
+- 偏好持久化：`localStorage('prd_ui_lang')`。抽屉顶部下拉热切换，无需刷新。
+- `getVditorLang()` 联动 Vditor 语言包。
+- 新增词条时四份字典使用同一个 key，禁止硬编码可见文案。
+- 扩展第 5 种语言：加字典、加 `<option>`、加 Vditor 映射（无对应包时回退 `en_US`）。
+
+完整字典结构、新增词条流程与扩展步骤见 `SKILL.md` 第 3.8 节。
+
 ## 部署
 
 ### 数据表
@@ -203,13 +230,13 @@ CLOUDFLARE_API_TOKEN="$CLOUDFLARE_API_TOKEN" wrangler pages deploy public --proj
 
 ## 权限矩阵
 
-| 入口 | 访客只读 | 已解锁 |
-|---|---|---|
-| 查看打点、定位、PRD 大屏 | 显示 | 显示 |
-| 新增 / 编辑 / 删除打点 | 隐藏 | 显示 |
-| 排序管理、版本新建 / 导入 | 隐藏 | 显示 |
-| 分组按钮、分组管理 | 隐藏 | 管理模式开启时显示 |
-| 拖拽调序、改组、关闭管理保存 | 隐藏 | 显示 |
+| 入口 | 访客只读 | 已解锁 | 管理中 |
+|---|---|---|---|
+| 查看打点、定位、PRD 大屏 | 显示 | 显示 | 显示 |
+| 新增 / 编辑 / 删除打点 | 隐藏 | 显示 | 显示 |
+| 排序管理、版本新建 / 导入 | 隐藏 | 显示 | 显示 |
+| 分组按钮、分组管理 | 隐藏 | 隐藏 | 显示 |
+| 拖拽调序、改组、关闭管理保存 | 隐藏 | 隐藏 | 显示 |
 
 ## 常见问题
 
@@ -223,7 +250,11 @@ CLOUDFLARE_API_TOKEN="$CLOUDFLARE_API_TOKEN" wrangler pages deploy public --proj
 
 **圆点在其它模块残留**：补齐 `currentView`、`scope`、`PRD_VIEW_LABELS`。
 
+**语言切换后文案缺失**：补齐四份字典同一 key，检查 `t(key)` 回退。
+
 **页面卡顿**：确认 observer 忽略了工具浮层自身 DOM 变化。
+
+**ClawHub 看不到图片**：`SKILL.md` 使用 2.0.0 tag 的 raw 地址。相对路径见 `assets/images/`。
 
 ## 验证
 
@@ -264,8 +295,10 @@ python3 scripts/inject.py /tmp/prd-pin-trial
 7. 导出 Markdown 与新网页 PRD 按组显示。
 8. UI 改为亮色玻璃 + 靛蓝强调 + 内联 SVG。
 9. 管理模式重绘保持列表滚动位置。
-10. 注入脚本生成双常量数据文件与通用钩子配置块。
-11. 本地服务改为通用实现。示例截图换成 2.0 脱敏图。
-12. Skill 内嵌 `.git` 历史移除。全部资产无密钥、无项目主体信息。
+10. 四语言 i18n 热切换、Vditor 语言联动与词条回退规则完整保留。
+11. 注入脚本生成双常量数据文件与通用钩子配置块。
+12. 本地服务改为通用实现。示例截图换成 2.0 脱敏图。
+13. 文档补齐 English / 日本語 / 한국어 摘要、多语言章节、权限矩阵、状态机与可渲染截图。
+14. Skill 内嵌 `.git` 历史移除。全部资产无密钥、无项目主体信息。
 
 完整规范见 [SKILL.md](SKILL.md)。
