@@ -1930,6 +1930,7 @@
       if (remoteData && (remoteData.versionRegistry || Array.isArray(remoteData.savedPins) || Array.isArray(remoteData) || (typeof remoteData === 'object' && remoteData.versions))) {
         /* [PRD-GROUPS-V1] 顶层 groups 是新增字段。旧工具忽略，不影响旧显示。 */
         if (Array.isArray(remoteData.groups)) window.PRD_D1_GROUPS = remoteData.groups;
+        if (remoteData.pinGroups && typeof remoteData.pinGroups === 'object') window.PRD_D1_PIN_GROUPS = remoteData.pinGroups;
         if (remoteData.versionRegistry) {
           versionRegistry = remoteData.versionRegistry;
         } else if (Array.isArray(remoteData.savedPins)) {
@@ -3666,6 +3667,31 @@
       color: #09090b;
       font-weight: 500;
     }
+    .prd-toc-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 10px 0 4px;
+      padding: 6px 8px 4px;
+      border-top: 1px solid #ececee;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #4450B4;
+      cursor: pointer;
+      letter-spacing: .01em;
+    }
+    .prd-toc-group:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+    .prd-toc-group-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .prd-toc-group-count {
+      margin-left: auto;
+      flex: none;
+      font-size: 10px;
+      font-weight: 700;
+      color: #4450B4;
+      background: rgba(94,106,210,.12);
+      border-radius: 8px;
+      padding: 1px 6px;
+    }
     .prd-toc-num { color: #18181b; font-weight: 700; font-size: 11px; }
     .prd-toc-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -3706,6 +3732,33 @@
       margin-top: 0;
       padding-top: 0;
       border-top: none;
+    }
+    .prd-doc-group { margin-top: 34px; scroll-margin-top: 80px; }
+    .prd-doc-group:first-of-type { margin-top: 0; }
+    .prd-doc-group-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      margin: 0 0 4px;
+      border-left: 3px solid var(--prd-primary);
+      background: rgba(94,106,210,.06);
+      border-radius: 0 8px 8px 0;
+    }
+    .prd-doc-group-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: #4450B4;
+      letter-spacing: -0.01em;
+    }
+    .prd-doc-group-count {
+      margin-left: auto;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #4450B4;
+      background: rgba(94,106,210,.13);
+      border-radius: 9px;
+      padding: 1px 8px;
     }
     .prd-doc-sec-heading {
       font-size: 16px;
@@ -4107,6 +4160,8 @@
         };
         /* [PRD-GROUPS-V1] 任何后续保存都保留 D1 顶层 groups，避免线上分组数据被覆盖丢失。 */
         if (Array.isArray(window.PRD_D1_GROUPS)) cfPayload.groups = window.PRD_D1_GROUPS;
+        /* [PRD-GROUPS-V1] 逐条打点归属随保存写入 D1，改组后跨设备与文档生效。 */
+        if (window.PRD_D1_PIN_GROUPS && typeof window.PRD_D1_PIN_GROUPS === 'object') cfPayload.pinGroups = window.PRD_D1_PIN_GROUPS;
         const res = await saveRemoteKVData(null, effectiveKey, cfPayload);
         if (!res) {
           throw new Error('Cloudflare 未返回成功确认');
@@ -4690,7 +4745,7 @@
       /* [PRD-GROUPS-V1] 侧栏锚点只在所属顶部模块（合同签署）下显示，切到工作中心等模块后隐藏。 */
       const scope = (window.PRD_PIN_SCOPE && typeof window.PRD_PIN_SCOPE === 'function') ? window.PRD_PIN_SCOPE() : null;
       if (scope && side && scope.top && scope.home && scope.top !== scope.home) return;
-      /* [PRD-GROUPS-V1] 侧栏锚点按分组期望菜单过滤：当前侧栏无该菜单项时隐藏。 */
+      /* [PRD-GROUPS-V1] 侧栏锚点按分组期望菜单过滤：当前侧栏无该菜单项时隐藏（如安心签无「我的合同」）。 */
       const expected = (window.PRD_PIN_EXPECTED_VIEW && typeof window.PRD_PIN_EXPECTED_VIEW === 'function') ? window.PRD_PIN_EXPECTED_VIEW(pin) : null;
       if (side && expected && !side.querySelector('[data-nav="' + expected + '"]')) return;
       const hiddenAncestor = el.closest ? el.closest('.hidden, [hidden]') : null;
@@ -5022,6 +5077,11 @@
       if (window.PRD_PIN_LOCATOR && typeof window.PRD_PIN_LOCATOR.openModal === 'function') {
         try { window.PRD_PIN_LOCATOR.openModal(pin); } catch (e) { console.warn('[prd-locate]', e); }
       }
+    }
+
+    /* [PRD-LOCATE-V2] 动态锚点状态准备：分步向导、分步表单、数据源依赖元素先恢复状态。 */
+    if (window.PRD_PREPARE_ANCHOR && typeof window.PRD_PREPARE_ANCHOR === 'function') {
+      try { window.PRD_PREPARE_ANCHOR(pin.selector, pin); } catch (e) { console.warn('[prd-prepare]', e); }
     }
 
     let modalId = null;
@@ -6191,25 +6251,28 @@ window.saveEditorModal = async function() {
           </article>
         `;
     };
-    const prdGroups = getPRDGroups();
+    const docGroups = resolveDocGroups(savedPins);
     let tocHtml = '';
-    if (prdGroups.length) {
-      prdGroups.forEach((g) => {
-        const list = savedPins.filter((p) => { const gg = prdGroupOfPin(p); return gg && gg.id === g.id; });
-        if (!list.length) return;
-        tocHtml += '<div class="prd-toc-group">' + escapeHtml(g.name) + '</div>';
-        list.forEach((pin) => { tocHtml += tocLinkHtml(pin); });
+    if (docGroups.length) {
+      docGroups.forEach((g, gi) => {
+        if (!g.pins.length) return;
+        tocHtml += '<a class="prd-toc-group" href="#' + docGroupAnchorId(g, gi) + '">' + escapeHtml(g.name) + '<span class="prd-toc-group-count">' + g.pins.length + '</span></a>';
+        g.pins.forEach((pin) => { tocHtml += tocLinkHtml(pin); });
       });
-      const other = savedPins.filter((p) => !prdGroupOfPin(p));
-      if (other.length) {
-        tocHtml += '<div class="prd-toc-group">未分组</div>';
-        other.forEach((pin) => { tocHtml += tocLinkHtml(pin); });
-      }
     } else {
       savedPins.forEach((pin) => { tocHtml += tocLinkHtml(pin); });
     }
     let articlesHtml = '';
-    savedPins.forEach((pin) => { articlesHtml += articleHtml(pin); });
+    if (docGroups.length) {
+      docGroups.forEach((g, gi) => {
+        articlesHtml += '<section class="prd-group-block" id="' + docGroupAnchorId(g, gi) + '">' +
+          '<div class="prd-group-block-heading"><span>' + escapeHtml(g.name) + '</span>' +
+          '<span class="prd-group-block-count">共 ' + g.pins.length + ' 项</span></div>' +
+          g.pins.map(articleHtml).join('') + '</section>';
+      });
+    } else {
+      savedPins.forEach((pin) => { articlesHtml += articleHtml(pin); });
+    }
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -6409,7 +6472,13 @@ window.saveEditorModal = async function() {
       padding: 2px 8px;
       border-radius: 6px;
     }
-    .prd-toc-group { font-size: 11.5px; font-weight: 700; color: #4450B4; padding: 10px 8px 4px; letter-spacing: .02em; }
+    .prd-toc-group { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; color: #4450B4; padding: 12px 8px 4px; margin-top: 6px; border-top: 1px solid rgba(16,24,40,.07); letter-spacing: .02em; text-decoration: none; }
+    .prd-toc-group:first-child { margin-top: 0; border-top: none; padding-top: 4px; }
+    .prd-toc-group-count { margin-left: auto; font-size: 10px; font-weight: 700; background: rgba(94,106,210,.12); color: #4450B4; border-radius: 8px; padding: 1px 6px; }
+    .prd-group-block { margin-top: 26px; scroll-margin-top: 90px; }
+    .prd-group-block:first-of-type { margin-top: 0; }
+    .prd-group-block-heading { display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin-bottom: 6px; border-left: 3px solid var(--prd-primary); background: rgba(94,106,210,.07); border-radius: 0 8px 8px 0; font-size: 13.5px; font-weight: 800; color: #4450B4; }
+    .prd-group-block-count { margin-left: auto; font-size: 10.5px; font-weight: 700; background: rgba(94,106,210,.14); border-radius: 9px; padding: 1px 8px; }
     .prd-group-pill { font-size: 11px; font-weight: 600; background: rgba(94,106,210,.10); color: #4450B4; padding: 2px 8px; border-radius: 6px; margin-left: auto; }
     .prd-selector-tag {
       font-size: 11px;
@@ -6508,6 +6577,12 @@ window.saveEditorModal = async function() {
     newWin.document.close();
   };
 
+  /* 分组引擎异步就绪：首帧可能只有预设分组，就绪后按签名变化重绘一次。 */
+  function docGroupSignature() {
+    try {
+      return (resolveDocGroups(savedPins) || []).map(function (g) { return g.id + ':' + g.pins.length; }).join('|');
+    } catch (e) { return ''; }
+  }
   window.openCurrentPagePRDDoc = function() {
     if (activeDocModal) activeDocModal.remove();
 
@@ -6515,6 +6590,7 @@ window.saveEditorModal = async function() {
     overlay.className = 'prd-doc-overlay';
     overlay.id = 'prd-doc-modal-overlay';
 
+    const draw = () => {
     overlay.innerHTML = `
       <div class="prd-doc-container" onclick="event.stopPropagation()">
         <div class="prd-doc-header">
@@ -6546,12 +6622,29 @@ window.saveEditorModal = async function() {
               <span style="font-size:10px;">TOC</span>
             </div>
             <div style="display:flex; flex-direction:column; gap:2px;">
-              ${savedPins.map(pin => `
+              ${(() => {
+                const docGroups = resolveDocGroups(savedPins);
+                if (!docGroups.length) {
+                  return savedPins.map(pin => `
                 <div class="prd-toc-item" onclick="window.docScrollToSection('sec-pin-${pin.id}', this)" title="${escapeHtml(pin.title || '')}">
                   <span class="prd-toc-num">${pin.id}.</span>
                   <span class="prd-toc-text">${escapeHtml(pin.title || '（未命名）')}</span>
                 </div>
-              `).join('')}
+              `).join('');
+                }
+                return docGroups.map((g, gi) => `
+                <div class="prd-toc-group" onclick="window.docScrollToSection('${docGroupAnchorId(g, gi)}', null)" title="${escapeHtml(g.name)}">
+                  <span class="prd-toc-group-name">${escapeHtml(g.name)}</span>
+                  <span class="prd-toc-group-count">${g.pins.length}</span>
+                </div>
+                ${g.pins.map(pin => `
+                <div class="prd-toc-item" onclick="window.docScrollToSection('sec-pin-${pin.id}', this)" title="${escapeHtml(pin.title || '')}">
+                  <span class="prd-toc-num">${pin.id}.</span>
+                  <span class="prd-toc-text">${escapeHtml(pin.title || '（未命名）')}</span>
+                </div>
+                `).join('')}
+              `).join('');
+              })()}
             </div>
           </div>
 
@@ -6574,7 +6667,9 @@ window.saveEditorModal = async function() {
                     <div style="font-size:42px; margin-bottom:12px;"></div>
                     <div style="font-size:16px; font-weight:600;">当前版本尚未录入任何 PRD 规格</div>
                   </div>
-                ` : savedPins.map(pin => `
+                ` : (() => {
+                  const docGroups = resolveDocGroups(savedPins);
+                  const articleOf = (pin) => `
                   <article class="prd-doc-article-section" id="sec-pin-${pin.id}">
                     <h2 class="prd-doc-sec-heading">
                       <span class="prd-doc-heading-title">${pin.id}. ${escapeHtml(pin.title || '（未命名需求）')}</span>
@@ -6586,17 +6681,38 @@ window.saveEditorModal = async function() {
                       ${parseMarkdown(pin.desc) || '<p style="color:#A39A90; font-style:italic;">暂无详细描述</p>'}
                     </div>
                   </article>
-                `).join('')}
+                `;
+                  if (!docGroups.length) return savedPins.map(articleOf).join('');
+                  return docGroups.map((g, gi) => `
+                  <section class="prd-doc-group" id="${docGroupAnchorId(g, gi)}">
+                    <div class="prd-doc-group-heading">
+                      <span class="prd-doc-group-name">${escapeHtml(g.name)}</span>
+                      <span class="prd-doc-group-count">共 ${g.pins.length} 项</span>
+                    </div>
+                    ${g.pins.map(articleOf).join('')}
+                  </section>
+                `).join('');
+                })()}
               </div>
             </div>
           </div>
         </div>
       </div>
     `;
+      window.renderMermaidInDom(overlay);
+    };
 
     document.body.appendChild(overlay);
     activeDocModal = overlay;
-    window.renderMermaidInDom(overlay);
+    draw();
+    let docSig = docGroupSignature();
+    let docTries = 0;
+    const docTimer = setInterval(() => {
+      if (!activeDocModal || activeDocModal !== overlay) { clearInterval(docTimer); return; }
+      const next = docGroupSignature();
+      if (next !== docSig) { docSig = next; draw(); }
+      if (++docTries >= 12) clearInterval(docTimer);
+    }, 200);
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) window.closeCurrentPagePRDDoc();
     });
@@ -6643,9 +6759,11 @@ window.saveEditorModal = async function() {
 
   /* [PRD-GROUPS-V1] 导出与新网页 PRD 的分组口径：优先 D1 groups，回退页面预设。 */
   function getPRDGroups() {
-    if (Array.isArray(window.PRD_D1_GROUPS) && window.PRD_D1_GROUPS.length) return window.PRD_D1_GROUPS;
-    if (Array.isArray(window.PRD_GROUP_PRESET)) return window.PRD_GROUP_PRESET;
-    return [];
+    var raw = null;
+    if (Array.isArray(window.PRD_D1_GROUPS) && window.PRD_D1_GROUPS.length) raw = window.PRD_D1_GROUPS;
+    else if (Array.isArray(window.PRD_GROUP_PRESET)) raw = window.PRD_GROUP_PRESET;
+    if (!raw) return [];
+    return raw.slice().sort(function (a, b) { return (Number(a.order) || 0) - (Number(b.order) || 0); });
   }
   function prdGroupOfPin(pin) {
     var groups = getPRDGroups();
@@ -6655,28 +6773,64 @@ window.saveEditorModal = async function() {
     }
     return null;
   }
+  /* 文档分组清单：优先分组引擎（含手工改组），缺模块时回退标题关键词匹配。 */
+  function resolveDocGroups(pins) {
+    var list = Array.isArray(pins) ? pins : savedPins;
+    if (typeof window.PRD_GROUPS_RESOLVE === 'function') {
+      try {
+        var r = window.PRD_GROUPS_RESOLVE(list);
+        if (Array.isArray(r) && r.length) return r;
+      } catch (e) {}
+    }
+    var groups = getPRDGroups();
+    var boxes = groups.map(function (g) {
+      return { id: g.id, name: g.name, order: Number(g.order) || 0, pins: [] };
+    });
+    var other = { id: '', name: '未分组', order: 9999, pins: [] };
+    list.forEach(function (pin) {
+      var g = prdGroupOfPin(pin), hit = null;
+      if (g) for (var i = 0; i < boxes.length; i++) if (boxes[i].id === g.id) { hit = boxes[i]; break; }
+      (hit || other).pins.push(pin);
+    });
+    var res = boxes.filter(function (b) { return b.pins.length; });
+    if (other.pins.length) res.push(other);
+    return res;
+  }
+  function docGroupAnchorId(g, idx) {
+    return 'grp-' + (g.id ? String(g.id).replace(/[^a-zA-Z0-9_-]/g, '_') : 'other-' + idx);
+  }
   window.exportPRDMarkdown = function() {
     let md = `# 产品需求规格说明书 (PRD) [${currentVersion}]\n\n`;
     md += `> **生成时间**：${new Date().toLocaleString()}  \n`;
     md += `> **规格版本**：\`${currentVersion}\`  \n\n`;
-    const prdGroups = getPRDGroups();
-    if (prdGroups.length) {
+    const docGroups = resolveDocGroups(savedPins);
+    const groupNameOf = (pin) => {
+      for (let i = 0; i < docGroups.length; i++) {
+        if (docGroups[i].pins.indexOf(pin) >= 0) return docGroups[i].name;
+      }
+      return '未分组';
+    };
+    if (docGroups.length) {
       md += `## 分组目录\n\n`;
-      prdGroups.forEach((g, gi) => {
-        const n = savedPins.filter((p) => { const gg = prdGroupOfPin(p); return gg && gg.id === g.id; }).length;
-        md += `- ${gi + 1}. ${g.name}（${n} 条）\n`;
-      });
-      const other = savedPins.filter((p) => !prdGroupOfPin(p)).length;
-      if (other) md += `- 未分组（${other} 条）\n`;
+      docGroups.forEach((g, gi) => { md += `- ${gi + 1}. ${g.name}（${g.pins.length} 条）\n`; });
       md += `\n---\n\n`;
+      docGroups.forEach((g) => {
+        md += `## 分组：${g.name}\n\n`;
+        g.pins.forEach((pin) => {
+          md += `### ${pin.id}. ${pin.title || '未命名需求'}\n`;
+          md += `- **所属分组**：${groupNameOf(pin)}\n`;
+          md += `- **需求类型**：${pin.type || '业务规则'}\n`;
+          md += `#### 功能逻辑与业务规约\n${pin.desc || '暂无描述'}\n\n---\n\n`;
+        });
+      });
+    } else {
+      savedPins.forEach((pin) => {
+        md += `## ${pin.id}. ${pin.title || '未命名需求'}\n`;
+        md += `- **所属分组**：未分组\n`;
+        md += `- **需求类型**：${pin.type || '业务规则'}\n`;
+        md += `### 功能逻辑与业务规约\n${pin.desc || '暂无描述'}\n\n---\n\n`;
+      });
     }
-    savedPins.forEach((pin, index) => {
-      const g = prdGroupOfPin(pin);
-      md += `## ${index + 1}. ${pin.title || '未命名需求'}\n`;
-      md += `- **所属分组**：${g ? g.name : '未分组'}\n`;
-      md += `- **需求类型**：${pin.type || '业务规则'}\n`;
-      md += `### 功能逻辑与业务规约\n${pin.desc || '暂无描述'}\n\n---\n\n`;
-    });
 
     const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -7104,7 +7258,7 @@ window.saveEditorModal = async function() {
       }
     }
     var s = document.createElement('script');
-    s.src = base + 'prd-groups.js?v=2.0';
+    s.src = base + 'prd-groups.js?v=2.1.0';
     document.head.appendChild(s);
   } catch (e) {
     console.warn('[PRD-GROUPS-V1] loader failed', e);

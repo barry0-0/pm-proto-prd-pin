@@ -1,7 +1,8 @@
 /**
- * pm-proto-prd-pin 2.0 通用定位钩子模板。
+ * pm-proto-prd-pin 2.1.0 通用定位钩子模板。
  *
- * 与核心引擎当前版本行为一致：容器映射、动态容器强制重渲染、标题兜底、弹窗分类打开。
+ * 与核心引擎当前版本行为一致：容器映射、动态容器强制重渲染、标题兜底、弹窗分类打开、
+ * 动态锚点状态准备（分步向导 / 分步表单 / 数据源依赖元素）。
  * 所有项目差异都放在 window.PRD_HOOK_CONFIG，本文件不写任何项目名、地址或密钥。
  *
  * PRD_HOOK_CONFIG 字段：
@@ -9,9 +10,13 @@
  *   titleViewHints:  { "标题关键词": "viewKey" }
  *   dynamicPattern:  RegExp，命中时即使已在目标视图也强制重渲染
  *   modalOpeners:    [{ title, selector, view, open }]，按顺序匹配
+ *   prepareAnchor:   function(selector, pin, view) 定位前恢复页面状态
  *   switchView:      function(viewKey) 切视图并渲染动态内容
  *   currentView:     function() 返回当前视图 key
  *   scope:           function() 返回 { top, home }
+ *
+ * prepareAnchor 只在需要时实现：目标元素藏在向导第 N 步、分步表单、或依赖数据源切换时使用。
+ * 要求幂等：已就绪则直接返回，不重复提交、不重置用户已填内容。
  */
 (function () {
   var cfg = window.PRD_HOOK_CONFIG || {};
@@ -20,11 +25,19 @@
   var titleHints = cfg.titleViewHints || {};
   var dynamicPattern = cfg.dynamicPattern || /(?:)/;
   var switchView = typeof cfg.switchView === 'function' ? cfg.switchView : function () {};
+  var prepareAnchor = typeof cfg.prepareAnchor === 'function' ? cfg.prepareAnchor : null;
   var currentView = typeof cfg.currentView === 'function' ? cfg.currentView : function () { return ''; };
   var scope = typeof cfg.scope === 'function' ? cfg.scope : function () { return { top: '', home: '' }; };
 
   window.PRD_GET_CURRENT_VIEW = currentView;
   window.PRD_PIN_SCOPE = scope;
+
+  /* 核心引擎在切视图、开弹窗之后、重试之前调用本钩子。未配置时为空实现。 */
+  window.PRD_PREPARE_ANCHOR = function (selector, pin, view) {
+    if (!prepareAnchor) return;
+    try { prepareAnchor(selector, pin, view || inferView(selector, pin)); }
+    catch (e) { console.warn('[prd-prepare]', e); }
+  };
 
   function inferView(selector, pin) {
     var el = null;

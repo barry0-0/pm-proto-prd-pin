@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-pm-proto-prd-pin 2.0 植入脚本。
+pm-proto-prd-pin 2.1.0 植入脚本。
 
 用法：
   python3 inject.py <目标原型目录>
@@ -21,7 +21,7 @@ import os
 import sys
 import shutil
 
-CACHE_VERSION = '2.0'
+CACHE_VERSION = '2.1.0'
 
 CONFIG_TEMPLATE = '''  <!-- PRD 打点工具配置。禁止在此写入任何密钥、Token 或凭据。 -->
   <script>
@@ -36,12 +36,14 @@ __PAGE_FILES__
     window.PRD_VIEW_LABELS = {};
     window.PRD_VIEW_JUMPS = {};
     /* 定位钩子配置。实现位于 prd-hook-templates.js，与当前工具行为一致。
-       按目标项目补齐 containerHints、titleViewHints、modalOpeners、switchView。 */
+       按目标项目补齐 containerHints、titleViewHints、modalOpeners、prepareAnchor、switchView。
+       prepareAnchor 只在锚点藏在向导步骤或分步表单里时使用，必须幂等。 */
     window.PRD_HOOK_CONFIG = {
       containerHints: [],
       titleViewHints: {},
       dynamicPattern: /(?:)/,
       modalOpeners: [],
+      prepareAnchor: null,
       switchView: function (viewKey) {
         if (window.UI && typeof UI.showView === 'function') UI.showView(viewKey);
       },

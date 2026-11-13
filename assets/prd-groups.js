@@ -117,6 +117,15 @@
         anchor: normalizeAnchor(g.anchor), link: normalizeLink(g.link)
       };
     });
+    syncCloudPinGroups();
+  }
+  /* [PRD-GROUPS-V1] 逐条打点归属同步到 D1 顶层 pinGroups，改组后换设备 / 在文档中生效。 */
+  function syncCloudPinGroups() {
+    var out = {};
+    Object.keys(cfg.pinGroups || {}).forEach(function (k) {
+      if (cfg.pinGroups[k]) out[k] = cfg.pinGroups[k];
+    });
+    window.PRD_D1_PIN_GROUPS = out;
   }
   function saveGroupsToCloud() {
     if (!isAuth()) return;
@@ -124,7 +133,7 @@
     try { if (typeof window.persistData === 'function') window.persistData(); } catch (e) { log('groups cloud save failed'); }
   }
   function load() {
-    var base = { groups: presetGroups(), pinGroups: {}, activeGroup: '' };
+    var base = { groups: presetGroups(), pinGroups: {}, activeGroup: '', otherCollapsed: false };
     try {
       var raw = localStorage.getItem(STORE_KEY);
       if (raw) {
@@ -139,11 +148,24 @@
           });
           base.pinGroups = parsed.pinGroups && typeof parsed.pinGroups === 'object' ? parsed.pinGroups : {};
           base.activeGroup = String(parsed.activeGroup || '');
+          base.otherCollapsed = !!parsed.otherCollapsed;
         }
       }
     } catch (e) { log('load failed, use preset'); }
     if (Array.isArray(window.PRD_D1_GROUPS) && window.PRD_D1_GROUPS.length) {
-      base.groups = normalizeCloudGroups(window.PRD_D1_GROUPS);
+      /* 折叠状态只认本机缓存：D1 的 collapsed 不决定默认展示，无本机记录则展开。 */
+      var localCollapsed = {};
+      base.groups.forEach(function (g) { localCollapsed[g.id] = !!g.collapsed; });
+      base.groups = normalizeCloudGroups(window.PRD_D1_GROUPS).map(function (g) {
+        g.collapsed = Object.prototype.hasOwnProperty.call(localCollapsed, g.id) ? localCollapsed[g.id] : false;
+        return g;
+      });
+    }
+    if (window.PRD_D1_PIN_GROUPS && typeof window.PRD_D1_PIN_GROUPS === 'object') {
+      var merged = {};
+      Object.keys(base.pinGroups || {}).forEach(function (k) { merged[k] = base.pinGroups[k]; });
+      Object.keys(window.PRD_D1_PIN_GROUPS).forEach(function (k) { merged[k] = window.PRD_D1_PIN_GROUPS[k]; });
+      base.pinGroups = merged;
     }
     base.groups.sort(function (a, b) { return a.order - b.order; });
     return base;
@@ -168,6 +190,7 @@
   }
   function save() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(cfg)); } catch (e) { log('save failed'); }
+    syncCloudPinGroups();
   }
   function registryPins() {
     try {
@@ -210,7 +233,7 @@
     for (var i = 0; i < pins.length; i++) if (String(pins[i].id) === String(id)) { hit = pins[i]; break; }
     if (!hit) return;
     cfg.pinGroups[stableKey(hit)] = gid || '';
-    save(); render();
+    save(); saveGroupsToCloud(); render();
   }
 
   // ---- 页面关联跳转 ----
@@ -347,16 +370,26 @@
     box.style.display = 'block';
     setTimeout(function () { if (box.parentNode) box.parentNode.removeChild(box); }, 2600);
   }
+  /* 通用布局容器不作为定位锚点：高亮整页无意义，交给分组视图跳转处理。 */
+  function isGenericAnchor(sel) {
+    return !sel || /^(body|html|main|#app|\.m-content|\.pc-content|\.content|\[data-view\])$/i.test(String(sel).trim());
+  }
   function jumpGroup(g) {
+    var inferred = viewOfGroupLabel(g);
     var a = normalizeAnchor(g.anchor);
-    if (a && (!a.pageKey || a.pageKey === pageKey)) {
-      if (a.view) {
-        var j = (window.PRD_VIEW_JUMPS || {})[a.view];
+    if (a && (!a.pageKey || a.pageKey === pageKey) && !isGenericAnchor(a.selector)) {
+      var view = a.view || inferred || '';
+      if (view) {
+        var j = (window.PRD_VIEW_JUMPS || {})[view];
         if (j) {
           try { if (typeof j.go === 'function') j.go(); } catch (e) { log('anchor go failed'); }
           try { if (typeof j.render === 'function') j.render(); } catch (e) { log('anchor render failed'); }
         } else {
-          try { if (window.UI && typeof window.UI.showView === 'function') window.UI.showView(a.view); } catch (e) {}
+          try { if (window.UI && typeof window.UI.showView === 'function') window.UI.showView(view); } catch (e) {}
+        }
+        /* [PRD-LOCATE-V2] 分组跳转与打点定位共用状态准备钩子。 */
+        if (window.PRD_PREPARE_ANCHOR && typeof window.PRD_PREPARE_ANCHOR === 'function') {
+          try { window.PRD_PREPARE_ANCHOR(a.selector, null, view); } catch (e) { log('anchor prepare failed'); }
         }
       }
       setTimeout(function () { highlightAnchor(a.selector); }, 180);
@@ -365,7 +398,6 @@
     // 兼容旧分组配置：link 被清空时按分组 label 反查视图，保证快速定位仍可用
     var l = normalizeLink(g.link);
     if (l.kind === 'none' || !l.target) {
-      var inferred = viewOfGroupLabel(g);
       if (inferred) l = { kind: 'view', target: inferred, newTab: false };
     }
     if (l.kind === 'none' || !l.target) return;
@@ -376,6 +408,9 @@
         try { if (typeof j2.render === 'function') j2.render(); } catch (e) {}
       } else {
         try { if (window.UI && typeof window.UI.showView === 'function') window.UI.showView(l.target); } catch (e) {}
+      }
+      if (window.PRD_PREPARE_ANCHOR && typeof window.PRD_PREPARE_ANCHOR === 'function') {
+        try { window.PRD_PREPARE_ANCHOR('', null, l.target); } catch (e) { log('link prepare failed'); }
       }
       return;
     }
@@ -423,6 +458,29 @@
       }
     }
     return null;
+  };
+
+  /* [PRD-GROUPS-V1] 分组归属公开接口：PRD 文档（弹窗 / 新网页 / 导出）与抽屉共用同一口径。
+     返回 [{ id, name, order, pins: [] }]，末尾追加未分组；空分组不返回。
+     归属顺序：手工改组（cfg.pinGroups）→ 分组 match 关键词前缀。 */
+  window.PRD_GROUPS_RESOLVE = function (pins) {
+    if (!cfg || !Array.isArray(cfg.groups)) return null;
+    var list = Array.isArray(pins) ? pins : registryPins();
+    var sorted = cfg.groups.slice().sort(function (a, b) { return (Number(a.order) || 0) - (Number(b.order) || 0); });
+    var out = sorted.map(function (g) {
+      return { id: g.id, name: g.name, order: Number(g.order) || 0, pins: [] };
+    });
+    var index = {};
+    out.forEach(function (x) { index[x.id] = x; });
+    var other = { id: '', name: '未分组', order: 9999, pins: [] };
+    list.forEach(function (pin) {
+      var gid = groupOf(pin);
+      var box = (gid && index[gid]) ? index[gid] : other;
+      box.pins.push(pin);
+    });
+    var res = out.filter(function (x) { return x.pins.length; });
+    if (other.pins.length) res.push(other);
+    return res;
   };
 
   // ---- 暗色玻璃主题（Designeer / PickUI 参考，原生 CSS） ----
@@ -805,6 +863,7 @@
         var next = act === 'collapse-all';
         cfg.groups.forEach(function (x) { x.collapsed = next; });
         state.otherCollapsed = next;
+        cfg.otherCollapsed = next;
         save(); render();
       });
     }
@@ -923,6 +982,7 @@
       var next = act === 'collapse-all';
       cfg.groups.forEach(function (x) { x.collapsed = next; });
       state.otherCollapsed = next;
+      cfg.otherCollapsed = next;
       save(); render(); return;
     }
     if (act === 'open-manage') { openGroupDialog(); return; }
@@ -949,8 +1009,8 @@
     if (act === 'toggle') {
       var g = groupById(gid);
       if (g) { g.collapsed = !g.collapsed; cfg.activeGroup = gid; save(); }
-      else if (gid === '__other__') { state.otherCollapsed = !state.otherCollapsed; }
-      else { state.otherCollapsed = !state.otherCollapsed; }
+      else if (gid === '__other__') { state.otherCollapsed = !state.otherCollapsed; cfg.otherCollapsed = state.otherCollapsed; save(); }
+      else { state.otherCollapsed = !state.otherCollapsed; cfg.otherCollapsed = state.otherCollapsed; save(); }
       render(); return;
     }
     if (act === 'jump') { var jg = groupById(gid); if (jg) jumpGroup(jg); return; }
@@ -1377,6 +1437,7 @@
   function init() {
     if (init.done) return true;
     cfg = load();
+    state.otherCollapsed = !!cfg.otherCollapsed;
     injectTheme();
 
     var listEl = document.getElementById('prd-drawer-list');
@@ -1419,8 +1480,24 @@
       if (gs !== init.lastGroupsSig) {
         init.lastGroupsSig = gs;
         if (Array.isArray(window.PRD_D1_GROUPS) && window.PRD_D1_GROUPS.length) {
-          cfg.groups = normalizeCloudGroups(window.PRD_D1_GROUPS);
+          var keepCollapsed = {};
+          cfg.groups.forEach(function (g) { keepCollapsed[g.id] = !!g.collapsed; });
+          cfg.groups = normalizeCloudGroups(window.PRD_D1_GROUPS).map(function (g) {
+            g.collapsed = Object.prototype.hasOwnProperty.call(keepCollapsed, g.id) ? keepCollapsed[g.id] : false;
+            return g;
+          });
           cfg.groups.sort(function (a, b) { return a.order - b.order; });
+          render();
+        }
+      }
+      var pgs = JSON.stringify(window.PRD_D1_PIN_GROUPS || {});
+      if (pgs !== init.lastPinGroupsSig) {
+        init.lastPinGroupsSig = pgs;
+        if (window.PRD_D1_PIN_GROUPS && typeof window.PRD_D1_PIN_GROUPS === 'object') {
+          var mergedPg = {};
+          Object.keys(cfg.pinGroups || {}).forEach(function (k) { mergedPg[k] = cfg.pinGroups[k]; });
+          Object.keys(window.PRD_D1_PIN_GROUPS).forEach(function (k) { mergedPg[k] = window.PRD_D1_PIN_GROUPS[k]; });
+          cfg.pinGroups = mergedPg;
           render();
         }
       }
@@ -1433,6 +1510,7 @@
   }
   init.lastSig = '';
   init.lastGroupsSig = '';
+  init.lastPinGroupsSig = '';
   init.manageWasOn = false;
   init.done = false;
 

@@ -1,16 +1,18 @@
 ---
 name: pm-proto-prd-pin
-description: 为任意 HTML 原型、Vue 2/3、React 17/18/Next.js 项目植入 2.0 版交互式 PRD 打点标注器、多版本规约生成系统与分组管理引擎。包含亮色玻璃 UI、内联 SVG 矢量图标、圆角方标牌、三态抽屉、分组新增与元素拾取定位、拖拽调序与插入指示线、按组自动重排打点编号、管理模式统一保存与二次确认、未保存变动横条、取消打点入口、动态视图与弹窗锚点定位、当前视图与顶部模块过滤、四语言热切换 i18n、访客只读权限隔离、Cloudflare D1 顶层 groups 真源、五模态持久化、导出 Markdown 与新网页 PRD 按组显示、Vditor IR 编辑器、Mermaid 与可视化表格、PRD 文档大屏、Cloudflare Pages 网关与 D1 表规范。当用户提到「需求打点」「原型标注」「PRD标记」「元素打标」「分组打点」「打点管理」「交互规约生成」「给原型加上PRD功能」「大头针标注」时使用本 Skill。
+description: 为任意 HTML 原型、Vue 2/3、React 17/18/Next.js 项目植入 2.1.0 版交互式 PRD 打点标注器、多版本规约生成系统与分组管理引擎。包含亮色玻璃 UI、内联 SVG 矢量图标、圆角方标牌、三态抽屉、分组新增与元素拾取定位、拖拽调序与插入指示线、按组自动重排打点编号、管理模式统一保存与二次确认、未保存变动横条、取消打点入口、动态视图与弹窗锚点定位、定位前状态准备钩子 PRD_PREPARE_ANCHOR、分组归属接口 PRD_GROUPS_RESOLVE、顶部分组默认展开、当前视图与顶部模块过滤、四语言热切换 i18n、访客只读权限隔离、Cloudflare D1 顶层 groups 与 pinGroups 真源、五模态持久化、弹窗 / 新网页 / Markdown 三处文档均按组显示、Vditor IR 编辑器、Mermaid 与可视化表格、PRD 文档大屏、Cloudflare Pages 网关与 D1 表规范。当用户提到「需求打点」「原型标注」「PRD标记」「元素打标」「分组打点」「打点管理」「交互规约生成」「给原型加上PRD功能」「大头针标注」时使用本 Skill。
 agent_created: true
 ---
 
-# 交互式原型 PRD 打点与分组管理引擎 2.0
+# 交互式原型 PRD 打点与分组管理引擎 2.1.0
 
-**English summary.** Version 2.0 is a full rewrite. It provides an in-situ PRD pin editor, a multi-version spec generator, and a first-class grouping engine. The UI uses a light glass theme, inline SVG icons, rounded square pin badges, a three-state drawer, grouped pins, drag reordering with insertion indicators, automatic renumbering by group, unified save on exiting manage mode, dynamic view and modal anchoring, view and module filtering, four-language hot switching, visitor read-only isolation, Cloudflare D1 with a top-level `groups` field, five persistence modes, grouped Markdown and standalone PRD exports, a Vditor IR editor, Mermaid diagrams, and an interactive table editor. No secrets, tokens, account IDs, personal names, or company names are stored in this Skill.
+> 版本：2.1.0 ｜ 基线：2.0 ｜ 更新：2026-11
 
-**日本語の概要。** バージョン 2.0 は全面改修版です。プロトタイプ上で PRD 仕様を直接注釈できます。グループ管理、ドラッグ並べ替え、管理モード終了時の一括保存、四言語切替、来訪者読み取り専用、Cloudflare D1 の `groups` 保存に対応します。機密情報は Skill に含まれません。
+**English summary.** Version 2.1.0 builds on the 2.0 rewrite. It adds a pre-locate state preparation hook (`PRD_PREPARE_ANCHOR`) for multi-step wizards, a single grouping resolver (`PRD_GROUPS_RESOLVE`) shared by drawer and documents, per-pin group persistence in D1 (`pinGroups`), grouped rendering in all three PRD outputs (in-page modal, standalone page, Markdown export), and groups expanded by default with collapse state kept per browser only. Existing 2.0 features remain: light glass theme, inline SVG icons, rounded square pin badges, three-state drawer, drag reordering with insertion indicators, automatic renumbering by group, unified save on exiting manage mode, dynamic view and modal anchoring, view and module filtering, four-language hot switching, visitor read-only isolation, five persistence modes, Vditor IR editor, Mermaid diagrams, and an interactive table editor. No secrets, tokens, account IDs, personal names, or company names are stored in this Skill.
 
-**한국어 요약.** 2.0은 전면 재작성 버전입니다. 프로토타입에서 PRD 규격을 직접 표시하고 그룹으로 관리합니다. 드래그 정렬, 관리 모드 종료 시 일괄 저장, 4개 언어 전환, 방문자 읽기 전용, Cloudflare D1 `groups` 저장을 지원합니다. Skill에는 어떤 비밀 정보도 포함되지 않습니다.
+**日本語の概要。** バージョン 2.1.0 は 2.0 の後継です。多段ウィザード向けの位置調整前に実行する状態復元フック（`PRD_PREPARE_ANCHOR`）、ドロワーと文書で共通のグループ判定インターフェース（`PRD_GROUPS_RESOLVE`）、D1 の `pinGroups` による注釈単位のグループ保存、三つの PRD 出力（画面内モーダル、別ページ、Markdown）でのグループ表示、デフォルト展開と折りたたみ状態のブラウザ単位保持を追加しました。機密情報は Skill に含まれません。
+
+**한국어 요약.** 버전 2.1.0은 2.0의 후속 버전입니다. 다단계 마법사용 상태 복원 훅(`PRD_PREPARE_ANCHOR`), 드로어와 문서가 공유하는 그룹 판정 인터페이스(`PRD_GROUPS_RESOLVE`), D1 `pinGroups` 기반 주석별 그룹 저장, 세 가지 PRD 출력(모달, 별도 페이지, Markdown)의 그룹 표시, 기본 펼침과 브라우저별 접기 상태 유지를 추가했습니다. Skill에는 어떤 비밀 정보도 포함되지 않습니다.
 
 本文件是 Agent 执行规范。目标项目接入后，UI 样式、交互、数据口径与本 Skill 资产一致。
 多语言架构见第 3.8 节。示例截图见第 1 节。
@@ -38,7 +40,7 @@ agent_created: true
 | `assets/server.js` | 零依赖本地持久化服务。 |
 | `assets/start.sh` | 本地服务启动脚本。 |
 | `assets/vendor/vditor/` | Vditor 离线资源。 |
-| `assets/images/` | 2.0 脱敏示例截图。 |
+| `assets/images/` | 2.1.0 脱敏示例截图。 |
 | `scripts/inject.py` | 一键植入与配置注入。 |
 | `SKILL.md` | 本规范。完整功能、契约与接入流程。 |
 | `README.md` | 快速开始、截图与功能说明。 |
@@ -54,7 +56,7 @@ graph LR
   E --> F[分组面板与工具栏]
 ```
 
-核心引擎末尾的 `[PRD-GROUPS-V1] LOADER` 按同目录加载 `prd-groups.js?v=2.0`。
+核心引擎末尾的 `[PRD-GROUPS-V1] LOADER` 按同目录加载 `prd-groups.js?v=2.1.0`。
 两个文件必须成对部署。分组扩展层用 `window.__PRD_GROUPS_V1_READY` 防止重复初始化。
 
 ### 示例截图
@@ -99,10 +101,11 @@ cd <目标原型目录>
 ### 接入后必做
 
 1. 按目标项目补齐 `PRD_VIEW_JUMPS`、`PRD_VIEW_LABELS`、`PRD_GROUP_PRESET`。
-2. 按目标项目补齐 `PRD_HOOK_CONFIG` 的容器映射、弹窗打开器与视图切换函数。
-3. 配置 Cloudflare 网关与 D1 表。
-4. 浏览器走查分组、定位、导出、多语言切换与访客只读。
-5. 需要线上生效时，取得明确部署授权后再部署。
+2. 按目标项目补齐 `PRD_HOOK_CONFIG` 的容器映射、弹窗打开器、状态准备与视图切换函数。
+3. 锚点藏在分步向导、分步表单或依赖数据源时，实现 `prepareAnchor`。
+4. 配置 Cloudflare 网关与 D1 表。
+5. 浏览器走查分组、定位、文档分组、导出、多语言切换与访客只读。
+6. 需要线上生效时，取得明确部署授权后再部署。
 
 ## 3. 完整功能清单
 
@@ -138,6 +141,11 @@ cd <目标原型目录>
 - D1 顶层 `groups` 是分组定义真源。本地变更写回 D1。
 - 启动时以 D1 groups 为准，轮询检测变化并重载。
 - 浏览器 `localStorage` 保存打点归属，key 前缀 `prd_groups_v1_`。
+- 折叠状态只认本机缓存：有记录按记录，无记录一律展开。D1 的 `collapsed` 不决定默认展示。
+- 「未分组」块同规则，状态存 `cfg.otherCollapsed`。「收起 / 展开」两个批量按钮同口径。
+- 打点归属同时写 D1 顶层 `pinGroups`。改组后立即写云端，换设备与文档立即生效。
+- 归属优先级：`pinGroups` 逐条记录 → 分组 `match[]` 标题前缀 → 未分组。
+- `window.PRD_GROUPS_RESOLVE(pins)` 是对外唯一归属接口，返回 `[{ id, name, order, pins[] }]`，末尾附未分组，空分组不返回。抽屉与三种 PRD 文档共用。
 
 ### 3.3 管理模式
 
@@ -178,9 +186,15 @@ stateDiagram-v2
 - `PRD_PIN_LOCATOR.navigate(selector, pin)`：按 `data-view`、最近宿主、结构路径、容器映射、标题兜底推断视图。
 - 动态容器锚点即使已在目标视图也强制重渲染。
 - `PRD_PIN_LOCATOR.openModal(pin)`：按标题与 selector 分类打开对应弹窗。弹窗创建必须同步。
+- `window.PRD_PREPARE_ANCHOR(selector, pin, view)`：切视图、开弹窗之后，恢复目标元素依赖的页面状态。幂等。
+- 状态准备覆盖三类：分步向导的第 N 步、分步表单的中间态、依赖数据源切换的元素。
+- 挂点顺序固定：`navigate` → `openModal` → `PRD_PREPARE_ANCHOR` → 查询 → 重试前再准备一次。
 - 目标元素不存在时，核心引擎按 120ms 间隔最多重试 8 次。
 - 弹窗内元素、动态表格、工作台容器均通过配置映射覆盖，不按 pin id 硬编码。
 - 定位失败时给出明确提示。
+- 分组快速定位与打点定位共用同一套准备钩子。
+- 分组 anchor 为通用布局容器（`body`、`main`、`.content` 等）时不作锚点，降级为分组视图跳转。
+- 分组 anchor 的 `view` 为空时，按分组 `label` 反查视图。
 
 ### 3.6 显示与导出
 
@@ -190,8 +204,11 @@ stateDiagram-v2
 - 版本栏控件同高、同圆角、同边框。收起 / 展开为图标加文字，两个动作随时可用。
 - 头部两行。标题不带 pageKey 字母。
 - 气泡、编辑器、PRD 大屏、新网页 PRD 不显示 selector 与 pageKey 字母。
-- 导出 Markdown 加分组目录与「所属分组」。
-- 新网页 PRD 的 TOC 按组分段，正文标注组名。
+- 导出 Markdown 加分组目录与「所属分组」。条目按分组顺序输出，组前加 `## 分组：<组名>`。
+- 新网页 PRD 的 TOC 与正文同时按组分段，组头显示组名与条数。
+- PRD 文档大屏（弹窗）左右两侧同时按组显示：左 TOC 组头带条数，右正文组头带「共 N 项」。
+- 三处输出同源 `resolveDocGroups()`，条目顺序一致。打点序号保持原编号，不重排。
+- 分组引擎异步就绪时，文档先按可用数据渲染，就绪后按分组签名变化自动重绘一次。
 - PRD 文档大屏带目录大纲与独立新网页打开。
 - 多格式导出：Markdown、JS 数据、打印 PDF。
 
@@ -304,7 +321,8 @@ function t(key) {
   "versionRegistry": { "activeVersion": "v1.0.0", "versions": { "v1.0.0": [] } },
   "savedPins": [],
   "updatedAt": "ISO 时间",
-  "groups": []
+  "groups": [],
+  "pinGroups": {}
 }
 ```
 
@@ -313,6 +331,9 @@ function t(key) {
 - `groups[]` 字段：`id / name / order / match[] / label / collapsed / anchor / link`。
 - `anchor`：`{ selector, view, pageKey }`。
 - `match[]` 是标题前缀关键词。
+- `pinGroups` 是顶层字段：`{ "<selector>\u0001<title>": "<groupId>" }`。逐条打点归属，优先于 `match[]`。
+- 旧客户端不识别 `pinGroups`，保存时会丢弃该字段；关键归属须同时用 `match[]` 覆盖。
+- `groups[].collapsed` 只作为快照写入，不决定他人默认展示。
 - docId 统一去掉 `.html` 后缀。
 - 写入体：`{"data": <上述对象>}`。
 
@@ -325,7 +346,7 @@ function t(key) {
 
 `window.PRD_CACHE_VERSION_OVERRIDE` 可注入。未注入时用 `v1`。
 数据口径变化时升此值，清浏览器缓存。
-静态脚本 `?v=2.0` 参数只用于资源缓存 bust。
+静态脚本 `?v=2.1.0` 参数只用于资源缓存 bust。
 
 ## 5. 配置钩子完整表
 
@@ -340,7 +361,10 @@ function t(key) {
 | `PRD_VIEW_JUMPS` | 视图 key → `{ go, render }`。 |
 | `PRD_PAGE_FILES` | 页面文件列表 `{ label, url }`。 |
 | `PRD_HOOK_CONFIG` | 定位钩子配置，见下表。 |
+| `PRD_PREPARE_ANCHOR` | 由钩子模板暴露。定位前恢复页面状态。业务侧可覆盖。 |
 | `PRD_D1_GROUPS` | 云端拉回的分组定义。 |
+| `PRD_D1_PIN_GROUPS` | 云端拉回的逐条打点归属。 |
+| `PRD_GROUPS_RESOLVE` | 分组扩展层暴露的归属接口 `(pins) => [{ id, name, order, pins[] }]`。 |
 | `PRD_REFRESH_MARKERS` | 核心引擎暴露。业务渲染后主动重绘圆点。 |
 
 `PRD_HOOK_CONFIG` 字段：
@@ -351,6 +375,7 @@ function t(key) {
 | `titleViewHints` | `{ "标题关键词": "viewKey" }`。 |
 | `dynamicPattern` | RegExp。命中时即使已在目标视图也强制重渲染。 |
 | `modalOpeners` | `[{ title, selector, view, open }]`。按顺序匹配弹窗。 |
+| `prepareAnchor` | `function(selector, pin, view)`。恢复分步向导 / 分步表单 / 数据源依赖状态。必须幂等。 |
 | `switchView` | `function(viewKey)`。切视图并渲染动态内容。 |
 | `currentView` | `function()`。返回当前视图 key。 |
 | `scope` | `function()`。返回 `{ top, home }`。 |
@@ -469,7 +494,21 @@ pm-proto-prd-pin/
 - 多图片/附件按 fileId 批量获取预览地址，禁止逐行重复请求。
 - 大整数 ID 作为字符串处理。`0` 是合法状态，空值检查用 `value !== null && value !== undefined`。
 
-## 11. 2.0 变更清单
+## 11. 变更清单
+
+### 2.1.0（2026-11）
+
+1. 新增 `PRD_PREPARE_ANCHOR` 状态准备钩子。修复分步向导、分步表单、数据源依赖元素的定位空白页。挂点顺序：`navigate` → `openModal` → 准备 → 查询。
+2. 定位失败重试前会再跑一次准备钩子，避免动态渲染慢一拍。
+3. 分组快速定位降级：通用容器 anchor 不作锚点；`view` 为空时按 `label` 反查；失败回退到视图跳转。
+4. 分组跳转与打点定位共用同一准备钩子。
+5. PRD 文档三处输出统一按组：弹窗左右两侧、新网页 TOC 与正文、导出 Markdown。打点序号保持原编号。
+6. 新增 `PRD_GROUPS_RESOLVE` 归属接口。抽屉与文档共用同一口径，优先 `pinGroups`，回退 `match[]` 前缀。
+7. D1 新增顶层 `pinGroups` 逐条归属。改组即写云端。旧客户端会丢弃该字段，关键归属须同时用 `match[]` 覆盖。
+8. 分组默认展开。折叠状态只认本机缓存，D1 `collapsed` 不决定默认展示。「未分组」同规则。
+9. 文档首帧按可用数据渲染，分组引擎就绪后按分组签名变化重绘一次。
+
+### 2.0（基线）
 
 1. 核心引擎与分组扩展层拆分为两个文件，loader 动态加载。
 2. 分组成为一等公民：自建、改名、删除、拖拽调序、元素拾取 anchor、快速定位。
