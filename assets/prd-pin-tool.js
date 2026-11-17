@@ -3368,6 +3368,12 @@
       line-height: 1.6 !important;
       color: #27272a;
     }
+    /* 嵌套列表层级：按行首缩进分级，缩进与项目符号同步变化。
+       现有列表规则带 !important，层级规则必须同级声明才能生效。 */
+    ul.prd-md-list li.prd-md-li-lv1, ol.prd-md-list li.prd-md-li-lv1 { margin-left: 18px !important; list-style-type: circle !important; }
+    ul.prd-md-list li.prd-md-li-lv2, ol.prd-md-list li.prd-md-li-lv2 { margin-left: 36px !important; list-style-type: square !important; }
+    ul.prd-md-list li.prd-md-li-lv3, ol.prd-md-list li.prd-md-li-lv3 { margin-left: 54px !important; list-style-type: disc !important; }
+    ul.prd-md-list li.prd-md-li-lv4, ol.prd-md-list li.prd-md-li-lv4 { margin-left: 72px !important; list-style-type: circle !important; }
     .prd-live-block ul li::marker, .prd-doc-content ul li::marker {
       color: #71717a !important;
     }
@@ -5992,7 +5998,10 @@ window.saveEditorModal = async function() {
     if (!html.trim()) return '暂无详细业务描述';
     html = html.replace(/<div class="prd-mermaid-block">[\s\S]*?<\/div><\/div>|<pre class="prd-code-block"[\s\S]*?<\/pre>/g, ' [图表/代码] ');
     html = html.replace(/<table[\s\S]*?<\/table>/g, ' [表格] ');
-    html = html.replace(/<li class="prd-md-li-lv(\d)"[^>]*>/g, (m, lv) => '<span class="prd-snip-indent" style="margin-left:' + (Math.min(4, Number(lv)) * 12) + 'px">• ');
+    html = html.replace(/<li class="prd-md-li-lv(\d)"[^>]*>/g, (m, lv) => {
+      const bullet = ['•', '◦', '▪', '·'][Math.min(3, Number(lv))];
+      return '<span class="prd-snip-indent" style="margin-left:' + (Math.min(4, Number(lv)) * 12) + 'px">' + bullet + ' ';
+    });
     html = html.replace(/<li[^>]*>/g, '<span>• ');
     html = html.replace(/<\/li>/g, '</span><br>');
     html = html.replace(/<\/(p|h[1-6]|blockquote|ul|ol)>/g, '<br>');
