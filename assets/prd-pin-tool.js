@@ -3196,6 +3196,11 @@
       margin: 4px 0;
       flex-shrink: 0;
     }
+    .prd-card-desc del { text-decoration: line-through; }
+    .prd-card-desc strong { color: #3f3f46; }
+    .prd-card-desc .prd-snip-indent { display: inline-block; }
+    .prd-card-desc input.prd-md-task { width: 10px; height: 10px; vertical-align: -1px; margin: 0 3px 0 0; }
+    .prd-card-desc img.prd-md-img { max-height: 14px; vertical-align: middle; }
     .prd-card-footer {
       display: flex;
       justify-content: space-between;
@@ -3845,6 +3850,15 @@
     }
   };
 
+  /* 列表缩进层级：Vditor 以 2 空格（或 1 个 Tab 记 2 级）表达嵌套，最多 4 级 */
+  function listLevel(rawLine) {
+    const m = String(rawLine || '').match(/^([ \t]*)/);
+    const ws = m ? m[1] : '';
+    let n = 0;
+    for (const ch of ws) n += ch === '\t' ? 2 : 1;
+    return Math.min(4, Math.floor(n / 2));
+  }
+
   window.parseMarkdown = parseMarkdown;
   function parseMarkdown(md) {
     if (!md) return '';
@@ -3870,6 +3884,13 @@
       const safe = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       inlineCodes.push(`<code>${safe}</code>`);
       return `__PRD_INLINE_CODE_${idx}__`;
+    });
+
+    // 2.5 跨行删除线：Vditor 对多行选中会生成首尾各一对 ~~，逐行解析会丢失格式。
+    //     先拆成每行独立的 ~~...~~，再交给 formatInline 渲染。
+    text = text.replace(/~~([\s\S]*?)~~/g, (m, body) => {
+      if (!body.includes('\n')) return m;
+      return body.split('\n').map(l => (l ? `~~${l}~~` : '')).join('\n');
     });
 
     // 3. 按行解析 Markdown
@@ -3933,6 +3954,8 @@
       s = s.replace(/__PRD_INLINE_CODE_(\d+)__/g, (m, id) => inlineCodes[id] || '');
       s = s.replace(/__PRD_CODE_BLOCK_(\d+)__/g, (m, id) => codeBlocks[id] || '');
 
+      // 图片先于链接替换，避免被链接正则误处理为带 ! 的文本链接
+      s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="prd-md-img">');
       s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
       s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
       s = s.replace(/~~([^~]+)~~/g, '<del>$1</del>');
@@ -3969,6 +3992,13 @@
         flushQuote();
       }
 
+      // 水平分割线：Vditor 的 line 工具栏生成 --- / *** / ___，需渲染为 hr 而非段落文本
+      if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+        flushTable(); flushQuote(); flushList();
+        outLines.push('<hr class="prd-md-hr">');
+        continue;
+      }
+
       if (trimmed.startsWith('### ')) {
         flushList();
         outLines.push(`<h3>${formatInline(trimmed.replace(/^###\s+/, ''))}</h3>`);
@@ -3992,25 +4022,33 @@
 
       if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
         const content = trimmed.replace(/^[-*]\s+/, '');
+        const lv = listLevel(line);
         if (!inList || listType !== 'ul') {
           flushList();
           inList = true;
           listType = 'ul';
           outLines.push('<ul class="prd-md-list">');
         }
-        outLines.push(`<li>${formatInline(content)}</li>`);
+        // 任务列表 - [ ] / - [x]：Vditor 的 check 工具栏生成，只读呈现复选框
+        const task = content.match(/^\[([ xX])\]\s+([\s\S]*)$/);
+        if (task) {
+          outLines.push(`<li class="prd-md-li-lv${lv}"><input type="checkbox" disabled class="prd-md-task"${task[1].toLowerCase() === 'x' ? ' checked' : ''}> ${formatInline(task[2])}</li>`);
+        } else {
+          outLines.push(`<li class="prd-md-li-lv${lv}">${formatInline(content)}</li>`);
+        }
         continue;
       }
 
       if (/^\d+\.\s+/.test(trimmed)) {
         const content = trimmed.replace(/^\d+\.\s+/, '');
+        const lv = listLevel(line);
         if (!inList || listType !== 'ol') {
           flushList();
           inList = true;
           listType = 'ol';
           outLines.push('<ol class="prd-md-list">');
         }
-        outLines.push(`<li>${formatInline(content)}</li>`);
+        outLines.push(`<li class="prd-md-li-lv${lv}">${formatInline(content)}</li>`);
         continue;
       }
 
@@ -5945,6 +5983,25 @@ window.saveEditorModal = async function() {
     return text || '暂无详细业务描述';
   }
 
+  /* 卡片摘要：复用 parseMarkdown 的渲染结果，降级为内联片段，保持卡片固定 2 行高度。
+     保留删除线、粗体、斜体、行内代码、图片；列表层级用缩进步长表达。
+     表格与代码块仍用占位符，避免卡片内出现不可读的宽表或长代码。 */
+  function renderDescSnippet(md) {
+    if (!md || typeof md !== 'string') return '暂无详细业务描述';
+    let html = parseMarkdown(md) || '';
+    if (!html.trim()) return '暂无详细业务描述';
+    html = html.replace(/<div class="prd-mermaid-block">[\s\S]*?<\/div><\/div>|<pre class="prd-code-block"[\s\S]*?<\/pre>/g, ' [图表/代码] ');
+    html = html.replace(/<table[\s\S]*?<\/table>/g, ' [表格] ');
+    html = html.replace(/<li class="prd-md-li-lv(\d)"[^>]*>/g, (m, lv) => '<span class="prd-snip-indent" style="margin-left:' + (Math.min(4, Number(lv)) * 12) + 'px">• ');
+    html = html.replace(/<li[^>]*>/g, '<span>• ');
+    html = html.replace(/<\/li>/g, '</span><br>');
+    html = html.replace(/<\/(p|h[1-6]|blockquote|ul|ol)>/g, '<br>');
+    html = html.replace(/<(p|h[1-6]|blockquote|ul|ol|hr)[^>]*>/g, '');
+    html = html.replace(/<br\s*\/?>(?:\s*<br\s*\/?>)+/g, '<br>');
+    html = html.replace(/<br\s*\/?>$/, '').trim();
+    return html || '暂无详细业务描述';
+  }
+
   function renderRightDrawerList() {
     const container = document.getElementById('prd-drawer-list');
     if (!container) return;
@@ -6013,7 +6070,7 @@ window.saveEditorModal = async function() {
           </div>
 
           <div class="prd-card-desc" title="${escapeHtml(stripMarkdownSnippet(pin.desc))}">
-            ${escapeHtml(stripMarkdownSnippet(pin.desc))}
+            ${renderDescSnippet(pin.desc)}
           </div>
 
           <div class="prd-card-footer">
